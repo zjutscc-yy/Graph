@@ -43,6 +43,7 @@ public class SynthGenerator extends AbstractGenerator {
 	private int id;
 
 	/** total number of goals in this goal plan tree */
+	//整棵树里的目标总数
 	private int treeGoalCount;
 
 	/** total number of plans in this goal plan tree */
@@ -61,6 +62,7 @@ public class SynthGenerator extends AbstractGenerator {
 	final private int num_tree;
 
 	/** number of goals */
+	//计划有的目标数，若为2，任一计划必须有两个子目标
 	final private int num_goal;
 
 	/** number of plans */
@@ -79,8 +81,8 @@ public class SynthGenerator extends AbstractGenerator {
 	final private int num_lit;
 
 	/** probability of a plan being leave plan */
-	final private double proPlan;
 
+	final private double proPlan;
 	/** the set of variables selected*/
 	private ArrayList<Integer> selected_indexes;
 

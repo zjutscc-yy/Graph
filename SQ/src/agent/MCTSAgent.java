@@ -1,6 +1,7 @@
 package agent;
 
 import goalplantree.*;
+import jdk.dynalink.beans.StaticClass;
 import mcts.BasicMCTSNode;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,8 +62,6 @@ public class MCTSAgent extends AbstractAgent{
         }
         return false;
     }
-
-
 
 
 

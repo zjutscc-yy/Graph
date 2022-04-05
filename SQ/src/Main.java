@@ -4,12 +4,14 @@ import simulation.Simulator;
 import xml2bdi.XMLReader;
 import environment.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import agent.*;
 
+
 public class Main {
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
 
 
         double total = 0;

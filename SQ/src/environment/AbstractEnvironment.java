@@ -4,6 +4,10 @@ import agent.AbstractAgent;
 import goalplantree.ActionNode;
 import goalplantree.GoalNode;
 import goalplantree.Literal;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -133,12 +137,18 @@ public abstract class AbstractEnvironment {
     /**
      * all the agents in this environment run one cycle
      */
-    public boolean run(){
+    public boolean run() throws IOException {
         // new states are initialised
         nStates = new ArrayList<>();
         // a value indicates if all agents stops executing
         boolean stoped = true;
         // for all the agents, run one cycle
+
+        //创建文件接收action
+//        File newFile = new File("F:\\project\\SQ-MCTS\\genGraph\\actions.txt");
+        //把action结果输出到file中
+        FileWriter newFile  = new FileWriter("actions.txt",true);
+
         for(AbstractAgent a: agents){
 
             // agent senses the environment
@@ -159,6 +169,9 @@ public abstract class AbstractEnvironment {
                 ActionNode act = a.execute(this);
 
                 System.out.println(act == null? "null": act.getName());
+
+                newFile.append(act.getName());
+                newFile.append("\n");
 
                 // if an action is selected for execution
                 if(act != null){
@@ -181,6 +194,8 @@ public abstract class AbstractEnvironment {
         }
         // the environment changes after all agents executed their actions
         //envChange();
+
+        newFile.close();
 
         return !stoped;
     }
