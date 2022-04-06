@@ -3,10 +3,21 @@ package structure;
 import java.util.ArrayList;
 
 public class Node {
-    //节点名字：先用数字
-    private int name;
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    private Event event;
+    //节点名字：先用数字
+    private int id;
+
+    //节点里存储的action名字
+    private String actionName;
+
+//    //点的集合
+//    private ArrayList<Node> nodes = new ArrayList<>();
+
+    //节点里存储当前两个goal-plan tree 的执行情况
+
 
     /**
      *以该节点为尾节点的边 例：1->2(尾节点)
@@ -26,6 +37,25 @@ public class Node {
      */
     private ArrayList<Node> beReachableNodes;
 
+    public Node() {
+
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Node(String actionName) {
+        this.actionName = actionName;
+    }
+
+    public String getActionName() {
+        return actionName;
+    }
+
+    public void setActionName(String actionName) {
+        this.actionName = actionName;
+    }
 
     /**
      * 递归地更新可达的node,边的方向为：this--->n
@@ -65,24 +95,5 @@ public class Node {
             }
         }
     }
-
-//    //检查两个节点的event是否相同
-//    public void checkNode(Node n1,Node n2){
-//        if (n1 == n2){//相同，不需增加节点，边？
-//
-//        }else{
-//            addNode();
-//        }
-//    }
-//
-//    //检查结果：如果相同，不加节点，如果不同，增加节点
-//    public void addNode(){
-//
-//    }
-
-
-
-
-
 
 }

@@ -31,28 +31,28 @@ public class Main {
         // read the type
         try {
             type = Integer.parseInt(args[1]);
-            if(type < 2 || type > 5){
+            if (type < 2 || type > 5) {
                 type = 2;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             type = 0;
         }
         // read the test num
-        try{
+        try {
             testNum = Integer.parseInt(args[2]);
-        }catch (Exception e){
+        } catch (Exception e) {
             testNum = 10;
         }
 
-        System.out.println("type: " +  type);
+        System.out.println("type: " + type);
 
         Simulator simulator = new Simulator();
 
-        for(int m = 0; m < testNum; m++){
+        for (int m = 0; m < testNum; m++) {
 
             try {
                 reader = new XMLReader(gptFilePath);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 System.out.println("ERROR: unable to open GPT file: " + gptFilePath);
                 return;
             }
@@ -64,7 +64,7 @@ public class Main {
             ArrayList<GoalNode> tlgs = reader.getTlgs();
 
 
-            if(type == 5) {
+            if (type == 5) {
                 for (int i = 0; i < tlgs.size(); i++) {
                     simulator.runSimulation(10000, tlgs.get(i));
                     System.out.println("sim:" + i);
@@ -80,8 +80,8 @@ public class Main {
 
             // build the agent
             ArrayList<Belief> bs = new ArrayList<>();
-            for(Literal l : literals){
-                    bs.add(new Belief(l.getName(), l.getState() ? 1 : 0));
+            for (Literal l : literals) {
+                bs.add(new Belief(l.getName(), l.getState() ? 1 : 0));
             }
 
             // build the fifo agent
@@ -89,14 +89,19 @@ public class Main {
             SPMCTSAgent spmctsAgent = new SPMCTSAgent("SPMCTS-Agent", bs, tlgs);
             QSISPMCTSAgent qsispmctsAgent = new QSISPMCTSAgent("QSISPMCTS-Agent", bs, tlgs);
 
-
             AbstractAgent agent = null;
 
             System.out.println("type:" + type);
-            switch (type){
-                case 2: agent = mctsAgent;break;
-                case 3: agent = spmctsAgent;break;
-                case 5: agent = qsispmctsAgent; break;
+            switch (type) {
+                case 2:
+                    agent = mctsAgent;
+                    break;
+                case 3:
+                    agent = spmctsAgent;
+                    break;
+                case 5:
+                    agent = qsispmctsAgent;
+                    break;
             }
 
             // add this agent to the environment
@@ -105,7 +110,7 @@ public class Main {
             boolean running = true;
 
             int step = 1;
-            while (running){
+            while (running) {
                 System.out.println("---------------------step " + step + "------------------------------");
                 running = environment.run();
                 step++;

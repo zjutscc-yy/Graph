@@ -3,6 +3,10 @@ package agent;
 import goalplantree.*;
 import jdk.dynalink.beans.StaticClass;
 import mcts.BasicMCTSNode;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,13 +24,13 @@ public class MCTSAgent extends AbstractAgent{
     /**
      * constructor
      */
-    public MCTSAgent(String id, ArrayList<Belief> bs){
+    public MCTSAgent(String id, ArrayList<Belief> bs)  {
         super(id, bs);
     }
-    public MCTSAgent(String id, ArrayList<Belief> bs, ArrayList<GoalNode> gs){
+    public MCTSAgent(String id, ArrayList<Belief> bs, ArrayList<GoalNode> gs) {
         super(id, bs, gs);
     }
-    public MCTSAgent(String id, ArrayList<Belief> bs, ArrayList<GoalNode> gs, HashMap<String, Double> vs){
+    public MCTSAgent(String id, ArrayList<Belief> bs, ArrayList<GoalNode> gs, HashMap<String, Double> vs) {
         super(id, bs, gs, vs);
     }
 
@@ -63,7 +67,21 @@ public class MCTSAgent extends AbstractAgent{
         return false;
     }
 
+    /**
+     *
+      * @return MCTS node
+     */
 
+    //获取mcts执行节点
+    public BasicMCTSNode getRoot(){
+
+        BasicMCTSNode root = new BasicMCTSNode(this.intentions, this.bb);
+        long start = System.currentTimeMillis();
+        // run mcts
+        root.run(alpha, beta);
+
+        return root;
+    }
 
     /**
      * if execution succeeds

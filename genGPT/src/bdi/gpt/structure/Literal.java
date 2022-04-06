@@ -93,7 +93,7 @@ public class Literal implements Comparable<Literal> {
 	}
 
 	/**
-	 * method to flip the value of this literal
+	 * method to flip the value of this literal]
 	 * @return true, if the current value is false; false, otherwise.
 	 */
 	public boolean flip(){

@@ -1,6 +1,7 @@
 package environment;
 
 import agent.AbstractAgent;
+import agent.MCTSAgent;
 import goalplantree.ActionNode;
 import goalplantree.GoalNode;
 import goalplantree.Literal;
@@ -144,8 +145,8 @@ public abstract class AbstractEnvironment {
         boolean stoped = true;
         // for all the agents, run one cycle
 
-        //创建文件接收action
-//        File newFile = new File("F:\\project\\SQ-MCTS\\genGraph\\actions.txt");
+        // 创建文件接收action
+        //File newFile = new File("F:\\project\\SQ-MCTS\\genGraph\\actions.txt");
         //把action结果输出到file中
         FileWriter newFile  = new FileWriter("actions.txt",true);
 
@@ -308,8 +309,4 @@ public abstract class AbstractEnvironment {
         result += " }.";
         return result;
     }
-
-
-
-
 }
