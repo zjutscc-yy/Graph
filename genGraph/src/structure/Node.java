@@ -80,9 +80,8 @@ public class Node {
     public TreeNode traversal(GoalNode node,String actionName) {
         Queue<TreeNode> queue = new LinkedList<TreeNode>();
         queue.offer(node);
-        int count = 0;
         while (!queue.isEmpty()) {
-            count++;
+
             TreeNode poll = queue.poll();
 
             //判断poll是否为action节点，如果是，与当前读到的action比较
@@ -91,14 +90,15 @@ public class Node {
                 String[] strArray = poll.getName().split("-");//把 T 分割出来
                 searchAction = strArray[1];
 
-                if (searchAction == actionName){
+                if (searchAction.equals(actionName)){
                     return poll;
                 }
             }
 
             else if (poll instanceof PlanNode) {
-                if (((PlanNode) poll).getPlanbody() != null) {
-                    for (TreeNode treeNode : ((PlanNode) poll).getPlanbody()) {
+                PlanNode planNode = (PlanNode) poll;
+                if (planNode.getPlanbody() != null) {
+                    for (TreeNode treeNode : planNode.getPlanbody()) {
                         queue.offer(treeNode);
                     }
 
@@ -106,8 +106,9 @@ public class Node {
             }
 
             else if (poll instanceof GoalNode) {
-                if (((GoalNode) poll).getPlans() != null) {
-                    for (PlanNode plan : node.getPlans()) {
+                GoalNode goalNode = (GoalNode) poll;
+                if (goalNode.getPlans() != null) {
+                    for (PlanNode plan : goalNode.getPlans()) {
                         queue.offer((TreeNode) plan);
                     }
 
@@ -145,66 +146,5 @@ public class Node {
     public void setId(int id) {
         this.id = id;
     }
-
-
-
-
-//    /**
-//     *以该节点为尾节点的边 例：1->2(尾节点)
-//     */
-//    private  ArrayList<NodeEdge> outEdges;
-//    /**
-//     * 以该节点为头节点的边
-//     */
-//    private ArrayList<NodeEdge> inEdges;
-//
-//    /**
-//     * 该节点指向的其他node
-//     */
-//    private ArrayList<Node> reachableNodes;
-//    /**
-//     * 可达该node的其它node
-//     */
-//    private ArrayList<Node> beReachableNodes;
-
-
-//    /**
-//     * 递归地更新可达的node,边的方向为：this--->n
-//     *
-//     * @param n 对于该node新增的可达node
-//     */
-//    public void updateReachable(Node n) {
-//        //如果e原来不可达，则添加e到可达node集合中
-//        if (!this.reachableNodes.contains(n)) {
-//            this.reachableNodes.add(n);
-//            this.reachableNodes.addAll(n.reachableNodes);
-//        }
-//        //对每一条入边递归地更新
-//        if (!inEdges.isEmpty()) {
-//            for (NodeEdge edge : inEdges) {
-//                edge.from.updateReachable(n);
-//
-//            }
-//        }
-//    }
-//
-//    /**
-//     * 递归地更新可达的node,边的方向为：n--->this
-//     *
-//     * @param n 对于该node新增的可被达node
-//     */
-//    public void updateBeReachable(Node n) {
-//        //如果e原来不可达，则添加e到可达node集合中
-//        if (!this.beReachableNodes.contains(n)) {
-//            this.beReachableNodes.add(n);
-//            this.beReachableNodes.addAll(n.beReachableNodes);
-//        }
-//        //对每一条入边递归地更新
-//        if (!outEdges.isEmpty()) {
-//            for (NodeEdge edge : outEdges) {
-//                edge.to.updateBeReachable(n);
-//            }
-//        }
-//    }
 
 }
