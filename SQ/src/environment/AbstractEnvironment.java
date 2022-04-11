@@ -146,9 +146,9 @@ public abstract class AbstractEnvironment {
         // for all the agents, run one cycle
 
         // 创建文件接收action
-        //File newFile = new File("F:\\project\\SQ-MCTS\\genGraph\\actions.txt");
+        //File actionPath1 = new File("F:\\project\\SQ-MCTS\\genGraph\\actions1.txt");
         //把action结果输出到file中
-        FileWriter newFile  = new FileWriter("actions.txt",true);
+        FileWriter actionPath1  = new FileWriter("actions1.txt",true);
 
         for(AbstractAgent a: agents){
 
@@ -171,8 +171,8 @@ public abstract class AbstractEnvironment {
 
                 System.out.println(act == null? "null": act.getName());
 
-                newFile.append(act.getName());
-                newFile.append("\n");
+                actionPath1.append(act.getName());
+                actionPath1.append("\n");
 
                 // if an action is selected for execution
                 if(act != null){
@@ -196,8 +196,7 @@ public abstract class AbstractEnvironment {
         // the environment changes after all agents executed their actions
         //envChange();
 
-        newFile.append("/");
-        newFile.close();
+        actionPath1.close();
 
         return !stoped;
     }

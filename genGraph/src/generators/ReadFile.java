@@ -53,6 +53,10 @@ public class ReadFile {
             Node node = new Node(i,strArray[0],strArray[1]);
             HashMap map = new HashMap();
 
+            //把当前节点的map赋值一份，方便让孩子节点在其基础上更新
+            map.putAll(graph.getCurrentNode().getCurrentStep());
+
+
             GoalNode searchGoalNode = node.searchWhichGoal(tlgs);//找到当前执行的哪棵树
             TreeNode searchActionNode = node.traversal(searchGoalNode, node.getActionName());
 
