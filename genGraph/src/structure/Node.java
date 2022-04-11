@@ -22,18 +22,30 @@ public class Node {
     //action 中 T1-A1 中的A1
     private String actionName;
 
-    //当前执行到多棵 goal-plan tree的哪个步骤
+    //当前执行到多棵 goal-plan tree的哪个步骤  如<G0,Action A0>  <G1,Action A5>
     private HashMap currentSteps;
 
-    //节点里所存的top-level goal
+    //节点里所存的top-level goal   如G0，G1
     private ArrayList<GoalNode> tlgs;
 
-    public HashMap getCurrentStep() {
-        return currentSteps;
+    //节点的孩子节点
+    private ArrayList<Node> childNode = new ArrayList<>();
+
+
+
+
+    //在currentNode下添加子节点
+    public void addChildNode(Node node){
+        childNode.add(node);
     }
 
-    public void setCurrentStep(HashMap currentStep) {
-        this.currentSteps = currentStep;
+
+    public ArrayList<Node> getChildNode() {
+        return childNode;
+    }
+
+    public void setChildNode(ArrayList<Node> childNode) {
+        this.childNode = childNode;
     }
 
     //读取生成的树的xml文件中的 top-leve goal
@@ -47,19 +59,10 @@ public class Node {
 
     public Node() {}
 
-    public Node(int id, String actionTreeName, String actionName, HashMap currentStep) {
+    public Node(int id, String actionTreeName, String actionName) {
         this.id = id;
         this.actionTreeName = actionTreeName;
         this.actionName = actionName;
-        this.currentSteps = currentSteps;
-    }
-
-    //添加当前节点
-    public void addNode(int i, String[] strArray) {
-        //设置node属性
-        this.setId(i + 1);
-        this.setActionTreeName(strArray[0]);
-        this.setActionName(strArray[1]);
     }
 
     //找到当前action属于哪颗树
@@ -145,6 +148,14 @@ public class Node {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public HashMap getCurrentStep() {
+        return currentSteps;
+    }
+
+    public void setCurrentStep(HashMap currentStep) {
+        this.currentSteps = currentStep;
     }
 
 }

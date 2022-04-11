@@ -196,6 +196,7 @@ public abstract class AbstractEnvironment {
         // the environment changes after all agents executed their actions
         //envChange();
 
+        newFile.append("/");
         newFile.close();
 
         return !stoped;
