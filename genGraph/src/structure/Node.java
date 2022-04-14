@@ -20,7 +20,7 @@ public class Node {
     private String actionName;
 
     //当前执行到多棵 goal-plan tree的哪个步骤  如<G0,Action A0>  <G1,Action A5>
-    private HashMap currentSteps;
+    private HashMap<GoalNode, TreeNode> currentSteps;
 
     //节点里所存的top-level goal   如G0，G1
     private ArrayList<GoalNode> tlgs;

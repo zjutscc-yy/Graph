@@ -115,7 +115,7 @@ public class ReadFile {
 
         HashMap map1 = new HashMap();
 
-        ArrayList<GoalNode> tlgs = root.getGoalNodes("F:\\project\\gpt\\1.xml");
+        ArrayList<GoalNode> tlgs = graph.initialState;
 
         //创建一个新的TreeNode的ArryList，因为currentStep是Tree Node型的， 对GoalNode进行遍历，强制转成TreeNode型
         ArrayList<TreeNode> currentSteps = new ArrayList<>();

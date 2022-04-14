@@ -29,6 +29,15 @@ public class Graph {
     //存储Node节点
     private ArrayList<Node> nodes = new ArrayList<Node>();
 
+    /**
+     * 读取初始状态（用GPTs表示）
+     * @param gptXMLFileName GPTs的xml文件url
+     */
+    public void setInitialState(String gptXMLFileName) {
+        XMLReader reader = new XMLReader(gptXMLFileName);
+        initialState = reader.getTlgs();
+    }
+
     //在图中添加节点
     public void addNode(Node node){
         nodes.add(node);
