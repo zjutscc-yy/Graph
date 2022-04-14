@@ -7,10 +7,7 @@ import goalplantree.PlanNode;
 import goalplantree.TreeNode;
 import xml2bdi.XMLReader;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class Node {
     //节点名字：先用数字
@@ -34,11 +31,45 @@ public class Node {
 
 
 
+
+
     //在currentNode下添加子节点
     public void addChildNode(Node node){
         childNode.add(node);
     }
 
+    //判断两个节点currentsteps是否相等
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node otherNode = (Node) o;
+        HashMap otherCurrentSteps = otherNode.currentSteps;
+        if (currentSteps.size() != otherCurrentSteps.size()) {
+            return false;
+        }
+        for (Map.Entry<GoalNode, TreeNode> goalNodeActionNodeEntry : currentSteps.entrySet()) {
+            // 当前的key （tlg）
+            GoalNode tlg = goalNodeActionNodeEntry.getKey();
+            // 当前的value （current step）
+            TreeNode curStep = goalNodeActionNodeEntry.getValue();
+            // 如果比较的对象不含有当前key，则说明一定不相等
+            if (!otherCurrentSteps.containsKey(tlg)) {
+                return false;
+            }
+            // 如果当前tlg的current step与比较对象的current step不相等，返回false
+            if (!otherCurrentSteps.get(tlg).equals(curStep)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(currentSteps);
+    }
 
     public ArrayList<Node> getChildNode() {
         return childNode;
@@ -148,6 +179,7 @@ public class Node {
 
     public void setId(int id) {
         this.id = id;
+        //修改子节点的id
     }
 
     public HashMap getCurrentStep() {

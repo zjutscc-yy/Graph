@@ -1,8 +1,27 @@
 package structure;
 
+import goalplantree.GoalNode;
+import goalplantree.TreeNode;
+import xml2bdi.XMLReader;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Graph {
+    public ArrayList<GoalNode> initialState;
+
+    private Node root;
+
+    public Node getRoot() {
+        return root;
+    }
+
+    public void setRoot(Node root) {
+        this.root = root;
+    }
 
     //表示当前指向哪个节点
     private Node currentNode;
@@ -31,7 +50,6 @@ public class Graph {
             }
         }
     }
-
 
 
     public Node getCurrentNode() {
