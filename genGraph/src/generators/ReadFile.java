@@ -20,10 +20,12 @@ public class ReadFile {
     private int index = 0;
     private boolean isFirstFlag = false;
 
+
     public void readFile(String fileName) throws IOException {
 
         Graph graph = new Graph();
         graph.setInitialState("F:\\project\\gpt\\1.xml");
+
 
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         //调用字符缓冲输入流对象的方法读数据
@@ -43,7 +45,7 @@ public class ReadFile {
         }
         br.close();
 
-        writeUml(graph);
+//        writeUml(graph);
 
 
         //遍历graph的所有node的Id
@@ -52,6 +54,19 @@ public class ReadFile {
 
     }
 
+    public Graph mergeGraph(Graph graph,Graph pathGraph){
+        if (graph.getNodes().size() == 0){
+            return pathGraph;
+        }
+        Node curGraphPtr = graph.getRoot();
+        Node curPathPtr = pathGraph.getRoot();
+
+        if (curPathPtr.getChildNode() != null){
+            for (Node node : graph.getNodes()) {//遍历图中所有节点
+            }
+        }
+        return graph;
+    }
 
     //已有图的根节点与新生成path的根节点，合并在一起，最后返回图的根节点
     public Node mergePath(Node graphRoot, Node pathRoot) {
@@ -63,52 +78,27 @@ public class ReadFile {
 
         if (curPathPtr.getChildNode() != null) {
             for (Node graphChildNode : curGraphPtr.getChildNode()) {
-                Node pathChildNode = curPathPtr.getChildNode().get(0);
-                if (graphChildNode.equals(pathChildNode)) {
+                for (Node pathChildNode : curPathPtr.getChildNode()) {
+                    if (graphChildNode.equals(pathChildNode)) {
                         curGraphPtr = graphChildNode;
                         curPathPtr = pathChildNode;
                     }else {
+
                         //每次add修改id
                         pathChildNode.setId(++index);
                         graphChildNode.addChildNode(pathChildNode);
-                        curGraphPtr = graphChildNode;
                         curPathPtr = pathChildNode;
+                        curGraphPtr = graphChildNode;
                     }
+                }
 
             }
         }
         return graphRoot;
     }
 
-
-//    public Graph mergeGraph(Graph graph,Graph singlePathGraph){
-//        graph.setCurrentNode(graph.getRoot());
-//        Node point = graph.getCurrentNode();
-//
-//        singlePathGraph.setCurrentNode(graph.getRoot());
-//        Node pointPath = singlePathGraph.getCurrentNode();
-//
-//        while (pointPath.getChildNode() != null){
-//            for (Node node : point.getChildNode()) {
-//                for (Node node1 : pointPath.getChildNode()) {
-//                   if (node.getCurrentStep().equals(node1.getCurrentStep())){
-//                       point = node;
-//                       pointPath = node1;
-//                   }else {
-//                       point.addChildNode(node1);
-//                       point = node;
-//                       pointPath = node1;
-//                   }
-//                }
-//            }
-//        }
-//
-//        return graph;
-//    }
-
     //生成单条路径
     public Node generateSinglePath(Graph graph, BufferedReader br) throws IOException {
-
 
         //每条路径都添加一个root节点
         Node root = new Node();
@@ -156,10 +146,8 @@ public class ReadFile {
 
             i++;
         }
-
         return root;
     }
-
 
     //把生成的图写成.txt，生成uml文件
     public void writeUml(Graph graph) throws IOException {

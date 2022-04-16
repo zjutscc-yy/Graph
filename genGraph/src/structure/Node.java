@@ -23,11 +23,10 @@ public class Node {
     private HashMap<GoalNode, TreeNode> currentSteps;
 
     //节点里所存的top-level goal   如G0，G1
-    private ArrayList<GoalNode> tlgs;
+//    private ArrayList<GoalNode> tlgs;
 
     //节点的孩子节点
-    private ArrayList<Node> childNode = new ArrayList<>();
-
+    private Set<Node> childNode = new HashSet<Node>();
 
 
 
@@ -38,7 +37,7 @@ public class Node {
         childNode.add(node);
     }
 
-    //判断两个节点currentsteps是否相等
+    //判断两个节点是否相等(currentsteps相等即认为节点相等)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,22 +70,18 @@ public class Node {
         return Objects.hash(currentSteps);
     }
 
-    public ArrayList<Node> getChildNode() {
+    public Set<Node> getChildNode() {
         return childNode;
     }
 
-    public void setChildNode(ArrayList<Node> childNode) {
-        this.childNode = childNode;
-    }
-
     //读取生成的树的xml文件中的 top-leve goal
-    public ArrayList<GoalNode> getGoalNodes(String fileName) {
-        //读取goal-plan tree的xml文件
-        XMLReader reader = new XMLReader(fileName);
-        //获取多个目标的 top-level goal
-        ArrayList<GoalNode> tlgs = reader.getTlgs();
-        return tlgs;
-    }
+//    public ArrayList<GoalNode> getGoalNodes(String fileName) {
+//        //读取goal-plan tree的xml文件
+//        XMLReader reader = new XMLReader(fileName);
+//        //获取多个目标的 top-level goal
+//        ArrayList<GoalNode> tlgs = reader.getTlgs();
+//        return tlgs;
+//    }
 
     public Node() {}
 

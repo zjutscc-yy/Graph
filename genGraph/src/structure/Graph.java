@@ -9,25 +9,32 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Graph {
+
+    //
     public ArrayList<GoalNode> initialState;
 
+    //图的根节点
     private Node root;
+
+    //图中存储哪些Node
+    private Set<Node> nodes = new HashSet<Node>();
+
+    //表示当前指向哪个节点
+    private Node currentNode;
+
+
 
     public Node getRoot() {
         return root;
     }
 
-    public void setRoot(Node root) {
-        this.root = root;
+    public ArrayList<GoalNode> getInitialState() {
+        return initialState;
     }
-
-    //表示当前指向哪个节点
-    private Node currentNode;
-
-    //存储Node节点
-    private ArrayList<Node> nodes = new ArrayList<Node>();
 
     /**
      * 读取初始状态（用GPTs表示）
@@ -51,7 +58,7 @@ public class Graph {
         }
     }
 
-    //遍历所有节点的孩子节点
+    //遍历出所有路径
     public void traversalChildNode(){
         for(Node node : nodes){
             for (Node node1 : node.getChildNode()) {
@@ -69,9 +76,8 @@ public class Graph {
         this.currentNode = currentNode;
     }
 
-    public ArrayList<Node> getNodes() {
+    public Set<Node> getNodes() {
         return nodes;
     }
-
 }
 
