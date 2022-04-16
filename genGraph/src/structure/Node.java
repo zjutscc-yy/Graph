@@ -26,7 +26,8 @@ public class Node {
 //    private ArrayList<GoalNode> tlgs;
 
     //节点的孩子节点
-    private Set<Node> childNode = new HashSet<Node>();
+    private ArrayList<Node> childNode = new ArrayList<>();
+
 
 
 
@@ -70,7 +71,7 @@ public class Node {
         return Objects.hash(currentSteps);
     }
 
-    public Set<Node> getChildNode() {
+    public ArrayList<Node> getChildNode() {
         return childNode;
     }
 

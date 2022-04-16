@@ -23,10 +23,6 @@ public class ReadFile {
 
     public void readFile(String fileName) throws IOException {
 
-        Graph graph = new Graph();
-        graph.setInitialState("F:\\project\\gpt\\1.xml");
-
-
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         //调用字符缓冲输入流对象的方法读数据
         String line;
@@ -35,17 +31,18 @@ public class ReadFile {
         2.创建多个路径List
         3.
          */
-        Node graphRoot = null;
+        bigGraph = new Graph();
+        bigGraph.setInitialState("F:\\project\\gpt\\1.xml");
         while ((line = br.readLine()) != null) {
-            Node root = generateSinglePath(graph, br);
+            Graph singlePathGraph = generatePathGraph(br);
             if (!isFirstFlag)
-                index = graph.getNodes().size();
+                index = singlePathGraph.getNodes().size();
             isFirstFlag = true;
-            graphRoot = mergePath(graphRoot, root);
+            bigGraph = mergeGraph(bigGraph, singlePathGraph);
         }
         br.close();
 
-//        writeUml(graph);
+        writeUml(bigGraph);
 
 
         //遍历graph的所有node的Id
@@ -54,58 +51,88 @@ public class ReadFile {
 
     }
 
+
+
     public Graph mergeGraph(Graph graph,Graph pathGraph){
         if (graph.getNodes().size() == 0){
             return pathGraph;
         }
+        boolean isAdd = false;//判断节点是否为新加节点
+
         Node curGraphPtr = graph.getRoot();
         Node curPathPtr = pathGraph.getRoot();
 
-        if (curPathPtr.getChildNode() != null){
-            for (Node node : graph.getNodes()) {//遍历图中所有节点
-            }
-        }
-        return graph;
-    }
+        out: while (curPathPtr.getChildNode().size() != 0) {
 
-    //已有图的根节点与新生成path的根节点，合并在一起，最后返回图的根节点
-    public Node mergePath(Node graphRoot, Node pathRoot) {
-        if (graphRoot == null) {
-            return pathRoot;
-        }
-        Node curGraphPtr = graphRoot;
-        Node curPathPtr = pathRoot;
-
-        if (curPathPtr.getChildNode() != null) {
-            for (Node graphChildNode : curGraphPtr.getChildNode()) {
-                for (Node pathChildNode : curPathPtr.getChildNode()) {
-                    if (graphChildNode.equals(pathChildNode)) {
-                        curGraphPtr = graphChildNode;
-                        curPathPtr = pathChildNode;
+            ArrayList<Node> curNodes = graph.getNodes();
+            inner: for (int i = 0; i < curNodes.size(); i++) {
+                Node graphNode = curNodes.get(i);
+                if (graphNode.equals(curPathPtr)){
+                    if (!isAdd){
+                        curGraphPtr = graphNode;
+                        if (curPathPtr.getChildNode().size() != 0){
+                            curPathPtr = curPathPtr.getChildNode().get(0);
+                        }
                     }else {
-
-                        //每次add修改id
-                        pathChildNode.setId(++index);
-                        graphChildNode.addChildNode(pathChildNode);
-                        curPathPtr = pathChildNode;
-                        curGraphPtr = graphChildNode;
+                        if (!curGraphPtr.getChildNode().contains(curPathPtr)) {
+                            curGraphPtr.addChildNode(curPathPtr);//可能会加重复，连着都不等，加个判断孩子节点里是否已经存在curPathPtr
+                        }
+                        curGraphPtr = graphNode;
+                        if (curPathPtr.getChildNode().size() != 0){
+                            curPathPtr = curGraphPtr.getChildNode().get(0);
+                        }
+                        isAdd = false;
                     }
+
+                    continue out;
                 }
 
+
             }
+            //找不到
+            isAdd = true;
+            curPathPtr.setId(index++);
+            if (!curGraphPtr.getChildNode().contains(curPathPtr)) {
+                curGraphPtr.addChildNode(curPathPtr);//可能会加重复，连着都不等，加个判断孩子节点里是否已经存在curPathPtr
+            }
+            graph.addNode(curPathPtr);
+            curGraphPtr = curPathPtr;
+            if (curPathPtr.getChildNode().size() != 0) {
+                curPathPtr = curPathPtr.getChildNode().get(0);
+            }
+
         }
-        return graphRoot;
+
+        //最后一个节点
+        if (graph.getNodes().contains(curPathPtr)){
+            if (!curGraphPtr.getChildNode().contains(curPathPtr)) {
+                curGraphPtr.addChildNode(curPathPtr);
+            }
+        }else {
+            curPathPtr.setId(index++);
+            if (!curGraphPtr.getChildNode().contains(curPathPtr)) {
+                curGraphPtr.addChildNode(curPathPtr);//可能会加重复，连着都不等，加个判断孩子节点里是否已经存在curPathPtr
+            }
+            graph.addNode(curPathPtr);
+        }
+
+        return graph;
+
     }
 
-    //生成单条路径
-    public Node generateSinglePath(Graph graph, BufferedReader br) throws IOException {
 
+
+    //生成单条路径
+    public Graph generatePathGraph(BufferedReader br) throws IOException {
+
+        Graph pathGraph = new Graph();
+        pathGraph.initialState = bigGraph.initialState;
         //每条路径都添加一个root节点
         Node root = new Node();
 
         HashMap map1 = new HashMap();
 
-        ArrayList<GoalNode> tlgs = graph.initialState;
+        ArrayList<GoalNode> tlgs = pathGraph.getInitialState();
 
         //创建一个新的TreeNode的ArryList，因为currentStep是Tree Node型的， 对GoalNode进行遍历，强制转成TreeNode型
         ArrayList<TreeNode> currentSteps = new ArrayList<>();
@@ -116,8 +143,9 @@ public class ReadFile {
         }
         root.setCurrentStep(map1);
         root.setId(0);
-        graph.setCurrentNode(root);
-        graph.addNode(root);
+        pathGraph.setCurrentNode(root);
+        pathGraph.setRoot(root);
+        pathGraph.addNode(root);
 
         int i = 1;
         String data;
@@ -129,7 +157,7 @@ public class ReadFile {
             HashMap map = new HashMap();
 
             //把当前节点的map赋值一份，方便让孩子节点在其基础上更新
-            map.putAll(graph.getCurrentNode().getCurrentStep());
+            map.putAll(pathGraph.getCurrentNode().getCurrentStep());
 
             GoalNode searchGoalNode = node.searchWhichGoal(tlgs);//找到当前执行的哪棵树
             TreeNode searchActionNode = node.traversal(searchGoalNode, node.getActionName());
@@ -138,15 +166,15 @@ public class ReadFile {
             node.setCurrentStep(map);
 
 
-            graph.addNode(node);
+            pathGraph.addNode(node);
 
-            graph.getCurrentNode().addChildNode(node);
+            pathGraph.getCurrentNode().addChildNode(node);
 
-            graph.setCurrentNode(node);
+            pathGraph.setCurrentNode(node);
 
             i++;
         }
-        return root;
+        return pathGraph;
     }
 
     //把生成的图写成.txt，生成uml文件

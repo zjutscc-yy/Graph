@@ -14,14 +14,13 @@ import java.util.Set;
 
 public class Graph {
 
-    //
     public ArrayList<GoalNode> initialState;
 
     //图的根节点
     private Node root;
 
     //图中存储哪些Node
-    private Set<Node> nodes = new HashSet<Node>();
+    private ArrayList<Node> nodes = new ArrayList<>();
 
     //表示当前指向哪个节点
     private Node currentNode;
@@ -30,6 +29,10 @@ public class Graph {
 
     public Node getRoot() {
         return root;
+    }
+
+    public void setRoot(Node root) {
+        this.root = root;
     }
 
     public ArrayList<GoalNode> getInitialState() {
@@ -76,7 +79,7 @@ public class Graph {
         this.currentNode = currentNode;
     }
 
-    public Set<Node> getNodes() {
+    public ArrayList<Node> getNodes() {
         return nodes;
     }
 }
