@@ -116,7 +116,7 @@ public class Main {
                 step++;
             }
             // check the number of goals achieved
-            //System.out.println(agent.getNumAchivedGoal());
+            System.out.println(agent.getNumAchivedGoal());
             total += agent.getNumAchivedGoal();
         }
 

@@ -22,20 +22,29 @@ public class Node {
     //当前执行到多棵 goal-plan tree的哪个步骤  如<G0,Action A0>  <G1,Action A5>
     private HashMap<GoalNode, TreeNode> currentSteps;
 
-    //节点里所存的top-level goal   如G0，G1
-//    private ArrayList<GoalNode> tlgs;
-
     //节点的孩子节点
     private ArrayList<Node> childNode = new ArrayList<>();
 
 
+    //输出所有路径的时候用
+    private boolean isVisited = false;
 
+    public boolean isVisited() {
+        return isVisited;
+    }
 
+    public void setVisited(boolean visited) {
+        isVisited = visited;
+    }
 
 
     //在currentNode下添加子节点
     public void addChildNode(Node node){
         childNode.add(node);
+    }
+
+    public void removeChildNode(Node node){
+        childNode.remove(node);
     }
 
     //判断两个节点是否相等(currentsteps相等即认为节点相等)

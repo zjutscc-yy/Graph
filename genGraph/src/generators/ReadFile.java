@@ -42,7 +42,7 @@ public class ReadFile {
         }
         br.close();
 
-        writeUml(bigGraph);
+//        writeUml(bigGraph);
 
 
         //遍历graph的所有node的Id
@@ -57,10 +57,10 @@ public class ReadFile {
         if (graph.getNodes().size() == 0){
             return pathGraph;
         }
-        boolean isAdd = false;//判断节点是否为新加节点
+        boolean isAdd = false;//判断curGraphPtr是否为新加节点
 
         Node curGraphPtr = graph.getRoot();
-        Node curPathPtr = pathGraph.getRoot();
+        Node curPathPtr = pathGraph.getRoot().getChildNode().get(0);
 
         out: while (curPathPtr.getChildNode().size() != 0) {
 
@@ -68,31 +68,26 @@ public class ReadFile {
             inner: for (int i = 0; i < curNodes.size(); i++) {
                 Node graphNode = curNodes.get(i);
                 if (graphNode.equals(curPathPtr)){
-                    if (!isAdd){
-                        curGraphPtr = graphNode;
-                        if (curPathPtr.getChildNode().size() != 0){
-                            curPathPtr = curPathPtr.getChildNode().get(0);
+                    if (!isAdd){//curGraphPtr在图里，curPathPtr在图里
+                        if (!curGraphPtr.getChildNode().contains(graphNode)) {
+                            curGraphPtr.addChildNode(graphNode);//可能会加重复，连着都不等，加个判断孩子节点里是否已经存在curPathPtr
                         }
-                    }else {
-                        if (!curGraphPtr.getChildNode().contains(curPathPtr)) {
-                            curGraphPtr.addChildNode(curPathPtr);//可能会加重复，连着都不等，加个判断孩子节点里是否已经存在curPathPtr
-                        }
-                        curGraphPtr = graphNode;
-                        if (curPathPtr.getChildNode().size() != 0){
-                            curPathPtr = curGraphPtr.getChildNode().get(0);
-                        }
-                        isAdd = false;
+                    }else{
+                        curGraphPtr.addChildNode(graphNode);//这有问题
+                        curGraphPtr.removeChildNode(curPathPtr);
                     }
+                    curGraphPtr = graphNode;
+                    if (curPathPtr.getChildNode().size() != 0){
+                        curPathPtr = curPathPtr.getChildNode().get(0);
+                    }
+                    isAdd = false;
 
                     continue out;
                 }
 
-
             }
             //找不到
-            isAdd = true;
-            curPathPtr.setId(index++);
-            if (!curGraphPtr.getChildNode().contains(curPathPtr)) {
+            if (!isAdd) {//curGraphPtr在图里
                 curGraphPtr.addChildNode(curPathPtr);//可能会加重复，连着都不等，加个判断孩子节点里是否已经存在curPathPtr
             }
             graph.addNode(curPathPtr);
@@ -100,24 +95,27 @@ public class ReadFile {
             if (curPathPtr.getChildNode().size() != 0) {
                 curPathPtr = curPathPtr.getChildNode().get(0);
             }
-
+            isAdd = true;
         }
 
-        //最后一个节点
-        if (graph.getNodes().contains(curPathPtr)){
-            if (!curGraphPtr.getChildNode().contains(curPathPtr)) {
-                curGraphPtr.addChildNode(curPathPtr);
+        //curPathPtr指向最后一个节点，最后一个节点一定已经在图中
+        ArrayList<Node> curNodes = graph.getNodes();
+        for (int i = 0; i < curNodes.size(); i++) {
+            Node graphNode = curNodes.get(i);
+            if(graphNode.equals(curPathPtr)){
+                if (!isAdd) {
+                    if (!curGraphPtr.getChildNode().contains(graphNode)) {
+                        curGraphPtr.addChildNode(graphNode);//可能会加重复，连着都不等，加个判断孩子节点里是否已经存在curPathPtr
+                    }
+                }else {
+                    curGraphPtr.addChildNode(graphNode);
+                    curGraphPtr.removeChildNode(curPathPtr);
+                    break;
+                }
             }
-        }else {
-            curPathPtr.setId(index++);
-            if (!curGraphPtr.getChildNode().contains(curPathPtr)) {
-                curGraphPtr.addChildNode(curPathPtr);//可能会加重复，连着都不等，加个判断孩子节点里是否已经存在curPathPtr
-            }
-            graph.addNode(curPathPtr);
         }
 
         return graph;
-
     }
 
 
@@ -142,18 +140,17 @@ public class ReadFile {
 
         }
         root.setCurrentStep(map1);
-        root.setId(0);
+        root.setId(ID++);
         pathGraph.setCurrentNode(root);
         pathGraph.setRoot(root);
         pathGraph.addNode(root);
 
-        int i = 1;
         String data;
         while (!("//".equals(data = br.readLine())) && data != null && !data.equals("")) {
 
             String[] strArray = data.split("-");
 
-            Node node = new Node(i, strArray[0], strArray[1]);
+            Node node = new Node(ID++, strArray[0], strArray[1]);
             HashMap map = new HashMap();
 
             //把当前节点的map赋值一份，方便让孩子节点在其基础上更新
@@ -172,7 +169,6 @@ public class ReadFile {
 
             pathGraph.setCurrentNode(node);
 
-            i++;
         }
         return pathGraph;
     }
@@ -205,4 +201,5 @@ public class ReadFile {
         newFile.close();
 
     }
+
 }
