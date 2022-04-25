@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ReadFile {
+    public static Graph bigGraph;
+    public static int ID = 0;
 
     private int index = 0;
     private boolean isFirstFlag = false;
