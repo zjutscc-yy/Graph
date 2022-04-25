@@ -44,6 +44,10 @@ public class BasicMCTSNode {
      */
     Statistic statistic = new Statistic();
 
+    public BasicMCTSNode(){
+
+    }
+
     /**
      * constructor for the root node
      * @param trees the set of goal-plan trees in the current state

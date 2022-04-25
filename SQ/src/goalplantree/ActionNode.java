@@ -1,6 +1,8 @@
 package goalplantree;
 
 
+import java.util.Arrays;
+
 public class ActionNode extends TreeNode {
 
     /**
@@ -14,7 +16,6 @@ public class ActionNode extends TreeNode {
      * postcondition
      */
     final private Literal[] postc;
-
 
     /**
      * constructor
@@ -74,4 +75,18 @@ public class ActionNode extends TreeNode {
         result += "}]";
         return result;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ActionNode otherNode = (ActionNode) o;
+        if (this.getName().equals(otherNode.getName())){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
 }

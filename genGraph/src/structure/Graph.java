@@ -25,7 +25,17 @@ public class Graph {
     //表示当前指向哪个节点
     private Node currentNode;
 
+    //运行graph时的当前节点
+    private Node runCurrentNode;
 
+
+    public Node getRunCurrentNode() {
+        return runCurrentNode;
+    }
+
+    public void setRunCurrentNode(Node runCurrentNode) {
+        this.runCurrentNode = runCurrentNode;
+    }
 
     public Node getRoot() {
         return root;
@@ -70,6 +80,14 @@ public class Graph {
         }
     }
 
+    public Graph clone(){
+        Graph cGraph = new Graph();
+        for (Node node : this.getNodes()) {
+            cGraph.addNode(node);
+        }
+        cGraph.setRunCurrentNode(this.getRoot());
+        return cGraph;
+    }
 
     public Node getCurrentNode() {
         return currentNode;

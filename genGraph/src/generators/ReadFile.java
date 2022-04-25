@@ -21,7 +21,7 @@ public class ReadFile {
     private boolean isFirstFlag = false;
 
 
-    public void readFile(String fileName) throws IOException {
+    public Graph readFile(String fileName) throws IOException {
 
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         //调用字符缓冲输入流对象的方法读数据
@@ -32,7 +32,7 @@ public class ReadFile {
         3.
          */
         bigGraph = new Graph();
-        bigGraph.setInitialState("F:\\project\\gpt\\1.xml");
+        bigGraph.setInitialState("F:\\project\\gpt\\2.xml");
         while ((line = br.readLine()) != null) {
             Graph singlePathGraph = generatePathGraph(br);
             if (!isFirstFlag)
@@ -44,15 +44,11 @@ public class ReadFile {
 
 //        writeUml(bigGraph);
 
-
-        //遍历graph的所有node的Id
-        graph.traversalId();
-        graph.traversalChildNode();
-
+        return bigGraph;
     }
 
 
-
+    //两个图合成一个图
     public Graph mergeGraph(Graph graph,Graph pathGraph){
         if (graph.getNodes().size() == 0){
             return pathGraph;
@@ -117,8 +113,6 @@ public class ReadFile {
 
         return graph;
     }
-
-
 
     //生成单条路径
     public Graph generatePathGraph(BufferedReader br) throws IOException {

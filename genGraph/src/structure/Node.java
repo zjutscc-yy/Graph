@@ -26,17 +26,6 @@ public class Node {
     private ArrayList<Node> childNode = new ArrayList<>();
 
 
-    //输出所有路径的时候用
-    private boolean isVisited = false;
-
-    public boolean isVisited() {
-        return isVisited;
-    }
-
-    public void setVisited(boolean visited) {
-        isVisited = visited;
-    }
-
 
     //在currentNode下添加子节点
     public void addChildNode(Node node){
@@ -184,15 +173,13 @@ public class Node {
 
     public void setId(int id) {
         this.id = id;
-        //修改子节点的id
     }
 
-    public HashMap getCurrentStep() {
+    public HashMap<GoalNode, TreeNode> getCurrentStep() {
         return currentSteps;
     }
 
     public void setCurrentStep(HashMap currentStep) {
         this.currentSteps = currentStep;
     }
-
 }

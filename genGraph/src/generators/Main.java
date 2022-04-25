@@ -1,6 +1,7 @@
 package generators;
 
 import agent.MCTSAgent;
+import structure.Graph;
 import structure.Node;
 
 import javax.swing.*;
@@ -13,8 +14,22 @@ public class Main {
     public static void main(String[] args)throws IOException {
         //读取actions.txt
        ReadFile read = new ReadFile();
-       read.readFile("F:\\project\\SQ-MCTS\\actions1.txt");
+       Graph bigGraph = read.readFile("F:\\project\\SQ-MCTS\\actions1.txt");
 
+       System.out.println(bigGraph.getNodes().size());
+
+
+//        bigGraph.traversalId();
+//        bigGraph.traversalChildNode();
+//        for (Node node : bigGraph.getNodes()) {
+//            System.out.println(node.getId());
+//        }
+
+
+        //把生成的图保存为xml文件
+//       String path ="F:\\project\\graph\\graph2.xml";
+//       XMLWriter wxf = new XMLWriter();
+//       wxf.CreateXML(bigGraph,path);
 
     }
 }
