@@ -44,7 +44,7 @@ public class ReadFile {
         }
         br.close();
 
-//        writeUml(bigGraph);
+        writeUml(bigGraph);
 
         return bigGraph;
     }

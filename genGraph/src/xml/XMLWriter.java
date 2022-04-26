@@ -1,4 +1,4 @@
-package generators;
+package xml;
 
 import goalplantree.GoalNode;
 import goalplantree.TreeNode;
@@ -18,23 +18,30 @@ import java.util.Map;
 
 public class XMLWriter {
 
-    XMLWriter(){
+    public XMLWriter(){
 
     }
 
-    void CreateXML(Graph bigGraph,String path){
+    public void CreateXML(Graph bigGraph, String path){
         try
         {
             Element graph = new Element("Graph");
             Document document = new Document(graph);
+            Element nodesElement = new Element("Nodes");
 
             for (Node bigGraphNode : bigGraph.getNodes()) {
-                writeNode(bigGraphNode,graph);
+                writeNode(bigGraphNode,nodesElement);
             }
 
+            //把nodes加到图里
+            graph.addContent(nodesElement);
+
+            Element nodeRelation = new Element("Node_Relation");
             for (Node bigGraphNode : bigGraph.getNodes()) {
-                writeNodeId(bigGraphNode,graph);
+                writeNodeId(bigGraphNode,nodeRelation);
             }
+
+            graph.addContent(nodeRelation);
 
             XMLOutputter xmlOutputer = new XMLOutputter();
             xmlOutputer.setFormat(Format.getPrettyFormat());
@@ -102,3 +109,4 @@ public class XMLWriter {
         parent.addContent(nodeIdElement);
     }
 }
+

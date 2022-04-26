@@ -13,7 +13,6 @@ public class GoalNode extends TreeNode {
     final private Literal[] goalConds;
 
 
-
     /**
      * initialisation with no relevant plans
      * @param name name of the goal

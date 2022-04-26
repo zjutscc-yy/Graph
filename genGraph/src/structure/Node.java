@@ -84,6 +84,11 @@ public class Node {
 
     public Node() {}
 
+    public Node(int id, HashMap<GoalNode, TreeNode> currentSteps) {
+        this.id = id;
+        this.currentSteps = currentSteps;
+    }
+
     public Node(int id, String actionTreeName, String actionName) {
         this.id = id;
         this.actionTreeName = actionTreeName;
@@ -105,7 +110,7 @@ public class Node {
     }
 
     //已经找到当前action属于哪颗树，        现对这棵树进行遍历找到对应action，然后setCurrentStep
-    public TreeNode traversal(GoalNode node,String actionName) {
+    public static TreeNode traversal(GoalNode node,String actionName) {
         Queue<TreeNode> queue = new LinkedList<TreeNode>();
         queue.offer(node);
         while (!queue.isEmpty()) {
