@@ -113,7 +113,9 @@ public class Node {
     public static TreeNode traversal(GoalNode node,String actionName) {
         Queue<TreeNode> queue = new LinkedList<TreeNode>();
         queue.offer(node);
+        int i= 0;
         while (!queue.isEmpty()) {
+            i++;
 
             TreeNode poll = queue.poll();
 
@@ -152,6 +154,58 @@ public class Node {
         return null;
     }
 
+    //读取图的xml文件时使用
+    public static TreeNode traversalGoal(GoalNode node,String actionName) {
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(node);
+        int i= 0;
+        while (!queue.isEmpty()) {
+            i++;
+
+            TreeNode poll = queue.poll();
+
+            //判断poll是否为action节点，如果是，与当前读到的action比较
+            if (poll instanceof ActionNode) {
+                String searchAction;
+                String[] strArray = poll.getName().split("-");//把 T 分割出来
+                searchAction = strArray[1];
+
+                if (searchAction.equals(actionName)){
+                    return poll;
+                }
+            }
+
+            else if (poll instanceof PlanNode) {
+                PlanNode planNode = (PlanNode) poll;
+                if (planNode.getPlanbody() != null) {
+                    for (TreeNode treeNode : planNode.getPlanbody()) {
+                        queue.offer(treeNode);
+                    }
+
+                }
+            }
+
+            else if (poll instanceof GoalNode) {
+                GoalNode goalNode = (GoalNode) poll;
+
+                String searchGoal;
+                String[] strArry = poll.getName().split("-");
+                searchGoal = strArry[1];
+
+                if (goalNode.getPlans() != null) {
+                    for (PlanNode plan : goalNode.getPlans()) {
+                        queue.offer((TreeNode) plan);
+                        if (searchGoal.equals(actionName)){
+                            return poll;
+                        }
+                    }
+
+                }
+            }
+
+        }
+        return null;
+    }
 
 
     public String getActionName() {

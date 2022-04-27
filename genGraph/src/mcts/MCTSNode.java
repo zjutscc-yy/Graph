@@ -31,12 +31,13 @@ public class MCTSNode extends BasicMCTSNode{
         bigGraph = graph;
         beliefs = bb;
         selectAction = new ArrayList<>();
+        bChoices = new ArrayList<>();
         bResult = -1;
     }
 
     /**
      * 其他节点的构造器
-     * @param a 做了动作a导致了此节点
+     * @param a    做了动作a导致了此节点
      */
     public MCTSNode(ArrayList<ActionNode> a){
         selectAction = a;
@@ -49,7 +50,7 @@ public class MCTSNode extends BasicMCTSNode{
 
             simNum += beta;
 
-            //选择过的节点
+            //每次迭代 选择过的节点
             List<MCTSNode> visited = new LinkedList<>();
 
             //记录到目前为止做的选择，模拟的选择
@@ -61,9 +62,12 @@ public class MCTSNode extends BasicMCTSNode{
 
             BeliefBaseImp sBeliefs = beliefs.clone();
 
+            // start from the root node
             MCTSNode current = this;
 
+            // add the root node to the list of visited node
             visited.add(current);
+            // the root node does not contain any choices, thus we ignore this process
 
             // selection：在叶子节点中选择UCT值最大的
             while (!current.isLeaf()) {
@@ -138,6 +142,27 @@ public class MCTSNode extends BasicMCTSNode{
         }
     }
 
+    /**
+     * @return a child node with maximum UCT value
+     */
+    protected MCTSNode select(){
+        // initialisation
+        MCTSNode selected = null;
+        double bestUCT = Double.MIN_VALUE;
+        // calculate the uct value for each of its selected nodes
+        for(int i = 0; i < children.size(); i++){
+            // UCT calculation
+            double uctValue = children.get(i).statistic.totValue/ (children.get(i).statistic.nVisits + epsilon)+
+                    Math.sqrt(Math.log(statistic.nVisits + 1)/(children.get(i).statistic.nVisits + epsilon))+ rm.nextDouble() * epsilon;
+            // compare the uct value with the current maximum value
+            if(uctValue > bestUCT){
+                selected = children.get(i);
+                bestUCT = uctValue;
+            }
+        }
+        // return the nodes with maximum UCT value, null if current node is a leaf node (contains no child nodes)
+        return selected;
+    }
 
     /**
      * 扩展当前节点：对当前节点添加孩子节点
@@ -160,8 +185,9 @@ public class MCTSNode extends BasicMCTSNode{
                     ArrayList<ActionNode> ncs = new ArrayList<>();
 
                     ncs.add(act);
-
+                    // create new MCTS node
                     MCTSNode child = new MCTSNode(ncs);
+                    // add it as the child of this node
                     this.children.add(child);
                 }
             }
@@ -200,7 +226,7 @@ public class MCTSNode extends BasicMCTSNode{
     /**
      * @return the simulation rollouts
      */
-    private double rollOut(Graph graph, BeliefBaseImp beliefs, ArrayList<ActionNode> sActionNode) {
+    private double rollOut(Graph graph, BeliefBaseImp beliefs, ArrayList<ActionNode> sChoices) {
         // to store the choices made in the simulation
         ArrayList<ActionNode> ass = new ArrayList<>();
 
@@ -233,7 +259,7 @@ public class MCTSNode extends BasicMCTSNode{
         double uResult = utility(sGraph);
 
         ArrayList<ActionNode> temp = new ArrayList<>();
-        temp.addAll(sActionNode);
+        temp.addAll(sChoices);
         temp.addAll(ass);
 
 
@@ -248,28 +274,6 @@ public class MCTSNode extends BasicMCTSNode{
     @Override
     public double getAchievedNum() {
         return utility(bigGraph);
-    }
-
-    /**
-     * @return a child node with maximum UCT value
-     */
-    protected MCTSNode select(){
-        // initialisation
-        MCTSNode selected = null;
-        double bestUCT = Double.MIN_VALUE;
-        // calculate the uct value for each of its selected nodes
-        for(int i = 0; i < children.size(); i++){
-            // UCT calculation
-            double uctValue = children.get(i).statistic.totValue/ (children.get(i).statistic.nVisits + epsilon)+
-                    Math.sqrt(Math.log(statistic.nVisits + 1)/(children.get(i).statistic.nVisits + epsilon))+ rm.nextDouble() * epsilon;
-            // compare the uct value with the current maximum value
-            if(uctValue > bestUCT){
-                selected = children.get(i);
-                bestUCT = uctValue;
-            }
-        }
-        // return the nodes with maximum UCT value, null if current node is a leaf node (contains no child nodes)
-        return selected;
     }
 
     private double utility(Graph graph){
@@ -321,6 +325,43 @@ public class MCTSNode extends BasicMCTSNode{
             }
         }
         return result;
+    }
+
+    /**
+     * @return the best choices
+     */
+    public ArrayList<ActionNode> bestActionNode() {
+        // if the root node cannot be expanded any further
+        if(this.children.size() == 0){
+            return new ArrayList<>();
+        }
+        // otherwise, find the child node that has been visited most
+        else {
+            int maxVisit = this.children.get(0).statistic.nVisits;
+            double best = this.children.get(0).statistic.best;
+            double total = this.children.get(0).statistic.totValue;
+            double average = this.children.get(0).statistic.totValue / this.children.get(0).statistic.nVisits;
+            MCTSNode bestChild = this.children.get(0);
+            for(MCTSNode child: children){
+                if(child.statistic.totValue / child.statistic.nVisits > average){
+                    //if(child.statistic.totValue > total){
+                    //if(child.statistic.nVisits > maxVisit){
+                    //if(child.statistic.best > best){
+                    maxVisit = child.statistic.nVisits;
+                    best = child.statistic.best;
+                    total = child.statistic.totValue;
+                    average = child.statistic.totValue / child.statistic.nVisits;
+                    bestChild = child;
+                }
+            }
+
+            System.out.println("best: " + best);
+            return bestChild.selectAction;
+        }
+    }
+
+    public ArrayList<ActionNode> getAllActions(){
+        return bChoices;
     }
 
 }

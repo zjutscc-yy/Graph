@@ -44,15 +44,24 @@ public class XMLReader {
         List<Element> graphInfo = graph.getChildren();
 
         //获得nodes标签里的所有信息，即所有nodes
-        Element nodesElement = graphInfo.get(0);
+        Element nodesElement = graphInfo.get(1);
         List<Element> node = nodesElement.getChildren();
 
         for (int i = 0; i < node.size(); i++){
             bigGraph.addNode(readNode(node.get(i)));
         }
 
+        //获取graph的root
+        Element rootElement = graphInfo.get(0);
+        int rootId = Integer.parseInt(rootElement.getAttributeValue("Id"));
+        for (Node bigGraphNode : bigGraph.getNodes()) {
+            if (rootId == bigGraphNode.getId()){
+                bigGraph.setRoot(bigGraphNode);
+            }
+        }
+
         //获取Node_Relation标签里的所有信息
-        Element Relation = graphInfo.get(1);
+        Element Relation = graphInfo.get(2);
         List<Element> nodeRelation = Relation.getChildren();
         //每条node_id
         for (int i = 0; i < nodeRelation.size(); i++){
@@ -84,7 +93,10 @@ public class XMLReader {
 
         for (GoalNode tlg : reader.getTlgs()) {
             if (tlg.getName().equals(element.getAttributeValue("Tlg_name"))){
-                TreeNode actionNode = Node.traversal(tlg,element.getAttributeValue("curStep"));
+                String date = element.getAttributeValue("curStep");
+                String[] strArray = date.split("-");
+
+                TreeNode actionNode = Node.traversalGoal(tlg,strArray[1]);
                 map.put(tlg,actionNode);
             }
         }

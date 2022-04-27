@@ -29,7 +29,7 @@ public class Main {
 
 
         //把生成的图保存为xml文件
-       String path ="F:\\project\\graph\\graph1.xml";
+       String path ="F:\\project\\graph\\graph2.xml";
 //       XMLWriter wxf = new XMLWriter();
 //       wxf.CreateXML(bigGraph,path);
 
@@ -37,7 +37,9 @@ public class Main {
         String gptPath = "F:\\project\\gpt\\2.xml";
         XMLReader reader = new XMLReader(path,gptPath);
 
-        Graph readGraph = reader.translate("F:\\project\\graph\\graph1.xml");
+        Graph readGraph = reader.translate(path);
+
+
         readGraph.traversalId();
         readGraph.traversalChildNode();
 

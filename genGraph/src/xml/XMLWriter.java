@@ -27,6 +27,13 @@ public class XMLWriter {
         {
             Element graph = new Element("Graph");
             Document document = new Document(graph);
+
+            //图的根节点
+            Element rootElement = new Element("Root");
+            Node root = bigGraph.getRoot();
+            rootElement.setAttribute(new Attribute("Id",String.valueOf(root.getId())));
+            graph.addContent(rootElement);
+
             Element nodesElement = new Element("Nodes");
 
             for (Node bigGraphNode : bigGraph.getNodes()) {
