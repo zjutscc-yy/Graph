@@ -85,7 +85,8 @@ public class Graph {
         for (Node node : this.getNodes()) {
             cGraph.addNode(node);
         }
-        cGraph.setRunCurrentNode(this.getRoot());
+        cGraph.setRoot(this.getRoot());
+        cGraph.setRunCurrentNode(this.getRunCurrentNode());
         return cGraph;
     }
 

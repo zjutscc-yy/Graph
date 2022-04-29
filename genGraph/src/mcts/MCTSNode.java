@@ -10,6 +10,7 @@ import java.util.*;
 
 public class MCTSNode extends BasicMCTSNode{
 
+
     static Graph bigGraph;
     // best simulation choices
     static ArrayList<ActionNode> bChoices;
@@ -43,11 +44,15 @@ public class MCTSNode extends BasicMCTSNode{
         selectAction = a;
     }
 
+    public boolean isLeaf(){
+        return children.size() == 0;
+    }
+
     @Override
     public void run(int alpha, int beta) {
 
         for (int i = 0; i < alpha; i++) {
-
+            System.out.println("第" + i +"次迭代");
             simNum += beta;
 
             //每次迭代 选择过的节点
@@ -69,8 +74,9 @@ public class MCTSNode extends BasicMCTSNode{
             visited.add(current);
             // the root node does not contain any choices, thus we ignore this process
 
-            // selection：在叶子节点中选择UCT值最大的
+            // selection：在叶子节点中选择UCT值最大的   current不是叶子节点
             while (!current.isLeaf()) {
+                System.out.println("the current node is set to its child node which has the largest UCT value");
                 // the current node is set to its child node which has the largest UCT value
                 current = current.select();
                 // once a node is selected, its choices are also added to the list
@@ -90,12 +96,14 @@ public class MCTSNode extends BasicMCTSNode{
             current.expand(cGraph, sBeliefs);
 
             /**
+             * 这里面包含了选择
              *simulation
              */
             if (current != null && !current.isLeaf()) {
                 // randomly select a node for simulation
                 MCTSNode sNode = null;
                 double max = 0;
+                //扩展后的随机选择
                 for (MCTSNode n : current.children) {
                     double randomValue = rm.nextDouble();
                     if (randomValue > max) {
@@ -129,7 +137,7 @@ public class MCTSNode extends BasicMCTSNode{
             }
 
             // if it is a leaf node
-            else if (!current.isLeaf()) {
+            else if (current.isLeaf()) {
                 // check the number of goals achieved
                 double sValue = current.getAchievedNum();
                 /**
@@ -172,25 +180,18 @@ public class MCTSNode extends BasicMCTSNode{
     private void expand(Graph graph, BeliefBaseImp sbeliefs){
         //获取图现在运行的哪一步
         Node cStep = graph.getRunCurrentNode();
+
+        //得到每个孩子对应做了哪个 动作
         for (Node node : cStep.getChildNode()) {
-            HashMap<GoalNode, TreeNode> nodeCurrentStep = node.getCurrentStep();
-            //在父节点与孩子节点的currentStep中找到不同的即为actionNode
-            for (Map.Entry<GoalNode, TreeNode> entry : cStep.getCurrentStep().entrySet()) {
-                GoalNode key = entry.getKey();
-                TreeNode value = entry.getValue();
-                if (nodeCurrentStep.get(key)!=value) {
-                    //找到了所做action与孩子节点的对应关系
-                    ActionNode act = (ActionNode) nodeCurrentStep.get(key);
+            ActionNode act = Node.getDifferentAction(cStep,node);
 
-                    ArrayList<ActionNode> ncs = new ArrayList<>();
+            ArrayList<ActionNode> ncs = new ArrayList<>();
 
-                    ncs.add(act);
-                    // create new MCTS node
-                    MCTSNode child = new MCTSNode(ncs);
-                    // add it as the child of this node
-                    this.children.add(child);
-                }
-            }
+            ncs.add(act);
+            // create new MCTS node
+            MCTSNode child = new MCTSNode(ncs);
+            // add it as the child of this node
+            this.children.add(child);
         }
     }
 
@@ -227,31 +228,56 @@ public class MCTSNode extends BasicMCTSNode{
      * @return the simulation rollouts
      */
     private double rollOut(Graph graph, BeliefBaseImp beliefs, ArrayList<ActionNode> sChoices) {
-        // to store the choices made in the simulation
+        //保存模拟所做的选择
         ArrayList<ActionNode> ass = new ArrayList<>();
 
-        // the list of available intentions
-        ArrayList<Integer> indexes = new ArrayList<>();
+        //还可以执行的节点:即当前正在运行的节点的孩子节点
+        ArrayList<Node> backNode = new ArrayList<>();
 
         //复制图
         Graph sGraph = new Graph();
         sGraph = graph.clone();
+        if (sGraph.getRunCurrentNode().getChildNode().size() != 0){
+            for (Node node : sGraph.getRunCurrentNode().getChildNode()) {
+                backNode.add(node);
+            }
+        }
 
         // copy the belief base
         BeliefBaseImp sbb = beliefs.clone();
 
         // simulation starts
-        // the simulation stops only when all intention becomes non-progressable
-        intentionloop:
-        while (indexes.size() > 0) {
+        // 模拟停止：当graph.getRunCurrentNode没有孩子节点时
+        while (backNode.size() > 0) {
             // the list of choices in the current iteration
             ArrayList<ActionNode> cx = new ArrayList<>();
 
-            // randomly pick a choice
-            int rc = rm.nextInt(indexes.size());
-            int index = indexes.remove(rc);
+            // 随机选择一个正在运行节点的孩子节点
+            int rc = rm.nextInt(backNode.size());
+            //获得所选择的那个节点
+            Node indexNode = backNode.remove(rc);//这是图的节点类型的
 
-            Node currentStep = sGraph.getRunCurrentNode();
+            //把当前运行节点到随机选择的孩子节点所做的actionNode加到cx里
+            ActionNode toActionNode = Node.getDifferentAction(sGraph.getRunCurrentNode(),indexNode);
+            cx.add(toActionNode);
+
+            for (ActionNode a : cx) {
+                biUpdate(a,sGraph,sbb);
+            }
+
+            //把正在运行的节点设置为所选的孩子节点
+            sGraph.setRunCurrentNode(indexNode);
+
+            // add the choices to the list
+            ass.addAll(cx);
+
+            // 重置还可以执行的节点:
+            backNode.clear();
+            if (sGraph.getRunCurrentNode().getChildNode().size() != 0){
+                for (Node node : sGraph.getRunCurrentNode().getChildNode()) {
+                    backNode.add(node);
+                }
+            }
 
         }
 
@@ -280,7 +306,7 @@ public class MCTSNode extends BasicMCTSNode{
         double num = 0;
         //节点没有孩子节点
         if(graph.getRunCurrentNode().getChildNode().size() == 0) {
-            num++;
+            num = graph.getRunCurrentNode().getCurrentStep().size();
         }
         return num;
     }

@@ -241,4 +241,26 @@ public class Node {
     public void setCurrentStep(HashMap currentStep) {
         this.currentSteps = currentStep;
     }
+
+    /**
+     * 获得导致两个节点 currentSteps 不同的actionNode
+     * @param fnode 父节点
+     * @param cnode 孩子节点
+     * @return
+     */
+    public static ActionNode getDifferentAction(Node fnode,Node cnode){
+        HashMap<GoalNode,TreeNode> nodeCurrentStep = cnode.getCurrentStep();
+        //遍历父节点的curentStep
+        for (Map.Entry<GoalNode, TreeNode> entry : fnode.getCurrentStep().entrySet()) {
+            GoalNode key = entry.getKey();
+            TreeNode value = entry.getValue();
+            if (nodeCurrentStep.get(key) != value){
+                ActionNode act = (ActionNode) nodeCurrentStep.get(key);
+                return act;
+            }
+        }
+        return null;
+    }
+
+
 }
