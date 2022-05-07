@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 public class XMLWriter {
@@ -34,20 +35,20 @@ public class XMLWriter {
             rootElement.setAttribute(new Attribute("Id",String.valueOf(root.getId())));
             graph.addContent(rootElement);
 
+            //普通节点
             Element nodesElement = new Element("Nodes");
 
             for (Node bigGraphNode : bigGraph.getNodes()) {
-                writeNode(bigGraphNode,nodesElement);
+                writeNode(bigGraphNode, nodesElement);
             }
-
             //把nodes加到图里
             graph.addContent(nodesElement);
 
+            //节点之间的关系
             Element nodeRelation = new Element("Node_Relation");
             for (Node bigGraphNode : bigGraph.getNodes()) {
                 writeNodeId(bigGraphNode,nodeRelation);
             }
-
             graph.addContent(nodeRelation);
 
             XMLOutputter xmlOutputer = new XMLOutputter();
@@ -93,7 +94,11 @@ public class XMLWriter {
         Element stepElement = new Element("Step");
 
         stepElement.setAttribute("Tlg_name", goalNode.getName());
-        stepElement.setAttribute("curStep", treeNode.getName());
+        if (treeNode != null) {
+            stepElement.setAttribute("curStep", treeNode.getName());
+        }else {
+            stepElement.setAttribute("curStep", "null");
+        }
         parent.addContent(stepElement);
     }
 

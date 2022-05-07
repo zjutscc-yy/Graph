@@ -95,9 +95,12 @@ public class XMLReader {
             if (tlg.getName().equals(element.getAttributeValue("Tlg_name"))){
                 String date = element.getAttributeValue("curStep");
                 String[] strArray = date.split("-");
-
-                TreeNode actionNode = Node.traversalGoal(tlg,strArray[1]);
-                map.put(tlg,actionNode);
+                if (strArray.length<2){
+                    map.put(tlg,null);
+                }else {
+                    TreeNode actionNode = Node.traversalGoal(tlg, strArray[1]);
+                    map.put(tlg, actionNode);
+                }
             }
         }
 

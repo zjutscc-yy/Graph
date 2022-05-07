@@ -26,13 +26,12 @@ public class Node {
     private ArrayList<Node> childNode = new ArrayList<>();
 
 
-
     //在currentNode下添加子节点
-    public void addChildNode(Node node){
+    public void addChildNode(Node node) {
         childNode.add(node);
     }
 
-    public void removeChildNode(Node node){
+    public void removeChildNode(Node node) {
         childNode.remove(node);
     }
 
@@ -46,18 +45,28 @@ public class Node {
         if (currentSteps.size() != otherCurrentSteps.size()) {
             return false;
         }
+        //遍历当前对象的currentSteps
         for (Map.Entry<GoalNode, TreeNode> goalNodeActionNodeEntry : currentSteps.entrySet()) {
             // 当前的key （tlg）
             GoalNode tlg = goalNodeActionNodeEntry.getKey();
             // 当前的value （current step）
-            TreeNode curStep = goalNodeActionNodeEntry.getValue();
-            // 如果比较的对象不含有当前key，则说明一定不相等
-            if (!otherCurrentSteps.containsKey(tlg)) {
-                return false;
-            }
-            // 如果当前tlg的current step与比较对象的current step不相等，返回false
-            if (!otherCurrentSteps.get(tlg).equals(curStep)) {
-                return false;
+            if (goalNodeActionNodeEntry.getValue() != null) {
+                TreeNode curStep = goalNodeActionNodeEntry.getValue();
+                // 如果比较的对象不含有当前key，则说明一定不相等
+                if (!otherCurrentSteps.containsKey(tlg)) {
+                    return false;
+                }
+                // 如果当前tlg的current step与比较对象的current step不相等，返回false
+                if (otherCurrentSteps.get(tlg) == null || !otherCurrentSteps.get(tlg).equals(curStep)) {
+                    return false;
+                }
+            }else {
+                if (!otherCurrentSteps.containsKey(tlg)) {
+                    return false;
+                }
+                if (otherCurrentSteps.get(tlg) != null) {
+                    return false;
+                }
             }
         }
 
@@ -82,7 +91,8 @@ public class Node {
 //        return tlgs;
 //    }
 
-    public Node() {}
+    public Node() {
+    }
 
     public Node(int id, HashMap<GoalNode, TreeNode> currentSteps) {
         this.id = id;
@@ -102,7 +112,7 @@ public class Node {
             String[] strArray = tlg.getName().split("-");//把 T 分割出来
             searchTree = strArray[0];
 
-            if (searchTree.equals(this.getActionTreeName())){//找到当前读取的action属于哪颗树，接下来对树进行层次遍历
+            if (searchTree.equals(this.getActionTreeName())) {//找到当前读取的action属于哪颗树，接下来对树进行层次遍历
                 return tlg;
             }
         }
@@ -110,10 +120,10 @@ public class Node {
     }
 
     //已经找到当前action属于哪颗树，        现对这棵树进行遍历找到对应action，然后setCurrentStep
-    public static TreeNode traversal(GoalNode node,String actionName) {
+    public static TreeNode traversal(GoalNode node, String actionName) {
         Queue<TreeNode> queue = new LinkedList<TreeNode>();
         queue.offer(node);
-        int i= 0;
+        int i = 0;
         while (!queue.isEmpty()) {
             i++;
 
@@ -125,12 +135,10 @@ public class Node {
                 String[] strArray = poll.getName().split("-");//把 T 分割出来
                 searchAction = strArray[1];
 
-                if (searchAction.equals(actionName)){
+                if (searchAction.equals(actionName)) {
                     return poll;
                 }
-            }
-
-            else if (poll instanceof PlanNode) {
+            } else if (poll instanceof PlanNode) {
                 PlanNode planNode = (PlanNode) poll;
                 if (planNode.getPlanbody() != null) {
                     for (TreeNode treeNode : planNode.getPlanbody()) {
@@ -138,9 +146,7 @@ public class Node {
                     }
 
                 }
-            }
-
-            else if (poll instanceof GoalNode) {
+            } else if (poll instanceof GoalNode) {
                 GoalNode goalNode = (GoalNode) poll;
                 if (goalNode.getPlans() != null) {
                     for (PlanNode plan : goalNode.getPlans()) {
@@ -155,10 +161,10 @@ public class Node {
     }
 
     //读取图的xml文件时使用
-    public static TreeNode traversalGoal(GoalNode node,String actionName) {
+    public static TreeNode traversalGoal(GoalNode node, String actionName) {
         Queue<TreeNode> queue = new LinkedList<TreeNode>();
         queue.offer(node);
-        int i= 0;
+        int i = 0;
         while (!queue.isEmpty()) {
             i++;
 
@@ -170,12 +176,10 @@ public class Node {
                 String[] strArray = poll.getName().split("-");//把 T 分割出来
                 searchAction = strArray[1];
 
-                if (searchAction.equals(actionName)){
+                if (searchAction.equals(actionName)) {
                     return poll;
                 }
-            }
-
-            else if (poll instanceof PlanNode) {
+            } else if (poll instanceof PlanNode) {
                 PlanNode planNode = (PlanNode) poll;
                 if (planNode.getPlanbody() != null) {
                     for (TreeNode treeNode : planNode.getPlanbody()) {
@@ -183,9 +187,7 @@ public class Node {
                     }
 
                 }
-            }
-
-            else if (poll instanceof GoalNode) {
+            } else if (poll instanceof GoalNode) {
                 GoalNode goalNode = (GoalNode) poll;
 
                 String searchGoal;
@@ -195,7 +197,7 @@ public class Node {
                 if (goalNode.getPlans() != null) {
                     for (PlanNode plan : goalNode.getPlans()) {
                         queue.offer((TreeNode) plan);
-                        if (searchGoal.equals(actionName)){
+                        if (searchGoal.equals(actionName)) {
                             return poll;
                         }
                     }
@@ -244,19 +246,23 @@ public class Node {
 
     /**
      * 获得导致两个节点 currentSteps 不同的actionNode
+     *
      * @param fnode 父节点
      * @param cnode 孩子节点
      * @return
      */
-    public static ActionNode getDifferentAction(Node fnode,Node cnode){
-        HashMap<GoalNode,TreeNode> nodeCurrentStep = cnode.getCurrentStep();
+    public static ActionNode getDifferentAction(Node fnode, Node cnode) {
+        HashMap<GoalNode, TreeNode> nodeCurrentStep = cnode.getCurrentStep();
         //遍历父节点的curentStep
         for (Map.Entry<GoalNode, TreeNode> entry : fnode.getCurrentStep().entrySet()) {
             GoalNode key = entry.getKey();
             TreeNode value = entry.getValue();
-            if (nodeCurrentStep.get(key) != value){
-                ActionNode act = (ActionNode) nodeCurrentStep.get(key);
-                return act;
+            if (nodeCurrentStep.get(key) != value) {
+                if (nodeCurrentStep.get(key) instanceof ActionNode) {
+                    //返回孩子节点的那个动作
+                    ActionNode act = (ActionNode) nodeCurrentStep.get(key);
+                    return act;
+                }
             }
         }
         return null;

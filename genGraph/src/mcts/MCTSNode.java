@@ -52,7 +52,6 @@ public class MCTSNode extends BasicMCTSNode{
     public void run(int alpha, int beta) {
 
         for (int i = 0; i < alpha; i++) {
-            System.out.println("第" + i +"次迭代");
             simNum += beta;
 
             //每次迭代 选择过的节点
@@ -76,7 +75,6 @@ public class MCTSNode extends BasicMCTSNode{
 
             // selection：在叶子节点中选择UCT值最大的   current不是叶子节点
             while (!current.isLeaf()) {
-                System.out.println("the current node is set to its child node which has the largest UCT value");
                 // the current node is set to its child node which has the largest UCT value
                 current = current.select();
                 // once a node is selected, its choices are also added to the list
@@ -213,7 +211,6 @@ public class MCTSNode extends BasicMCTSNode{
                     }
                 }
             }
-            break;
         }
 
         // get its postcondition

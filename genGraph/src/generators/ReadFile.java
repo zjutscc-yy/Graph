@@ -13,6 +13,7 @@ import xml2bdi.XMLReader;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ReadFile {
@@ -22,10 +23,43 @@ public class ReadFile {
     private int index = 0;
     private boolean isFirstFlag = false;
 
+    /**
+     * 第0条路径里面T15对应的最后一个节点的index为 AllPathTIndex[0][14]
+     */
+    private int AllPathTIndex[][] = new int[20][20];
 
     public Graph readFile(String fileName) throws IOException {
 
+
+        /**
+         * 先设置每条路径的最后一个T
+         */
+        BufferedReader brTemp = new BufferedReader(new FileReader(fileName));
+        String lineTemp = "";
+        List<String> findEndIndexTempList = new ArrayList<>();
+        int pathIndex = 0;
+        while ((lineTemp = brTemp.readLine()) != null) {
+            //如果文件还有内容
+            if (lineTemp.equals(""))
+                continue;               //如果当前行为空，跳过这一行
+            if (lineTemp.equals("//")){//到了单条路径的末尾
+                //这里更新当前路径的某一个T的最后节点的index
+                for (int iTemp = 0 ;iTemp<AllPathTIndex[pathIndex].length;iTemp++)
+                    AllPathTIndex[pathIndex][iTemp] = findEndIndexTempList.lastIndexOf(""+iTemp);
+
+                pathIndex++;
+                findEndIndexTempList.clear();// 清空当前路径的T数据缓存内容
+                continue;               //跳过这一行
+            }
+            findEndIndexTempList.add(lineTemp.split("-")[0].replace("T",""));
+        }
+        for (int iTemp = 0 ;iTemp<AllPathTIndex[pathIndex].length;iTemp++)
+            AllPathTIndex[pathIndex][iTemp] = findEndIndexTempList.lastIndexOf(""+iTemp);
+        brTemp.close();
+
         BufferedReader br = new BufferedReader(new FileReader(fileName));
+
+
         //调用字符缓冲输入流对象的方法读数据
         String line;
         /*
@@ -33,10 +67,12 @@ public class ReadFile {
         2.创建多个路径List
         3.
          */
+        int currentPathIndex = 0;
         bigGraph = new Graph();
-        bigGraph.setInitialState("F:\\project\\gpt\\2.xml");
+        bigGraph.setInitialState("F:\\project\\gpt\\5.xml");
         while ((line = br.readLine()) != null) {
-            Graph singlePathGraph = generatePathGraph(br);
+            Graph singlePathGraph = generatePathGraph(br,currentPathIndex);
+            currentPathIndex++;
             if (!isFirstFlag)
                 index = singlePathGraph.getNodes().size();
             isFirstFlag = true;
@@ -117,7 +153,7 @@ public class ReadFile {
     }
 
     //生成单条路径
-    public Graph generatePathGraph(BufferedReader br) throws IOException {
+    public Graph generatePathGraph(BufferedReader br,int currentPathIndex) throws IOException {
 
         Graph pathGraph = new Graph();
         pathGraph.initialState = bigGraph.initialState;
@@ -142,8 +178,10 @@ public class ReadFile {
         pathGraph.addNode(root);
 
         String data;
-        while (!("//".equals(data = br.readLine())) && data != null && !data.equals("")) {
+        int indexOfSingle = -1;
 
+        while (!("//".equals(data = br.readLine())) && data != null && !data.equals("")) {
+            indexOfSingle++;
             String[] strArray = data.split("-");
 
             Node node = new Node(ID++, strArray[0], strArray[1]);
@@ -158,12 +196,39 @@ public class ReadFile {
             map.put(searchGoalNode, searchActionNode);
             node.setCurrentStep(map);
 
-
             pathGraph.addNode(node);
 
             pathGraph.getCurrentNode().addChildNode(node);
 
             pathGraph.setCurrentNode(node);
+
+
+            /**
+             * 如果当前节点某个T的最后一个节点，在其后添加null
+             */
+            String TEnd = "";
+            String GEnd = "";
+            for (int i = 0; i < AllPathTIndex[currentPathIndex].length && AllPathTIndex[currentPathIndex][i]!=-1; i++) {
+                if (indexOfSingle == AllPathTIndex[currentPathIndex][i]) {
+                    TEnd += "T" + i;
+                    GEnd+="G" + 0;
+                    Node insertNode = new Node();
+                    HashMap insertMap = new HashMap();
+                    insertMap.putAll(pathGraph.getCurrentNode().getCurrentStep());
+
+                    for (GoalNode tlg : tlgs) {
+                        if (tlg.getName().equals(TEnd+"-"+GEnd)){
+                            insertMap.put(tlg,null);
+                            insertNode.setCurrentStep(insertMap);
+                        }
+                    }
+                    insertNode.setId(ID++);
+                    pathGraph.getCurrentNode().addChildNode(insertNode);
+                    pathGraph.addNode(insertNode);
+                    pathGraph.setCurrentNode(insertNode);
+                    break;
+                }
+            }
 
         }
         return pathGraph;
@@ -175,7 +240,7 @@ public class ReadFile {
         //把节点和边保存到txt文件中
         //File graphFile = new File("F:\\project\\SQ-MCTS\\genGraph\\graphView.txt");
 
-        FileWriter newFile = new FileWriter("graphView.txt", true);
+        FileWriter newFile = new FileWriter("graphView5.txt", true);
 
         newFile.append("@startuml\n\n")
                 .append("digraph ").append("graph1").append(" {\n");

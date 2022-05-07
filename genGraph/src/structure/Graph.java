@@ -1,12 +1,15 @@
 package structure;
 
+import goalplantree.ActionNode;
 import goalplantree.GoalNode;
 import goalplantree.TreeNode;
+import org.apache.commons.math3.ode.events.Action;
 import xml2bdi.XMLReader;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.nio.channels.AcceptPendingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,7 +30,6 @@ public class Graph {
 
     //运行graph时的当前节点
     private Node runCurrentNode;
-
 
     public Node getRunCurrentNode() {
         return runCurrentNode;
@@ -101,5 +103,18 @@ public class Graph {
     public ArrayList<Node> getNodes() {
         return nodes;
     }
+
+    /**
+     * 如果选择的这个action执行成功，更新图
+     */
+    public void success(ActionNode action){
+        Node runCurrentNode = this.getRunCurrentNode();
+        for (Node node : runCurrentNode.getChildNode()) {
+            if (Node.getDifferentAction(runCurrentNode, node).equals(action)) {
+                this.setRunCurrentNode(node);
+            }
+        }
+    }
+
 }
 
