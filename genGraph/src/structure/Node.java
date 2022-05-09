@@ -106,13 +106,12 @@ public class Node {
     }
 
     //找到当前action属于哪颗树
-    public GoalNode searchWhichGoal(ArrayList<GoalNode> tlgs) {
+    public GoalNode searchWhichGoal(ArrayList<GoalNode> tlgs,String[] str) {
         for (GoalNode tlg : tlgs) {
             String searchTree;
             String[] strArray = tlg.getName().split("-");//把 T 分割出来
             searchTree = strArray[0];
-
-            if (searchTree.equals(this.getActionTreeName())) {//找到当前读取的action属于哪颗树，接下来对树进行层次遍历
+            if (searchTree.equals(str[0])) {//找到当前读取的action属于哪颗树，接下来对树进行层次遍历
                 return tlg;
             }
         }
@@ -252,12 +251,13 @@ public class Node {
      * @return
      */
     public static ActionNode getDifferentAction(Node fnode, Node cnode) {
+        //孩子节点的hashmap
         HashMap<GoalNode, TreeNode> nodeCurrentStep = cnode.getCurrentStep();
         //遍历父节点的curentStep
         for (Map.Entry<GoalNode, TreeNode> entry : fnode.getCurrentStep().entrySet()) {
             GoalNode key = entry.getKey();
             TreeNode value = entry.getValue();
-            if (nodeCurrentStep.get(key) != value) {
+            if (nodeCurrentStep.get(key) != value && nodeCurrentStep.get(key) != null) {
                 if (nodeCurrentStep.get(key) instanceof ActionNode) {
                     //返回孩子节点的那个动作
                     ActionNode act = (ActionNode) nodeCurrentStep.get(key);

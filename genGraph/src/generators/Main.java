@@ -7,6 +7,7 @@ import goalplantree.ActionNode;
 import mcts.MCTSNode;
 import structure.Graph;
 import structure.Node;
+import xml.WriteGraph;
 import xml.XMLReader;
 import xml.XMLWriter;
 
@@ -26,13 +27,15 @@ public class Main {
 
        System.out.println(bigGraph.getNodes().size());
 
-        bigGraph.traversalId();
-        bigGraph.traversalChildNode();
+       bigGraph.traversalId();
+       bigGraph.traversalChildNode();
 
-        //把生成的图保存为xml文件
-       String path ="F:\\project\\graph\\graph5.xml";
-       XMLWriter wxf = new XMLWriter();
+       //把生成的图保存为xml文件
+         String path ="F:\\project\\graph\\graph5.xml";
+       WriteGraph wxf = new WriteGraph();
        wxf.CreateXML(bigGraph,path);
+//       XMLWriter wxf = new XMLWriter();
+//       wxf.CreateXML(bigGraph,path);
     }
 }
 

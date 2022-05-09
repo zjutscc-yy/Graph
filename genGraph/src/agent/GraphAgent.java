@@ -93,36 +93,33 @@ public class GraphAgent extends AbstractAgent{
 
     @Override
     public void exeSucceed() {
-        if (actions.remove(0) != null) {
-            // get the last action
-            ActionNode action = actions.remove(0);
-            // update the belief base according to the action's postcondition
-            Literal[] post = action.getPostc();
-            for (Literal l : post) {
-                this.bb.update(l);
-            }
+        // get the last action
+        ActionNode action = actions.remove(0);
 
-            // update the intention
-            graph.success(action);
-        }else {
-
+        // update the belief base according to the action's postcondition
+        Literal[] post = action.getPostc();
+        for (Literal l : post) {
+            this.bb.update(l);
         }
 
+        // update the intention
+        graph.success(action);
 
         // 如果图中的某个目标执行成功
-//        if (graph.achieved()){
-//            // add its name to the achieved goal
-//            achievedGoals.add();
-//        }
-
-
-
+        GoalNode achieveTlg = graph.achieved(graph.getRunCurrentNode());
+        if (!achievedGoals.contains(achieveTlg.getName())){
+            achievedGoals.add(achieveTlg.getName());
+        }
     }
 
     @Override
     public void exeFail() {
         // get the last action
         ActionNode action = actions.remove(0);
+        System.out.println("cc: " + action.getName());
+
+        // update the intention
+        graph.fail(action);
 
 
     }

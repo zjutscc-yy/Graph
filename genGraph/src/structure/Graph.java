@@ -10,10 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.AcceptPendingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Graph {
 
@@ -30,6 +27,17 @@ public class Graph {
 
     //运行graph时的当前节点
     private Node runCurrentNode;
+
+    //所有目标都实现的节点
+    private Node endNode;
+
+    public Node getEndNode() {
+        return endNode;
+    }
+
+    public void setEndNode(Node endNode) {
+        this.endNode = endNode;
+    }
 
     public Node getRunCurrentNode() {
         return runCurrentNode;
@@ -109,12 +117,35 @@ public class Graph {
      */
     public void success(ActionNode action){
         Node runCurrentNode = this.getRunCurrentNode();
+        action.setStatus(TreeNode.Status.SUCCESS);
         for (Node node : runCurrentNode.getChildNode()) {
-            if (Node.getDifferentAction(runCurrentNode, node).equals(action)) {
+            if (Node.getDifferentAction(runCurrentNode, node) != null) {
+                if (Node.getDifferentAction(runCurrentNode, node).equals(action)) {
+                    this.setRunCurrentNode(node);
+                }
+            }else {//也就是到了图的最终状态（getDifferentAction为空）
                 this.setRunCurrentNode(node);
             }
         }
     }
 
+    /**
+     * graph里某个目标成功
+     */
+    public GoalNode achieved(Node node){
+        HashMap<GoalNode, TreeNode> nodeCurrentStep = node.getCurrentStep();
+        for (Map.Entry<GoalNode, TreeNode> entry : nodeCurrentStep.entrySet()) {
+            GoalNode key = entry.getKey();
+            if (nodeCurrentStep.get(key) == null){
+                return key;
+            }
+        }
+        return null;
+    }
+
+    public void fail(ActionNode action){
+        action.setStatus(TreeNode.Status.FAILURE);
+
+    }
 }
 

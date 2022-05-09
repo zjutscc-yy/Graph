@@ -1,68 +1,83 @@
+import agent.AbstractAgent;
 import agent.Belief;
 import agent.BeliefBaseImp;
+import agent.GraphAgent;
+import environment.SynthEnvironment;
 import goalplantree.ActionNode;
+import goalplantree.GoalNode;
+import goalplantree.Literal;
 import mcts.MCTSNode;
+import simulation.Simulator;
 import structure.Graph;
 import structure.Node;
-import xml.XMLReader;
+import xml.ReadGraph;
+import xml2bdi.XMLReader;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
+
     public static void main(String[] args) throws Exception {
 
-//        long start = System.currentTimeMillis();
-
+        long start = System.currentTimeMillis();
 
         //读图的xml文件
         String gptPath = "F:\\project\\gpt\\2.xml";
         //图的路径
         String path ="F:\\project\\graph\\graph2.xml";
-        XMLReader reader = new XMLReader(path,gptPath);
+        ReadGraph read = new ReadGraph(path,gptPath);
 
-        Graph readGraph = reader.translate(path);
-        readGraph.traversalId();
-        readGraph.traversalChildNode();
+        Graph readGraph = read.translate(path);
 
-        //test
-//        List<Belief> beliefs = new ArrayList<>();
-//        for (int i = 0; i < 32; i++) {
-//            String name_temp = "node_"+i+"_"+Math.random()*10;
-//            double degree_temp = Math.random();
-//            int degree_ = degree_temp >0.5?1:0;
-//            Belief beliefTemp = new Belief(name_temp,degree_);
-//            beliefs.add(beliefTemp);
-//        }
-//
-//        readGraph.setRunCurrentNode(readGraph.getRoot());
-//
-//        BeliefBaseImp beliefBaseImp = new BeliefBaseImp((ArrayList<Belief>) beliefs);
-//        MCTSNode mctsNode = new MCTSNode(readGraph,beliefBaseImp);
-//
-//        int i = 1;
-//        mctsNode.run(100,10);
-//        while (readGraph.getRunCurrentNode().getChildNode().size() != 0) {
-//            ActionNode select = null;
-//            System.out.println("***************step" + i++ + "**************");
-//            for (ActionNode lead : mctsNode.bestActionNode()) {
-//                System.out.println(lead.getName());
-//                select = lead;
-//            }
-//
-//
-//            for (Node node : readGraph.getRunCurrentNode().getChildNode()) {
-//                ActionNode act = Node.getDifferentAction(readGraph.getRunCurrentNode(),node);
-//                if (act.getName().equals(select.getName())){
-//                    readGraph.setRunCurrentNode(node);
-//                    mctsNode = new MCTSNode(readGraph,beliefBaseImp);
-//                    mctsNode.run(100,10);
-//                }
-//            }
-//        }
-//        long end = System.currentTimeMillis();
-//        System.out.println("程序运行时间" + (end - start));
+        //测试生成的图对不对
+//        readGraph.traversalId();
+//        readGraph.traversalChildNode();
 
 
+        gptPath = args[0];
+        double total = 0;
+
+        XMLReader reader;
+        reader = new XMLReader(gptPath);
+
+        Simulator simulator = new Simulator();
+
+
+        // get the list of literals in the environment
+        ArrayList<Literal> literals = reader.getLiterals();
+        // get the list of goals
+        ArrayList<GoalNode> tlgs = reader.getTlgs();
+
+        // build the environment
+        SynthEnvironment environment = new SynthEnvironment(literals, 0);
+        System.out.println(environment.onPrint());
+        System.out.println("--------------------------------------------------------");
+
+        // build the agent
+        ArrayList<Belief> bs = new ArrayList<>();
+        for (Literal l : literals) {
+            bs.add(new Belief(l.getName(), l.getState() ? 1 : 0));
+        }
+
+        GraphAgent graphAgent = new GraphAgent("Graph-Agent", bs, tlgs);
+        AbstractAgent agent = null;
+
+        environment.addAgent(agent);
+
+        boolean running = true;
+
+        int step = 1;
+        while (running) {
+            System.out.println("---------------------step " + step + "------------------------------");
+            running = environment.run();
+            step++;
+        }
+        // check the number of goals achieved
+        System.out.println(agent.getNumAchivedGoal());
+        total += agent.getNumAchivedGoal();
+
+        long end = System.currentTimeMillis();
+        System.out.println("程序运行时间" + (end - start));
     }
 }

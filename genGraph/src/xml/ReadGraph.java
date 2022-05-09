@@ -2,7 +2,6 @@ package xml;
 
 import goalplantree.GoalNode;
 import goalplantree.TreeNode;
-import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
@@ -14,7 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class XMLReader {
+
+public class ReadGraph {
 
     /**
      * 所有节点
@@ -23,8 +23,7 @@ public class XMLReader {
     xml2bdi.XMLReader reader;
 
 
-
-    public XMLReader(String url,String gptFilePath){
+    public ReadGraph(String url,String gptFilePath){
         try{
             reader = new xml2bdi.XMLReader(gptFilePath);
             translate(url);
@@ -141,6 +140,6 @@ public class XMLReader {
                 }
             }
         }
-
     }
 }
+

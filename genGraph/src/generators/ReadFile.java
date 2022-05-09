@@ -21,12 +21,14 @@ public class ReadFile {
     public static int ID = 0;
 
     private int index = 0;
-    private boolean isFirstFlag = false;
 
     /**
      * 第0条路径里面T15对应的最后一个节点的index为 AllPathTIndex[0][14]
      */
     private int AllPathTIndex[][] = new int[20][20];
+    private int TFlag = 0;//作用域有限
+    private Long fileSize = 0l;
+
 
     public Graph readFile(String fileName) throws IOException {
 
@@ -34,6 +36,7 @@ public class ReadFile {
         /**
          * 先设置每条路径的最后一个T
          */
+        fileSize = new File(fileName).length();
         BufferedReader brTemp = new BufferedReader(new FileReader(fileName));
         String lineTemp = "";
         List<String> findEndIndexTempList = new ArrayList<>();
@@ -42,19 +45,19 @@ public class ReadFile {
             //如果文件还有内容
             if (lineTemp.equals(""))
                 continue;               //如果当前行为空，跳过这一行
-            if (lineTemp.equals("//")){//到了单条路径的末尾
+            if (lineTemp.equals("//")) {//到了单条路径的末尾
                 //这里更新当前路径的某一个T的最后节点的index
-                for (int iTemp = 0 ;iTemp<AllPathTIndex[pathIndex].length;iTemp++)
-                    AllPathTIndex[pathIndex][iTemp] = findEndIndexTempList.lastIndexOf(""+iTemp);
+                for (int iTemp = 0; iTemp < AllPathTIndex[pathIndex].length; iTemp++)
+                    AllPathTIndex[pathIndex][iTemp] = findEndIndexTempList.lastIndexOf("" + iTemp);
 
                 pathIndex++;
                 findEndIndexTempList.clear();// 清空当前路径的T数据缓存内容
                 continue;               //跳过这一行
             }
-            findEndIndexTempList.add(lineTemp.split("-")[0].replace("T",""));
+            findEndIndexTempList.add(lineTemp.split("-")[0].replace("T", ""));
         }
-        for (int iTemp = 0 ;iTemp<AllPathTIndex[pathIndex].length;iTemp++)
-            AllPathTIndex[pathIndex][iTemp] = findEndIndexTempList.lastIndexOf(""+iTemp);
+        for (int iTemp = 0; iTemp < AllPathTIndex[pathIndex].length; iTemp++)
+            AllPathTIndex[pathIndex][iTemp] = findEndIndexTempList.lastIndexOf("" + iTemp);
         brTemp.close();
 
         BufferedReader br = new BufferedReader(new FileReader(fileName));
@@ -71,11 +74,9 @@ public class ReadFile {
         bigGraph = new Graph();
         bigGraph.setInitialState("F:\\project\\gpt\\5.xml");
         while ((line = br.readLine()) != null) {
-            Graph singlePathGraph = generatePathGraph(br,currentPathIndex);
+            Graph singlePathGraph = generatePathGraph(br, currentPathIndex);
             currentPathIndex++;
-            if (!isFirstFlag)
-                index = singlePathGraph.getNodes().size();
-            isFirstFlag = true;
+            index = singlePathGraph.getNodes().size();
             bigGraph = mergeGraph(bigGraph, singlePathGraph);
         }
         br.close();
@@ -87,8 +88,8 @@ public class ReadFile {
 
 
     //两个图合成一个图
-    public Graph mergeGraph(Graph graph,Graph pathGraph){
-        if (graph.getNodes().size() == 0){
+    public Graph mergeGraph(Graph graph, Graph pathGraph) {
+        if (graph.getNodes().size() == 0) {
             return pathGraph;
         }
         boolean isAdd = false;//判断curGraphPtr是否为新加节点
@@ -96,22 +97,24 @@ public class ReadFile {
         Node curGraphPtr = graph.getRoot();
         Node curPathPtr = pathGraph.getRoot().getChildNode().get(0);
 
-        out: while (curPathPtr.getChildNode().size() != 0) {
+        out:
+        while (curPathPtr.getChildNode().size() != 0) {
 
             ArrayList<Node> curNodes = graph.getNodes();
-            inner: for (int i = 0; i < curNodes.size(); i++) {
+            inner:
+            for (int i = 0; i < curNodes.size(); i++) {
                 Node graphNode = curNodes.get(i);
-                if (graphNode.equals(curPathPtr)){
-                    if (!isAdd){//curGraphPtr在图里，curPathPtr在图里
+                if (graphNode.equals(curPathPtr)) {
+                    if (!isAdd) {//curGraphPtr在图里，curPathPtr在图里
                         if (!curGraphPtr.getChildNode().contains(graphNode)) {
                             curGraphPtr.addChildNode(graphNode);//可能会加重复，连着都不等，加个判断孩子节点里是否已经存在curPathPtr
                         }
-                    }else{
+                    } else {
                         curGraphPtr.addChildNode(graphNode);//这有问题
                         curGraphPtr.removeChildNode(curPathPtr);
                     }
                     curGraphPtr = graphNode;
-                    if (curPathPtr.getChildNode().size() != 0){
+                    if (curPathPtr.getChildNode().size() != 0) {
                         curPathPtr = curPathPtr.getChildNode().get(0);
                     }
                     isAdd = false;
@@ -136,12 +139,12 @@ public class ReadFile {
         ArrayList<Node> curNodes = graph.getNodes();
         for (int i = 0; i < curNodes.size(); i++) {
             Node graphNode = curNodes.get(i);
-            if(graphNode.equals(curPathPtr)){
+            if (graphNode.equals(curPathPtr)) {
                 if (!isAdd) {
                     if (!curGraphPtr.getChildNode().contains(graphNode)) {
                         curGraphPtr.addChildNode(graphNode);//可能会加重复，连着都不等，加个判断孩子节点里是否已经存在curPathPtr
                     }
-                }else {
+                } else {
                     curGraphPtr.addChildNode(graphNode);
                     curGraphPtr.removeChildNode(curPathPtr);
                     break;
@@ -153,7 +156,7 @@ public class ReadFile {
     }
 
     //生成单条路径
-    public Graph generatePathGraph(BufferedReader br,int currentPathIndex) throws IOException {
+    public Graph generatePathGraph(BufferedReader br, int currentPathIndex) throws IOException {
 
         Graph pathGraph = new Graph();
         pathGraph.initialState = bigGraph.initialState;
@@ -190,7 +193,7 @@ public class ReadFile {
             //把当前节点的map赋值一份，方便让孩子节点在其基础上更新
             map.putAll(pathGraph.getCurrentNode().getCurrentStep());
 
-            GoalNode searchGoalNode = node.searchWhichGoal(tlgs);//找到当前执行的哪棵树
+            GoalNode searchGoalNode = node.searchWhichGoal(tlgs,strArray);//找到当前执行的哪棵树
             TreeNode searchActionNode = node.traversal(searchGoalNode, node.getActionName());
 
             map.put(searchGoalNode, searchActionNode);
@@ -204,34 +207,81 @@ public class ReadFile {
 
 
             /**
-             * 如果当前节点某个T的最后一个节点，在其后添加null
+             * 如果当前节点某个T的最后一个节点，在其后添加null并把下一行的状态更新
              */
-            String TEnd = "";
-            String GEnd = "";
-            for (int i = 0; i < AllPathTIndex[currentPathIndex].length && AllPathTIndex[currentPathIndex][i]!=-1; i++) {
-                if (indexOfSingle == AllPathTIndex[currentPathIndex][i]) {
-                    TEnd += "T" + i;
-                    GEnd+="G" + 0;
-                    Node insertNode = new Node();
-                    HashMap insertMap = new HashMap();
-                    insertMap.putAll(pathGraph.getCurrentNode().getCurrentStep());
+            String nextLine = "";
+            while (isCurrentNodeEnd(currentPathIndex, indexOfSingle)) {
+                String TEnd = "";
+                String GEnd = "";
 
-                    for (GoalNode tlg : tlgs) {
-                        if (tlg.getName().equals(TEnd+"-"+GEnd)){
-                            insertMap.put(tlg,null);
-                            insertNode.setCurrentStep(insertMap);
-                        }
+                TEnd += "T" + TFlag;
+                GEnd += "G" + 0;
+                Node insertNode = new Node();
+                HashMap insertMap = new HashMap();
+                insertMap.putAll(pathGraph.getCurrentNode().getCurrentStep());
+
+                for (GoalNode tlg : tlgs) {
+                    if (tlg.getName().equals(TEnd + "-" + GEnd)) {
+                        insertMap.put(tlg, null);
                     }
-                    insertNode.setId(ID++);
-                    pathGraph.getCurrentNode().addChildNode(insertNode);
-                    pathGraph.addNode(insertNode);
-                    pathGraph.setCurrentNode(insertNode);
-                    break;
                 }
-            }
+                //读下一条
+                br.mark(fileSize.intValue());
+                nextLine = br.readLine();
+                //判断条件
+                if (nextLine==null || nextLine.equals("//") || nextLine.equals("")) break;
+                String[] nextArray= nextLine.split("-");
+                //更新
 
+                GoalNode searchGoal = node.searchWhichGoal(tlgs,nextArray);//找到当前执行的哪棵树
+                TreeNode searchAction = node.traversal(searchGoal, nextArray[1]);
+
+                insertMap.put(searchGoal,searchAction);
+                insertNode.setCurrentStep(insertMap);
+                insertNode.setId(ID++);
+                pathGraph.getCurrentNode().addChildNode(insertNode);
+                pathGraph.addNode(insertNode);
+                pathGraph.setCurrentNode(insertNode);
+                //更新结束
+//                br.reset();
+                if (isCurrentNodeEnd(currentPathIndex,indexOfSingle+1)){//判断下一个action是否为end
+                    indexOfSingle++;
+                    continue;
+                }
+                break;
+            }
         }
+
+        //添加最后节点
+        Node lastNode = new Node();
+        HashMap lastMap = new HashMap();
+        lastMap.putAll(pathGraph.getCurrentNode().getCurrentStep());
+        for (GoalNode tlg : tlgs) {
+            lastMap.put(tlg,null);
+        }
+        lastNode.setCurrentStep(lastMap);
+        lastNode.setId(ID++);
+        pathGraph.addNode(lastNode);
+        pathGraph.getCurrentNode().addChildNode(lastNode);
+
+        pathGraph.setEndNode(lastNode);
         return pathGraph;
+    }
+
+    /**
+     * 判断当前action是否为最后一个action
+     * a@param currentIndex
+     *
+     * @return
+     */
+    private boolean isCurrentNodeEnd(int currentPathIndex, int currentIndex) {
+        for (int i = 0; i < AllPathTIndex[currentPathIndex].length && AllPathTIndex[currentPathIndex][i] != -1; i++) {
+            if (currentIndex == AllPathTIndex[currentPathIndex][i]) {
+                TFlag = i;
+                return true;
+            }
+        }
+        return false;
     }
 
     //把生成的图写成.txt，生成uml文件

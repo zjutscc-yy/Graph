@@ -14,12 +14,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
+public class WriteGraph {
 
-public class XMLWriter {
-
-    public XMLWriter(){
+    public WriteGraph(){
 
     }
 
@@ -128,4 +126,5 @@ public class XMLWriter {
         parent.addContent(nodeIdElement);
     }
 }
+
 
