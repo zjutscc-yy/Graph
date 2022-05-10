@@ -97,6 +97,7 @@ public class Graph {
         }
         cGraph.setRoot(this.getRoot());
         cGraph.setRunCurrentNode(this.getRunCurrentNode());
+        cGraph.setEndNode(this.getEndNode());
         return cGraph;
     }
 
@@ -145,7 +146,21 @@ public class Graph {
 
     public void fail(ActionNode action){
         action.setStatus(TreeNode.Status.FAILURE);
-
     }
+
+//    public ActionNode progress(){
+//        System.out.println("progress!!!");
+//        // if the top-level goal has not been achieved already
+//        if(runCurrentNode != null && !runCurrentNode.equals(endNode)){
+//            // get the action
+//            ActionNode act = ;
+//            // activate this action
+//            act.setStatus(TreeNode.Status.ACTIVE);
+//            return act;
+//
+//        }
+//        return null;
+//    }
+
 }
 

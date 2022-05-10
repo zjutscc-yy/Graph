@@ -255,14 +255,18 @@ public class Node {
         HashMap<GoalNode, TreeNode> nodeCurrentStep = cnode.getCurrentStep();
         //遍历父节点的curentStep
         for (Map.Entry<GoalNode, TreeNode> entry : fnode.getCurrentStep().entrySet()) {
-            GoalNode key = entry.getKey();
-            TreeNode value = entry.getValue();
-            if (nodeCurrentStep.get(key) != value && nodeCurrentStep.get(key) != null) {
-                if (nodeCurrentStep.get(key) instanceof ActionNode) {
-                    //返回孩子节点的那个动作
-                    ActionNode act = (ActionNode) nodeCurrentStep.get(key);
-                    return act;
+            GoalNode key = entry.getKey();//获得父节点的key
+            if(entry.getKey() != null) {//如果父节点key对应的value不为空
+                TreeNode value = entry.getValue();
+                if (nodeCurrentStep.get(key) != value && nodeCurrentStep.get(key) != null) {
+                    if (nodeCurrentStep.get(key) instanceof ActionNode) {
+                        //返回孩子节点的那个动作
+                        ActionNode act = (ActionNode) nodeCurrentStep.get(key);
+                        return act;
+                    }
                 }
+            }else {//如果父节点key对应的value为空
+                break;
             }
         }
         return null;

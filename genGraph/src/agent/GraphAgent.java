@@ -1,8 +1,7 @@
 package agent;
 
-import goalplantree.ActionNode;
-import goalplantree.GoalNode;
-import goalplantree.Literal;
+import environment.AbstractEnvironment;
+import goalplantree.*;
 import mcts.MCTSNode;
 import structure.Graph;
 
@@ -19,6 +18,7 @@ public class GraphAgent extends AbstractAgent{
 
     // to record the best simulation choices
     ArrayList<ActionNode> bestChoices = new ArrayList<>();
+
     // to record the best simulation result
     double bestResult = -1;
     // alpha and beta are set to 100 and 50 respectively by default
@@ -30,6 +30,11 @@ public class GraphAgent extends AbstractAgent{
      * @param id  agent的name
      * @param bs  初始的beliefs
      */
+
+    public GraphAgent(String id, ArrayList<Belief> bs, Graph graph){
+        super(id,bs);
+        this.graph = graph;
+    }
     public GraphAgent(String id, ArrayList<Belief> bs) {
         super(id, bs);
     }
@@ -60,6 +65,7 @@ public class GraphAgent extends AbstractAgent{
 
     @Override
     public boolean deliberate() {
+        //图每次更新自己的runcurrentNode，就是真实走了一步，比如图走到29，然后以29建立mcts的root，进行alpha，beta
         MCTSNode root = new MCTSNode(this.graph,this.bb);
         long start = System.currentTimeMillis();
         //run mcts
@@ -72,6 +78,10 @@ public class GraphAgent extends AbstractAgent{
             this.actions = cs;
             return true;
         }
+
+        //cs为空，表示运行到图的最后一个节点
+
+
         return false;
     }
 
@@ -106,9 +116,11 @@ public class GraphAgent extends AbstractAgent{
         graph.success(action);
 
         // 如果图中的某个目标执行成功
-        GoalNode achieveTlg = graph.achieved(graph.getRunCurrentNode());
-        if (!achievedGoals.contains(achieveTlg.getName())){
-            achievedGoals.add(achieveTlg.getName());
+        if (graph.achieved(graph.getRunCurrentNode()) != null) {
+            GoalNode achieveTlg = graph.achieved(graph.getRunCurrentNode());
+            if (!achievedGoals.contains(achieveTlg.getName())) {
+                achievedGoals.add(achieveTlg.getName());
+            }
         }
     }
 
@@ -120,7 +132,24 @@ public class GraphAgent extends AbstractAgent{
 
         // update the intention
         graph.fail(action);
+    }
 
-
+    /**
+     * progress the agent's intentions and return the action to execute at the current cycle
+     * @param environment the associated environment
+     * @return the action to execute at the current cycle
+     */
+    @Override
+    public ActionNode execute(AbstractEnvironment environment) {
+        // check if there is a decision has been made already. If there is, then execute it
+        while(this.actions.size() > 0){
+            // get the immediate choice
+            ActionNode action = this.actions.get(0);
+            System.out.println("progress!!!");
+            // activate this action
+            action.setStatus(TreeNode.Status.ACTIVE);
+            return action;
+        }
+        return null;
     }
 }

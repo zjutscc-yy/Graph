@@ -20,6 +20,9 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
+        /**
+         * 读生成的图
+         */
         long start = System.currentTimeMillis();
 
         //读图的xml文件
@@ -29,13 +32,15 @@ public class Main {
         ReadGraph read = new ReadGraph(path,gptPath);
 
         Graph readGraph = read.translate(path);
+        readGraph.setRunCurrentNode(readGraph.getRoot());
 
         //测试生成的图对不对
 //        readGraph.traversalId();
 //        readGraph.traversalChildNode();
 
-
-        gptPath = args[0];
+        /**
+         * mcts跑图
+         */
         double total = 0;
 
         XMLReader reader;
@@ -60,8 +65,9 @@ public class Main {
             bs.add(new Belief(l.getName(), l.getState() ? 1 : 0));
         }
 
-        GraphAgent graphAgent = new GraphAgent("Graph-Agent", bs, tlgs);
-        AbstractAgent agent = null;
+//        GraphAgent graphAgent = new GraphAgent("Graph-Agent", bs, readGraph);
+        AbstractAgent agent = new GraphAgent("Graph-Agent", bs, readGraph);
+
 
         environment.addAgent(agent);
 

@@ -72,7 +72,7 @@ public class ReadFile {
          */
         int currentPathIndex = 0;
         bigGraph = new Graph();
-        bigGraph.setInitialState("F:\\project\\gpt\\5.xml");
+        bigGraph.setInitialState("F:\\project\\gpt\\2.xml");
         while ((line = br.readLine()) != null) {
             Graph singlePathGraph = generatePathGraph(br, currentPathIndex);
             currentPathIndex++;
@@ -290,7 +290,7 @@ public class ReadFile {
         //把节点和边保存到txt文件中
         //File graphFile = new File("F:\\project\\SQ-MCTS\\genGraph\\graphView.txt");
 
-        FileWriter newFile = new FileWriter("graphView5.txt", true);
+        FileWriter newFile = new FileWriter("graphView.txt", true);
 
         newFile.append("@startuml\n\n")
                 .append("digraph ").append("graph1").append(" {\n");
