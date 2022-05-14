@@ -33,7 +33,7 @@ public class WriteGraph {
             rootElement.setAttribute(new Attribute("Id",String.valueOf(root.getId())));
             graph.addContent(rootElement);
 
-            //图的结束状态节点
+//            图的结束状态节点
             Element endElement = new Element("End");
             Node endNode = bigGraph.getEndNode();
             endElement.setAttribute(new Attribute("Id",String.valueOf(endNode.getId())));

@@ -59,7 +59,7 @@ public class ReadGraph {
             }
         }
 
-        //获取graph的end
+//        获取graph的end
         Element endElement = graphInfo.get(1);
         int endId = Integer.parseInt(endElement.getAttributeValue("Id"));
         for (Node bigGraphNode : bigGraph.getNodes()) {

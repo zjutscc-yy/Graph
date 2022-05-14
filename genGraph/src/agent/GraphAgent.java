@@ -4,6 +4,7 @@ import environment.AbstractEnvironment;
 import goalplantree.*;
 import mcts.MCTSNode;
 import structure.Graph;
+import structure.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +80,10 @@ public class GraphAgent extends AbstractAgent{
             return true;
         }
 
-        //cs为空，表示运行到图的最后一个节点
+//        if (graph.getRunCurrentNode().getChildNode().size() == 1 &&
+//                graph.getRunCurrentNode().getChildNode().get(0).equals(graph.getEndNode())){
+//
+//        }
 
 
         return false;
@@ -117,11 +121,14 @@ public class GraphAgent extends AbstractAgent{
 
         // 如果图中的某个目标执行成功
         if (graph.achieved(graph.getRunCurrentNode()) != null) {
-            GoalNode achieveTlg = graph.achieved(graph.getRunCurrentNode());
-            if (!achievedGoals.contains(achieveTlg.getName())) {
-                achievedGoals.add(achieveTlg.getName());
+            ArrayList<GoalNode> achieveTlg = graph.achieved(graph.getRunCurrentNode());
+            for (GoalNode goalNode : achieveTlg) {
+                if (!achievedGoals.contains(goalNode.getName())) {
+                    achievedGoals.add(goalNode.getName());
+                }
             }
         }
+
     }
 
     @Override

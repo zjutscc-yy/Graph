@@ -1,30 +1,26 @@
 import agent.AbstractAgent;
 import agent.Belief;
-import agent.BeliefBaseImp;
 import agent.GraphAgent;
 import environment.SynthEnvironment;
-import goalplantree.ActionNode;
 import goalplantree.GoalNode;
 import goalplantree.Literal;
-import mcts.MCTSNode;
 import simulation.Simulator;
 import structure.Graph;
-import structure.Node;
 import xml.ReadGraph;
 import xml2bdi.XMLReader;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+import java.util.Random;
 
 public class Main {
-
+    static long startTime = System.currentTimeMillis();
     public static void main(String[] args) throws Exception {
-
+//        startTime = System.currentTimeMillis();
+//        long startAll = System.currentTimeMillis();
         /**
          * 读生成的图
          */
-        long start = System.currentTimeMillis();
-
         //读图的xml文件
         String gptPath = "F:\\project\\gpt\\2.xml";
         //图的路径
@@ -65,7 +61,6 @@ public class Main {
             bs.add(new Belief(l.getName(), l.getState() ? 1 : 0));
         }
 
-//        GraphAgent graphAgent = new GraphAgent("Graph-Agent", bs, readGraph);
         AbstractAgent agent = new GraphAgent("Graph-Agent", bs, readGraph);
 
 
@@ -73,6 +68,8 @@ public class Main {
 
         boolean running = true;
 
+//        startTime = System.currentTimeMillis();
+//        long startAll = System.currentTimeMillis();
         int step = 1;
         while (running) {
             System.out.println("---------------------step " + step + "------------------------------");
@@ -82,8 +79,16 @@ public class Main {
         // check the number of goals achieved
         System.out.println(agent.getNumAchivedGoal());
         total += agent.getNumAchivedGoal();
+//        long end = System.currentTimeMillis();
 
-        long end = System.currentTimeMillis();
-        System.out.println("程序运行时间" + (end - start));
+//        long endAll = System.currentTimeMillis();
+//        System.out.println("总的程序运行时间" + (endAll - startAll));
+
+//        System.out.println("程序运行时间" + (end - startTime));
+    }
+
+    static boolean isTimeEnd(){
+        return (startTime+2400 > System.currentTimeMillis());
     }
 }
+

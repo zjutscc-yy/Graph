@@ -133,21 +133,21 @@ public class Graph {
     /**
      * graph里某个目标成功
      */
-    public GoalNode achieved(Node node){
+    public ArrayList<GoalNode> achieved(Node node){
         HashMap<GoalNode, TreeNode> nodeCurrentStep = node.getCurrentStep();
+        ArrayList<GoalNode> achievegoal = new ArrayList<>();
         for (Map.Entry<GoalNode, TreeNode> entry : nodeCurrentStep.entrySet()) {
             GoalNode key = entry.getKey();
             if (nodeCurrentStep.get(key) == null){
-                return key;
+                achievegoal.add(key);
             }
         }
-        return null;
+        return achievegoal;
     }
 
     public void fail(ActionNode action){
         action.setStatus(TreeNode.Status.FAILURE);
     }
-
 //    public ActionNode progress(){
 //        System.out.println("progress!!!");
 //        // if the top-level goal has not been achieved already
@@ -161,6 +161,5 @@ public class Graph {
 //        }
 //        return null;
 //    }
-
 }
 

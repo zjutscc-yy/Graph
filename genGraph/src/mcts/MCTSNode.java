@@ -86,15 +86,13 @@ public class MCTSNode extends BasicMCTSNode{
                 // the current node is set to its child node which has the largest UCT value
                 current = current.select();
                 // once a node is selected, its choices are also added to the list
-                if (current.selectAction != null) {//current为最后一个时，倒数第二到最后没有做动作，不需要添加动作，只需要标记已被访问过
-                    ca.addAll(current.selectAction);
-                }
+                ca.addAll(current.selectAction);
                 // the selected node is also added to the list of visited nodes
                 visited.add(current);
             }
 
             for (ActionNode actionNode : ca) {
-                biUpdate(actionNode,cGraph,sBeliefs);
+                biUpdate(actionNode, cGraph, sBeliefs);
             }
 
 
@@ -123,20 +121,19 @@ public class MCTSNode extends BasicMCTSNode{
                 // get the selected node and update the intention and belief base
                 ArrayList<ActionNode> sChoices = sNode.selectAction;
 
-                if (sChoices != null) {
-                    for (ActionNode a : sChoices) {
-                        biUpdate(a, cGraph, sBeliefs);
-                    }
-                    // add the choices of the new node to the list of choices
-                    ca.addAll(sChoices);
+                for (ActionNode a : sChoices) {
+                    biUpdate(a, cGraph, sBeliefs);
                 }
+                // add the choices of the new node to the list of choices
+                ca.addAll(sChoices);
 
 
                 // run beta simulations
                 for (int j = 0; j < beta; j++) {
+                    //在选择的mcts点里进行模拟，得到一个值
                     double sValue = sNode.rollOut(cGraph, sBeliefs, ca);
                     /**
-                     * back-propagation
+                     * back-propagation 把上述的得到的值，更新
                      */
                     for (MCTSNode node : visited) {
                         node.statistic.addValue(sValue);
@@ -189,7 +186,7 @@ public class MCTSNode extends BasicMCTSNode{
         //获取图现在运行的哪一步
         Node cStep = graph.getRunCurrentNode();
 
-        //得到每个孩子对应做了哪个 动作
+        //得到每个孩子对应做了哪个动作
         for (Node node : cStep.getChildNode()) {
             if (Node.getDifferentAction(cStep,node) != null) {
                 ActionNode act = Node.getDifferentAction(cStep, node);
@@ -202,6 +199,13 @@ public class MCTSNode extends BasicMCTSNode{
                 // add it as the child of this node
                 this.children.add(child);
             }
+//            else {//图现在运行节点的孩子是endNode
+//                ArrayList<ActionNode> ncs = new ArrayList<>();
+//                // create new MCTS node
+//                MCTSNode child = new MCTSNode(ncs);
+//                // add it as the child of this node
+//                this.children.add(child);
+//            }
         }
     }
 
@@ -232,6 +236,10 @@ public class MCTSNode extends BasicMCTSNode{
             sBeliefs.update(l);
         }
     }
+//
+//    private void biUpdate(Graph graph){
+//        graph.setRunCurrentNode(graph.getEndNode());
+//    }
 
     /**
      * @return the simulation rollouts

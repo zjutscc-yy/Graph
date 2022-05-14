@@ -11,8 +11,11 @@ import agent.*;
 
 public class Main {
 
+    static long startTime = System.currentTimeMillis();
     public static void main(String[] args) throws IOException {
-        long start = System.currentTimeMillis();
+
+//        startTime = System.currentTimeMillis();
+//        long startAll = System.currentTimeMillis();
         double total = 0;
         int type;
         int testNum;
@@ -107,7 +110,8 @@ public class Main {
             environment.addAgent(agent);
 
             boolean running = true;
-
+//            startTime = System.currentTimeMillis();
+//            long startAll = System.currentTimeMillis();
             int step = 1;
             while (running) {
                 System.out.println("---------------------step " + step + "------------------------------");
@@ -117,11 +121,18 @@ public class Main {
             // check the number of goals achieved
             System.out.println(agent.getNumAchivedGoal());
             total += agent.getNumAchivedGoal();
+//            long end = System.currentTimeMillis();
+
+//            long endAll = System.currentTimeMillis();
+//            System.out.println("程序运行时间" + (endAll - startAll));
+
+//            System.out.println("程序运行时间" + (end - startTime));
         }
 
-        long end = System.currentTimeMillis();
-        System.out.println("程序运行时间" + (end - start));
+    }
 
+    static boolean isTimeEnd(){
+        return (startTime+2400 > System.currentTimeMillis());
     }
 
 }

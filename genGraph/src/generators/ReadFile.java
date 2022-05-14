@@ -72,7 +72,7 @@ public class ReadFile {
          */
         int currentPathIndex = 0;
         bigGraph = new Graph();
-        bigGraph.setInitialState("F:\\project\\gpt\\2.xml");
+        bigGraph.setInitialState("F:\\project\\gpt\\5.xml");
         while ((line = br.readLine()) != null) {
             Graph singlePathGraph = generatePathGraph(br, currentPathIndex);
             currentPathIndex++;
@@ -158,6 +158,7 @@ public class ReadFile {
     //生成单条路径
     public Graph generatePathGraph(BufferedReader br, int currentPathIndex) throws IOException {
 
+        boolean isPathEnd = false;
         Graph pathGraph = new Graph();
         pathGraph.initialState = bigGraph.initialState;
         //每条路径都添加一个root节点
@@ -183,7 +184,7 @@ public class ReadFile {
         String data;
         int indexOfSingle = -1;
 
-        while (!("//".equals(data = br.readLine())) && data != null && !data.equals("")) {
+        while (!isPathEnd && !("//".equals(data = br.readLine())) && data != null && !data.equals("")) {
             indexOfSingle++;
             String[] strArray = data.split("-");
 
@@ -193,7 +194,7 @@ public class ReadFile {
             //把当前节点的map赋值一份，方便让孩子节点在其基础上更新
             map.putAll(pathGraph.getCurrentNode().getCurrentStep());
 
-            GoalNode searchGoalNode = node.searchWhichGoal(tlgs,strArray);//找到当前执行的哪棵树
+            GoalNode searchGoalNode = node.searchWhichGoal(tlgs, strArray);//找到当前执行的哪棵树
             TreeNode searchActionNode = node.traversal(searchGoalNode, node.getActionName());
 
             map.put(searchGoalNode, searchActionNode);
@@ -229,14 +230,17 @@ public class ReadFile {
                 br.mark(fileSize.intValue());
                 nextLine = br.readLine();
                 //判断条件
-                if (nextLine==null || nextLine.equals("//") || nextLine.equals("")) break;
-                String[] nextArray= nextLine.split("-");
+                if (nextLine == null || nextLine.equals("//") || nextLine.equals("")) {
+                    // 这里表示到了单条路径的末尾
+                    isPathEnd = true;
+                    break;
+                }
+                String[] nextArray = nextLine.split("-");
                 //更新
-
-                GoalNode searchGoal = node.searchWhichGoal(tlgs,nextArray);//找到当前执行的哪棵树
+                GoalNode searchGoal = node.searchWhichGoal(tlgs, nextArray);//找到当前执行的哪棵树
                 TreeNode searchAction = node.traversal(searchGoal, nextArray[1]);
 
-                insertMap.put(searchGoal,searchAction);
+                insertMap.put(searchGoal, searchAction);
                 insertNode.setCurrentStep(insertMap);
                 insertNode.setId(ID++);
                 pathGraph.getCurrentNode().addChildNode(insertNode);
@@ -244,10 +248,11 @@ public class ReadFile {
                 pathGraph.setCurrentNode(insertNode);
                 //更新结束
 //                br.reset();
-                if (isCurrentNodeEnd(currentPathIndex,indexOfSingle+1)){//判断下一个action是否为end
+                if (isCurrentNodeEnd(currentPathIndex, indexOfSingle + 1)) {//判断下一个action是否为end
                     indexOfSingle++;
                     continue;
-                }
+                } else
+                    indexOfSingle++;
                 break;
             }
         }
@@ -290,7 +295,7 @@ public class ReadFile {
         //把节点和边保存到txt文件中
         //File graphFile = new File("F:\\project\\SQ-MCTS\\genGraph\\graphView.txt");
 
-        FileWriter newFile = new FileWriter("graphView.txt", true);
+        FileWriter newFile = new FileWriter("graphView5.txt", true);
 
         newFile.append("@startuml\n\n")
                 .append("digraph ").append("graph1").append(" {\n");
