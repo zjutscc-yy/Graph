@@ -194,6 +194,10 @@ public class ReadFile {
             //把当前节点的map赋值一份，方便让孩子节点在其基础上更新
             map.putAll(pathGraph.getCurrentNode().getCurrentStep());
 
+            ArrayList<GoalNode> achievedTlg = new ArrayList<>();
+            achievedTlg.addAll(pathGraph.getCurrentNode().getAchievedGoal());
+            node.setAchievedGoal(achievedTlg);
+
             GoalNode searchGoalNode = node.searchWhichGoal(tlgs, strArray);//找到当前执行的哪棵树
             TreeNode searchActionNode = node.traversal(searchGoalNode, node.getActionName());
 
@@ -224,8 +228,14 @@ public class ReadFile {
                 for (GoalNode tlg : tlgs) {
                     if (tlg.getName().equals(TEnd + "-" + GEnd)) {
                         insertMap.put(tlg, null);
+                        pathGraph.getCurrentNode().addAchievedGoal(tlg);
                     }
                 }
+
+                ArrayList<GoalNode> insertTlg = new ArrayList<>();
+                insertTlg.addAll(pathGraph.getCurrentNode().getAchievedGoal());
+                insertNode.setAchievedGoal(insertTlg);
+
                 //读下一条
                 br.mark(fileSize.intValue());
                 nextLine = br.readLine();
@@ -263,6 +273,7 @@ public class ReadFile {
         lastMap.putAll(pathGraph.getCurrentNode().getCurrentStep());
         for (GoalNode tlg : tlgs) {
             lastMap.put(tlg,null);
+            lastNode.addAchievedGoal(tlg);
         }
         lastNode.setCurrentStep(lastMap);
         lastNode.setId(ID++);
@@ -293,9 +304,9 @@ public class ReadFile {
     public void writeUml(Graph graph) throws IOException {
 
         //把节点和边保存到txt文件中
-        //File graphFile = new File("F:\\project\\SQ-MCTS\\genGraph\\graphView.txt");
+        File graphFile = new File("F:\\project\\SQ-MCTS\\genGraph\\graphView5.10.txt");
 
-        FileWriter newFile = new FileWriter("graphView5.txt", true);
+        FileWriter newFile = new FileWriter("graphView5.10.txt", true);
 
         newFile.append("@startuml\n\n")
                 .append("digraph ").append("graph1").append(" {\n");

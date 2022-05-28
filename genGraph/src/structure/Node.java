@@ -25,6 +25,20 @@ public class Node {
     //节点的孩子节点
     private ArrayList<Node> childNode = new ArrayList<>();
 
+    //该节点当前实现的目标
+    private ArrayList<GoalNode> achievedGoal = new ArrayList<>();
+
+    public void addAchievedGoal(GoalNode goal){
+        achievedGoal.add(goal);
+    }
+
+    public ArrayList<GoalNode> getAchievedGoal() {
+        return achievedGoal;
+    }
+
+    public void setAchievedGoal(ArrayList<GoalNode> achievedGoal) {
+        this.achievedGoal = achievedGoal;
+    }
 
     //在currentNode下添加子节点
     public void addChildNode(Node node) {
@@ -94,9 +108,10 @@ public class Node {
     public Node() {
     }
 
-    public Node(int id, HashMap<GoalNode, TreeNode> currentSteps) {
+    public Node(int id, HashMap<GoalNode, TreeNode> currentSteps ,ArrayList<GoalNode> achievedGoal) {
         this.id = id;
         this.currentSteps = currentSteps;
+        this.achievedGoal = achievedGoal;
     }
 
     public Node(int id, String actionTreeName, String actionName) {

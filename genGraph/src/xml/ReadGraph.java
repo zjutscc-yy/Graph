@@ -81,8 +81,20 @@ public class ReadGraph {
 
     private Node readNode(Element element){
         int id = Integer.parseInt(element.getAttributeValue("Id"));
+        List<Element> achieveCur = element.getChildren();
+
+        //获得Achieved所有标签
+        Element achievedElement = achieveCur.get(0);
+        //获得Achieved标签下的所有AchievedGoal标签
+        List<Element> achievedGoal = achievedElement.getChildren();
+
+        ArrayList<GoalNode> achievedTlg = new ArrayList<>();
+        for (int i = 0; i < achievedGoal.size(); i++) {
+            achievedTlg = readGoal(achievedGoal.get(i),achievedTlg);
+        }
+
         //获得currentStep标签
-        Element currentStepsElement = element.getChildren().get(0);
+        Element currentStepsElement = achieveCur.get(1);
         //获得currentStep标签下的所有step标签
         List<Element> steps = currentStepsElement.getChildren();
 
@@ -92,18 +104,30 @@ public class ReadGraph {
         }
 
         //创建一个新的node
-        Node graphNode = new Node(id,curSteps);
+        Node graphNode = new Node(id,curSteps,achievedTlg);
         return graphNode;
     }
+
+    private ArrayList<GoalNode> readGoal(Element element,ArrayList arr){
+        for (GoalNode tlg : reader.getTlgs()) {
+            String data = element.getAttributeValue("Tlg_name");
+            String[] strArr = data.split("-");
+            if (strArr.length >= 2 && element.getAttributeValue("Tlg_name").equals(tlg.getName())){
+                arr.add(tlg);
+            }
+        }
+        return arr;
+    }
+
 
 
     private HashMap<GoalNode, TreeNode> readSteps(Element element,HashMap map){
 
         for (GoalNode tlg : reader.getTlgs()) {
             if (tlg.getName().equals(element.getAttributeValue("Tlg_name"))){
-                String date = element.getAttributeValue("curStep");
-                String[] strArray = date.split("-");
-                if (strArray.length<2){
+                String data = element.getAttributeValue("curStep");
+                String[] strArray = data.split("-");
+                if (strArray.length < 2){
                     map.put(tlg,null);
                 }else {
                     TreeNode actionNode = Node.traversalGoal(tlg, strArray[1]);

@@ -23,8 +23,8 @@ public class GraphAgent extends AbstractAgent{
     // to record the best simulation result
     double bestResult = -1;
     // alpha and beta are set to 100 and 50 respectively by default
-    int alpha = 100;
-    int beta = 10;
+    int alpha = 1;
+    int beta = 1;
 
     /**
      * 构造器
@@ -80,12 +80,6 @@ public class GraphAgent extends AbstractAgent{
             return true;
         }
 
-//        if (graph.getRunCurrentNode().getChildNode().size() == 1 &&
-//                graph.getRunCurrentNode().getChildNode().get(0).equals(graph.getEndNode())){
-//
-//        }
-
-
         return false;
     }
 
@@ -120,8 +114,8 @@ public class GraphAgent extends AbstractAgent{
         graph.success(action);
 
         // 如果图中的某个目标执行成功
-        if (graph.achieved(graph.getRunCurrentNode()) != null) {
-            ArrayList<GoalNode> achieveTlg = graph.achieved(graph.getRunCurrentNode());
+        if (graph.getRunCurrentNode().getAchievedGoal().size() != 0){
+            ArrayList<GoalNode> achieveTlg = graph.getRunCurrentNode().getAchievedGoal();
             for (GoalNode goalNode : achieveTlg) {
                 if (!achievedGoals.contains(goalNode.getName())) {
                     achievedGoals.add(goalNode.getName());

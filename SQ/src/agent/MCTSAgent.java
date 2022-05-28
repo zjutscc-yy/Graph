@@ -18,8 +18,8 @@ public class MCTSAgent extends AbstractAgent{
     // to record the best simulation result
     double bestResult = -1;
     // alpha and beta are set to 100 and 50 respectively by default
-    int alpha = 100;
-    int beta = 50;
+    int alpha = 100000;
+    int beta = 10;
 
     /**
      * constructor

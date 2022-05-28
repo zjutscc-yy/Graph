@@ -120,14 +120,11 @@ public class MCTSNode extends BasicMCTSNode{
 
                 // get the selected node and update the intention and belief base
                 ArrayList<ActionNode> sChoices = sNode.selectAction;
-
                 for (ActionNode a : sChoices) {
                     biUpdate(a, cGraph, sBeliefs);
                 }
                 // add the choices of the new node to the list of choices
                 ca.addAll(sChoices);
-
-
                 // run beta simulations
                 for (int j = 0; j < beta; j++) {
                     //在选择的mcts点里进行模拟，得到一个值
@@ -199,13 +196,6 @@ public class MCTSNode extends BasicMCTSNode{
                 // add it as the child of this node
                 this.children.add(child);
             }
-//            else {//图现在运行节点的孩子是endNode
-//                ArrayList<ActionNode> ncs = new ArrayList<>();
-//                // create new MCTS node
-//                MCTSNode child = new MCTSNode(ncs);
-//                // add it as the child of this node
-//                this.children.add(child);
-//            }
         }
     }
 
@@ -236,10 +226,6 @@ public class MCTSNode extends BasicMCTSNode{
             sBeliefs.update(l);
         }
     }
-//
-//    private void biUpdate(Graph graph){
-//        graph.setRunCurrentNode(graph.getEndNode());
-//    }
 
     /**
      * @return the simulation rollouts

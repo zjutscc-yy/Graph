@@ -12,6 +12,7 @@ import structure.Node;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,11 +74,37 @@ public class WriteGraph {
         nodeElement.setAttribute(new Attribute("Id",String.valueOf(node.getId())));
 
         //node的子标签
+        writeAcievedGoal(node,nodeElement);
         writeCurSteps(node,nodeElement);
 
         //把node加到图里
         parent.addContent(nodeElement);
     }
+
+    private void writeAcievedGoal(Node node,Element parent){
+        Element achievedGoalElement = new Element("Achieved");
+
+        if (node.getAchievedGoal().size() == 0){
+            Element goalElement = new Element("AchievedGoal");
+            goalElement.setAttribute("Tlg_name", "null");
+            achievedGoalElement.addContent(goalElement);
+
+        }else {
+            for (GoalNode goalNode : node.getAchievedGoal()) {
+                writeGoal(goalNode, achievedGoalElement);
+            }
+        }
+        parent.addContent(achievedGoalElement);
+    }
+
+    private void writeGoal(GoalNode goalNode,Element parent){
+        Element goalElement = new Element("AchievedGoal");
+
+        goalElement.setAttribute("Tlg_name", goalNode.getName());
+
+        parent.addContent(goalElement);
+    }
+
 
     private void writeCurSteps(Node node,Element parent){
         Element currentStepsElement = new Element("currentSteps");

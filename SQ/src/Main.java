@@ -6,6 +6,8 @@ import environment.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
 import agent.*;
 
 
@@ -19,6 +21,7 @@ public class Main {
         double total = 0;
         int type;
         int testNum;
+        List<Integer> resultList = new ArrayList<>();
 
         String gptFilePath;
         XMLReader reader;
@@ -79,7 +82,6 @@ public class Main {
             System.out.println(environment.onPrint());
             System.out.println("--------------------------------------------------------");
 
-
             // build the agent
             ArrayList<Belief> bs = new ArrayList<>();
             for (Literal l : literals) {
@@ -120,6 +122,7 @@ public class Main {
             }
             // check the number of goals achieved
             System.out.println(agent.getNumAchivedGoal());
+            resultList.add(agent.getNumAchivedGoal());
             total += agent.getNumAchivedGoal();
 //            long end = System.currentTimeMillis();
 
@@ -128,11 +131,19 @@ public class Main {
 
 //            System.out.println("程序运行时间" + (end - startTime));
         }
+        int x = 0;
+        for (int i = 0; i < resultList.size(); i++) {
+            x += resultList.get(i);
+        }
+        System.out.println(resultList);
+        System.out.println("一共测试" + testNum + "次");
+        double averageAchieveGoal = x / (double)resultList.size();
+        System.out.println("平均实现目标数：" + averageAchieveGoal);
 
     }
 
     static boolean isTimeEnd(){
-        return (startTime+2400 > System.currentTimeMillis());
+        return (startTime+5000 > System.currentTimeMillis());
     }
 
 }
