@@ -54,7 +54,7 @@ public class Main {
         Simulator simulator = new Simulator();
 
         for (int m = 0; m < testNum; m++) {
-
+            startTime = System.currentTimeMillis();
             try {
                 reader = new XMLReader(gptFilePath);
             } catch (Exception e) {
@@ -139,11 +139,9 @@ public class Main {
         System.out.println("一共测试" + testNum + "次");
         double averageAchieveGoal = x / (double)resultList.size();
         System.out.println("平均实现目标数：" + averageAchieveGoal);
-
     }
 
     static boolean isTimeEnd(){
-        return (startTime+5000 > System.currentTimeMillis());
+        return (startTime + 27000 > System.currentTimeMillis());
     }
-
 }

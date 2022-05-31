@@ -58,96 +58,99 @@ public class MCTSNode extends BasicMCTSNode{
 
     @Override
     public void run(int alpha, int beta) {
+        startTime = System.currentTimeMillis();
 
         for (int i = 0; i < alpha; i++) {
-            simNum += beta;
+//            if (isTimeEnd()) {
+                simNum += beta;
 
-            //每次迭代 选择过的节点
-            List<MCTSNode> visited = new LinkedList<>();
+                //每次迭代 选择过的节点
+                List<MCTSNode> visited = new LinkedList<>();
 
-            //记录到目前为止做的选择，模拟的选择
-            ArrayList<ActionNode> ca = new ArrayList<>();
+                //记录到目前为止做的选择，模拟的选择
+                ArrayList<ActionNode> ca = new ArrayList<>();
 
-            // 复制图
-            Graph cGraph = new Graph();
-            cGraph = bigGraph.clone();
+                // 复制图
+                Graph cGraph = new Graph();
+                cGraph = bigGraph.clone();
 
-            BeliefBaseImp sBeliefs = beliefs.clone();
+                BeliefBaseImp sBeliefs = beliefs.clone();
 
-            // start from the root node
-            MCTSNode current = this;
+                // start from the root node
+                MCTSNode current = this;
 
-            // add the root node to the list of visited node
-            visited.add(current);
-            // the root node does not contain any choices, thus we ignore this process
-
-            // selection：在叶子节点中选择UCT值最大的   current不是叶子节点
-            while (!current.isLeaf()) {
-                // the current node is set to its child node which has the largest UCT value
-                current = current.select();
-                // once a node is selected, its choices are also added to the list
-                ca.addAll(current.selectAction);
-                // the selected node is also added to the list of visited nodes
+                // add the root node to the list of visited node
                 visited.add(current);
-            }
+                // the root node does not contain any choices, thus we ignore this process
 
-            for (ActionNode actionNode : ca) {
-                biUpdate(actionNode, cGraph, sBeliefs);
-            }
+                // selection：在叶子节点中选择UCT值最大的   current不是叶子节点
+                while (!current.isLeaf()) {
+                    // the current node is set to its child node which has the largest UCT value
+                    current = current.select();
+                    // once a node is selected, its choices are also added to the list
+                    ca.addAll(current.selectAction);
+                    // the selected node is also added to the list of visited nodes
+                    visited.add(current);
+                }
+
+                for (ActionNode actionNode : ca) {
+                    biUpdate(actionNode, cGraph, sBeliefs);
+                }
 
 
-            /**
-             * expansion
-             */
-            current.expand(cGraph, sBeliefs);
+                /**
+                 * expansion
+                 */
+                current.expand(cGraph, sBeliefs);
 
-            /**
-             * 这里面包含了选择
-             *simulation
-             */
-            if (current != null && !current.isLeaf()) {
-                // randomly select a node for simulation
-                MCTSNode sNode = null;
-                double max = 0;
-                //扩展后的随机选择
-                for (MCTSNode n : current.children) {
-                    double randomValue = rm.nextDouble();
-                    if (randomValue > max) {
-                        max = randomValue;
-                        sNode = n;
+                /**
+                 * 这里面包含了选择
+                 *simulation
+                 */
+                if (current != null && !current.isLeaf()) {
+                    // randomly select a node for simulation
+                    MCTSNode sNode = null;
+                    double max = 0;
+                    //扩展后的随机选择
+                    for (MCTSNode n : current.children) {
+                        double randomValue = rm.nextDouble();
+                        if (randomValue > max) {
+                            max = randomValue;
+                            sNode = n;
+                        }
+                    }
+
+                    // get the selected node and update the intention and belief base
+                    ArrayList<ActionNode> sChoices = sNode.selectAction;
+                    for (ActionNode a : sChoices) {
+                        biUpdate(a, cGraph, sBeliefs);
+                    }
+                    // add the choices of the new node to the list of choices
+                    ca.addAll(sChoices);
+                    // run beta simulations
+                    for (int j = 0; j < beta; j++) {
+                        //在选择的mcts点里进行模拟，得到一个值
+                        double sValue = sNode.rollOut(cGraph, sBeliefs, ca);
+                        /**
+                         * back-propagation 把上述的得到的值，更新
+                         */
+                        for (MCTSNode node : visited) {
+                            node.statistic.addValue(sValue);
+                        }
                     }
                 }
 
-                // get the selected node and update the intention and belief base
-                ArrayList<ActionNode> sChoices = sNode.selectAction;
-                for (ActionNode a : sChoices) {
-                    biUpdate(a, cGraph, sBeliefs);
-                }
-                // add the choices of the new node to the list of choices
-                ca.addAll(sChoices);
-                // run beta simulations
-                for (int j = 0; j < beta; j++) {
-                    //在选择的mcts点里进行模拟，得到一个值
-                    double sValue = sNode.rollOut(cGraph, sBeliefs, ca);
+                // if it is a leaf node
+                else if (current.isLeaf()) {
+                    // check the number of goals achieved
+                    double sValue = current.getAchievedNum();
                     /**
-                     * back-propagation 把上述的得到的值，更新
+                     * back-propagation
                      */
                     for (MCTSNode node : visited) {
                         node.statistic.addValue(sValue);
                     }
-                }
-            }
-
-            // if it is a leaf node
-            else if (current.isLeaf()) {
-                // check the number of goals achieved
-                double sValue = current.getAchievedNum();
-                /**
-                 * back-propagation
-                 */
-                for (MCTSNode node : visited) {
-                    node.statistic.addValue(sValue);
-                }
+//                }
             }
         }
     }

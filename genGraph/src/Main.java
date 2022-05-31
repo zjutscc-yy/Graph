@@ -25,7 +25,7 @@ public class Main {
         //读图的xml文件
         String gptPath = "F:\\project\\gpt\\5.xml";
         //图的路径
-        String path ="F:\\project\\graph\\graph5.10.xml";
+        String path ="F:\\project\\graph\\graph5.5.xml";
         ReadGraph read = new ReadGraph(path,gptPath);
 
         Graph readGraph = read.translate(path);
@@ -50,6 +50,7 @@ public class Main {
 
 
         for (int m = 0; m < testNum; m++) {
+            startTime = System.currentTimeMillis();
             readGraph.setRunCurrentNode(readGraph.getRoot());
             // get the list of literals in the environment
             ArrayList<Literal> literals = reader.getLiterals();
@@ -104,7 +105,7 @@ public class Main {
     }
 
     static boolean isTimeEnd(){
-        return (startTime+2400 > System.currentTimeMillis());
+        return (startTime+27000 > System.currentTimeMillis());
     }
 }
 

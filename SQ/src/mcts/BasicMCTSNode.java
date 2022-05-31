@@ -26,6 +26,8 @@ public class BasicMCTSNode {
     // best simulation result
     static double bResult;
 
+    static long startTime = System.currentTimeMillis();
+
     public static int simNum = 0;
 
     /**
@@ -99,6 +101,11 @@ public class BasicMCTSNode {
         return children.size();
     }
 
+
+//    public boolean isTimeEnd(){
+//        return (startTime + 300 > System.currentTimeMillis());
+//    }
+
     /**
      * The process of iteratively building the MCTS search trees
      * @param alpha the number of iteration
@@ -106,110 +113,110 @@ public class BasicMCTSNode {
      */
     public void run(int alpha, int beta){
 
+        startTime = System.currentTimeMillis();
         // run alpha iterations
-        for(int i = 0; i < alpha; i++){
+        for(int i = 0; i < alpha; i++) {
+//            if (isTimeEnd()) {
+                simNum += beta;
 
-            simNum += beta;
+                // in each iteration, we record the list of nodes that have been visited
+                List<BasicMCTSNode> visited = new LinkedList<>();
+                // we also record the choices made so far
+                ArrayList<Choice> cs = new ArrayList<>();
 
-            // in each iteration, we record the list of nodes that have been visited
-            List<BasicMCTSNode> visited = new LinkedList<>();
-            // we also record the choices made so far
-            ArrayList<Choice> cs = new ArrayList<>();
-
-            // copy the current intentions
-            GoalPlanTree[] sGPTs = new GoalPlanTree[gpts.length];
-            for(int x = 0; x < gpts.length; x++){
-                sGPTs[x] = gpts[x].clone();
-            }
-            // copy the current belief base
-            BeliefBaseImp sBeliefs = beliefs.clone();
-
-
-            // start from the root node
-            BasicMCTSNode current = this;
-            // add the root node to the list of visited node
-            visited.add(current);
-            // the root node does not contain any choices, thus we ignore this process
+                // copy the current intentions
+                GoalPlanTree[] sGPTs = new GoalPlanTree[gpts.length];
+                for (int x = 0; x < gpts.length; x++) {
+                    sGPTs[x] = gpts[x].clone();
+                }
+                // copy the current belief base
+                BeliefBaseImp sBeliefs = beliefs.clone();
 
 
-            /**
-             * selection phase: find a leaf node that has the largest UCT value
-             */
-            while (!current.isLeaf()){
-                // the current node is set to its child node which has the largest UCT value
-                current = current.select();
-                // once a node is selected, its choices are also added to the list
-                cs.addAll(current.choices);
-                // the selected node is also added to the list of visited nodes
+                // start from the root node
+                BasicMCTSNode current = this;
+                // add the root node to the list of visited node
                 visited.add(current);
-            }
-            // get the intention and belief bases after these choices
-            for(Choice c : cs){
-                biUpdate(c, sGPTs, sBeliefs);
-                //System.out.println("Test: (" + c.intentionChoice + "," + c.planChoice + ")");
-            }
-            //System.out.println("---------------------------------------------------------------");
+                // the root node does not contain any choices, thus we ignore this process
 
 
+                /**
+                 * selection phase: find a leaf node that has the largest UCT value
+                 */
+                while (!current.isLeaf()) {
+                    // the current node is set to its child node which has the largest UCT value
+                    current = current.select();
+                    // once a node is selected, its choices are also added to the list
+                    cs.addAll(current.choices);
+                    // the selected node is also added to the list of visited nodes
+                    visited.add(current);
+                }
+                // get the intention and belief bases after these choices
+                for (Choice c : cs) {
+                    biUpdate(c, sGPTs, sBeliefs);
+                    //System.out.println("Test: (" + c.intentionChoice + "," + c.planChoice + ")");
+                }
+                //System.out.println("---------------------------------------------------------------");
 
 
-            /**
-             * expansion phase: expand the selected node by adding all its possible child nodes
-             */
-            current.expand(sGPTs, sBeliefs);
+                /**
+                 * expansion phase: expand the selected node by adding all its possible child nodes
+                 */
+                current.expand(sGPTs, sBeliefs);
 
-            /**
-             * simulation phase: select one of the newly created node for simulation
-             */
+                /**
+                 * simulation phase: select one of the newly created node for simulation
+                 */
 
 
-            if(current != null && !current.isLeaf()){
-                // randomly select a node for simulation
-                BasicMCTSNode sNode = null;
-                double max = 0;
-                for(BasicMCTSNode n : current.children){
-                    double randomValue = rm.nextDouble();
-                    if(randomValue > max){
-                        max = randomValue;
-                        sNode = n;
+                if (current != null && !current.isLeaf()) {
+                    // randomly select a node for simulation
+                    BasicMCTSNode sNode = null;
+                    double max = 0;
+                    for (BasicMCTSNode n : current.children) {
+                        double randomValue = rm.nextDouble();
+                        if (randomValue > max) {
+                            max = randomValue;
+                            sNode = n;
+                        }
                     }
+
+                    // get the selected node and update the intention and belief base
+                    ArrayList<Choice> sChoices = sNode.choices;
+
+                    for (Choice c : sChoices) {
+                        biUpdate(c, sGPTs, sBeliefs);
+                    }
+
+                    // add the choices of the new node to the list of choices
+                    cs.addAll(sChoices);
+
+                    // run beta simulations
+                    for (int j = 0; j < beta; j++) {
+                        double sValue = sNode.rollOut(sGPTs, sBeliefs, cs);
+                        /**
+                         * back-propagation
+                         */
+                        for (BasicMCTSNode node : visited) {
+                            node.statistic.addValue(sValue);
+                        }
+                    }
+
+
                 }
-
-                // get the selected node and update the intention and belief base
-                ArrayList<Choice> sChoices = sNode.choices;
-
-                for(Choice c : sChoices){
-                    biUpdate(c,sGPTs,sBeliefs);
-                }
-
-                // add the choices of the new node to the list of choices
-                cs.addAll(sChoices);
-
-                // run beta simulations
-                for(int j = 0; j < beta; j++){
-                    double sValue = sNode.rollOut(sGPTs, sBeliefs, cs);
+                // if it is a leaf node
+                else if (!current.isLeaf()) {
+                    // check the number of goals achieved
+                    double sValue = current.getAchievedNum();
                     /**
                      * back-propagation
                      */
-                    for(BasicMCTSNode node : visited){
+                    for (BasicMCTSNode node : visited) {
                         node.statistic.addValue(sValue);
                     }
                 }
-
-
             }
-            // if it is a leaf node
-            else if(!current.isLeaf()){
-                // check the number of goals achieved
-                double sValue = current.getAchievedNum();
-                /**
-                 * back-propagation
-                 */
-                for(BasicMCTSNode node : visited){
-                    node.statistic.addValue(sValue);
-                }
-            }
-        }
+//        }
     }
 
     /**

@@ -18,7 +18,7 @@ public class MCTSAgent extends AbstractAgent{
     // to record the best simulation result
     double bestResult = -1;
     // alpha and beta are set to 100 and 50 respectively by default
-    int alpha = 100000;
+    int alpha = 100;
     int beta = 10;
 
     /**
@@ -53,7 +53,6 @@ public class MCTSAgent extends AbstractAgent{
     @Override
     public boolean deliberate() {
         BasicMCTSNode root = new BasicMCTSNode(this.intentions, this.bb);
-        long start = System.currentTimeMillis();
         // run mcts
         root.run(alpha, beta);
 

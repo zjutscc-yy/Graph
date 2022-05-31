@@ -23,8 +23,8 @@ public class GraphAgent extends AbstractAgent{
     // to record the best simulation result
     double bestResult = -1;
     // alpha and beta are set to 100 and 50 respectively by default
-    int alpha = 1;
-    int beta = 1;
+    int alpha = 100;
+    int beta = 10;
 
     /**
      * 构造器
