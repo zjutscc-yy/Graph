@@ -28,6 +28,10 @@ public class Literal implements Cloneable{
      */
     public boolean getState(){return this.state;}
 
+    public void setState(boolean state) {
+        this.state = state;
+    }
+
     /**
      * check if this condition and the given condition are describing the same thing
      * @param o the given object

@@ -37,9 +37,9 @@ import org.jdom2.output.XMLOutputter;
 /**
  * @version 2.1
  */
-class XMLWriter
+public class XMLWriter
 {	
-	XMLWriter()
+	public XMLWriter()
 	{
 	}
 
@@ -49,7 +49,7 @@ class XMLWriter
 	 * @param goalForests The GPT forest
 	 * @param path The file to write to
 	 */
-	void CreateXML(HashMap<String, Literal> environment, ArrayList<GoalNode> goalForests, String path) {
+	public void CreateXML(HashMap<String, Literal> environment, ArrayList<GoalNode> goalForests, String path) {
 		try
 		{
 			Element forest = new Element("Forest");

@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="SQ" />
     <orderEntry type="library" name="org.jdom:jdom2:2.0.6" level="project" />
+    <orderEntry type="module" module-name="genGPT" />
   </component>
 </module>
