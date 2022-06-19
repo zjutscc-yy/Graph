@@ -31,47 +31,55 @@ public class Main {
         }catch (IOException ioe){
             System.out.println("io异常");
         }
-        //修改文件
-        int environmentIndex = 0;
-        boolean needEditFlag = false;
-        Random rd = new Random();
-        for (int i = 0; i < fileCon.size(); i++) {
-            if (fileCon.get(i).contains("Literal")){
-                // 如果文件某一行含有 Literal ，说明该行是environment 判断是否修改
-                //先随便大概修改30个environment 的状态
 
-                //判断是否需要修改
-                needEditFlag = rd.nextDouble()<0.3;
-                if (needEditFlag){
-                    //需要修改这一行
-                    //根据initVal把这一行分成两部分
-                    String[] arrTemp = fileCon.get(i).split("initVal");
-                    if (arrTemp[1].contains("true")){
-                        arrTemp[1] = arrTemp[1].replace("true","false");
-                    }else{
-                        arrTemp[1] = arrTemp[1].replace("false","true");
+        //上面读取了文件,下面就是修改和生成
+        String newPath = "F:\\project\\gpt\\gen5_Graph0.1\\5.";   //生成的文件的名字
+
+        for (int i = 0; i < 10; i++) {
+            List<String> newArr = fileCon;
+            //修改文件
+            int environmentIndex = 0;
+            boolean needEditFlag = false;
+            Random rd = new Random();
+            for (int j = 0; j < newArr.size(); j++) {
+                if (newArr.get(j).contains("Literal") && !newArr.get(j).contains("G-")){
+                    // 如果文件某一行含有 Literal ，说明该行是environment 判断是否修改
+                    //先随便大概修改30个environment 的状态
+                    //判断是否需要修改
+                    needEditFlag = rd.nextDouble()<0.1;
+                    if (needEditFlag){
+                        //需要修改这一行
+                        //根据initVal把这一行分成两部分
+                        String[] arrTemp = newArr.get(j).split("initVal");
+                        if (arrTemp[1].contains("true")){
+                            arrTemp[1] = arrTemp[1].replace("true","false");
+                        }else{
+                            arrTemp[1] = arrTemp[1].replace("false","true");
+                        }
+                        // 上面把字符串换完了，之后把字符串写回去
+                        newArr.set(j,arrTemp[0]+"initVal"+arrTemp[1]);
                     }
-                    // 上面把字符串换完了，之后把字符串写回去
-                    fileCon.set(i,arrTemp[0]+"initVal"+arrTemp[1]);
                 }
             }
-        }
-        //存储文件
-        System.out.println("修改环境结束");
+            //存储文件
+            System.out.println("修改环境结束");
 
-        String newPath = "F:\\project\\gpt\\gen5_Graph\\5.2.xml";
-        File newFile = new File(newPath);
-        try {
-            newFile.createNewFile();
-            BufferedWriter bw = new BufferedWriter(new FileWriter(newFile));
-            for (int i = 0; i < fileCon.size(); i++) {
-                bw.write(fileCon.get(i)+"\r\n");    // 这里的r和n是换行
+
+            File newFile = new File(newPath+(i+66)+".xml");
+            try {
+                newFile.createNewFile();
+                BufferedWriter bw = new BufferedWriter(new FileWriter(newFile));
+                for (int j = 0; j < newArr.size(); j++) {
+                    bw.write(newArr.get(j)+"\r\n");    // 这里的r和n是换行
+                }
+                bw.flush();
+                bw.close();
+            }catch (IOException ioe){
+                System.out.println("ioe");
             }
-            bw.flush();
-            bw.close();
-        }catch (IOException ioe){
-            System.out.println("ioe");
         }
+
+
 
         //获取原本环境变量
 //        XMLReader reader = new XMLReader(gptPath);

@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractEnvironment {
@@ -146,9 +147,9 @@ public abstract class AbstractEnvironment {
         // for all the agents, run one cycle
 
         // 创建文件接收action
-//        File actionPath1 = new File("F:\\project\\SQ-MCTS\\genGraph\\actions10.txt");
+        File actionPath1 = new File("F:\\project\\paths\\actions6.txt");
         //把action结果输出到file中
-//        FileWriter actionPath  = new FileWriter("actions10.txt",true);
+        FileWriter actionPath  = new FileWriter("actions6.txt",true);
 
         for(AbstractAgent a: agents){
 
@@ -171,9 +172,8 @@ public abstract class AbstractEnvironment {
 
                 System.out.println(act == null? "null": act.getName());
 
-//                actionPath.append(act.getName());
-//                actionPath.append("\n");
-
+                actionPath.append(act.getName());
+                actionPath.append("\n");
                 // if an action is selected for execution
                 if(act != null){
                     // apply the action to the environment and get the execution result
@@ -193,10 +193,11 @@ public abstract class AbstractEnvironment {
 
             }
         }
+
         // the environment changes after all agents executed their actions
         //envChange();
 
-//        actionPath.close();
+        actionPath.close();
 
         return !stoped;
     }

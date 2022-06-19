@@ -23,9 +23,10 @@ public class Main {
          * 读生成的图
          */
         //读图的xml文件
-        String gptPath = "F:\\project\\gpt\\5.xml";
+        String gptPath = "F:\\project\\gpt\\gen5_Graph0.3\\5.50.xml";
+//        String gptPath = "F:\\project\\gpt\\5.xml";
         //图的路径
-        String path ="F:\\project\\graph\\graph5.5.xml";
+        String path ="F:\\project\\graph\\graph5_0.3.xml";
         ReadGraph read = new ReadGraph(path,gptPath);
 
         Graph readGraph = read.translate(path);

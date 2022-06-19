@@ -185,19 +185,22 @@ public class MCTSNode extends BasicMCTSNode{
     private void expand(Graph graph, BeliefBaseImp sbeliefs){
         //获取图现在运行的哪一步
         Node cStep = graph.getRunCurrentNode();
-
         //得到每个孩子对应做了哪个动作
         for (Node node : cStep.getChildNode()) {
             if (Node.getDifferentAction(cStep,node) != null) {
                 ActionNode act = Node.getDifferentAction(cStep, node);
+                // get its precondition
+                Literal[] prec = act.getPrec();
+                // if the precondition holds
+                if (sbeliefs.evaluate(prec) == 1){
+                    ArrayList<ActionNode> ncs = new ArrayList<>();
+                    ncs.add(act);
+                    // create new MCTS node
+                    MCTSNode child = new MCTSNode(ncs);
+                    // add it as the child of this node
+                    this.children.add(child);
+                }
 
-                ArrayList<ActionNode> ncs = new ArrayList<>();
-
-                ncs.add(act);
-                // create new MCTS node
-                MCTSNode child = new MCTSNode(ncs);
-                // add it as the child of this node
-                this.children.add(child);
             }
         }
     }
