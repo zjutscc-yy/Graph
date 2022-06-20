@@ -8,11 +8,35 @@ import xml2bdi.XMLReader;
 import java.io.*;
 import java.util.*;
 
+/**
+ * 改变环境变量
+ * 1.原本的gpt路径
+ * 2.修改环境变量的概率
+ * 3.生成xml文件个数
+ *
+ * 以上在config中修改
+ *
+ * 修改后的xml文件放置路径（在main中修改）
+ */
+
 public class Main {
     public static void main(String[] args) {
-        String gptPath = "F:\\project\\gpt\\5.xml";
+        String gptFilePath;
+        double rate;
+        int genAmount;
+
+        if (args.length == 0) {
+            System.out.println("ERROR: no GPT file specified!");
+            return;
+        }
+        gptFilePath = args[0];
+
+        rate = Double.valueOf(args[1]);
+
+        genAmount = Integer.parseInt(args[2]);
+
         //读取文件
-        File sourceFile = new File(gptPath);
+        File sourceFile = new File(gptFilePath);
         String line = "";
         List<String> fileCon = new ArrayList<>();
         try{
@@ -35,7 +59,7 @@ public class Main {
         //上面读取了文件,下面就是修改和生成
         String newPath = "F:\\project\\gpt\\gen5_Graph0.1\\5.";   //生成的文件的名字
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < genAmount; i++) {
             List<String> newArr = fileCon;
             //修改文件
             int environmentIndex = 0;
@@ -46,7 +70,7 @@ public class Main {
                     // 如果文件某一行含有 Literal ，说明该行是environment 判断是否修改
                     //先随便大概修改30个environment 的状态
                     //判断是否需要修改
-                    needEditFlag = rd.nextDouble()<0.1;
+                    needEditFlag = rd.nextDouble() < rate;
                     if (needEditFlag){
                         //需要修改这一行
                         //根据initVal把这一行分成两部分

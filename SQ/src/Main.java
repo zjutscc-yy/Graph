@@ -4,23 +4,27 @@ import simulation.Simulator;
 import xml2bdi.XMLReader;
 import environment.*;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import agent.*;
 
+/**
+ * 需要的参数为
+ * 1.跑的哪颗树
+ * 2.智能体类型
+ * 3.测试次数
+ *
+ * 以上都在config中修改
+ *
+ * 记得不需写入txt文件
+ */
 
 public class Main {
-
     static long startTime = System.currentTimeMillis();
 
     public static void main(String[] args) throws IOException {
-
-//        List<File> fileList = getFileList("tarDir");
-        //for循环file列表
 
 //        startTime = System.currentTimeMillis();
 //        long startAll = System.currentTimeMillis();
@@ -136,13 +140,15 @@ public class Main {
 //            System.out.println("程序运行时间" + (endAll - startAll));
 
 //            System.out.println("程序运行时间" + (end - startTime));
-            FileWriter actionPath  = new FileWriter("actions6.txt",true);
-            if (m != testNum - 1){
-                actionPath.append("//");
-                actionPath.append("\n");
-                actionPath.append("\n");
-            }
-            actionPath.close();
+
+            //往哪个文件写action序列
+//            FileWriter actionPath  = new FileWriter("actions6.txt",true);
+//            if (m != testNum - 1){
+//                actionPath.append("//");
+//                actionPath.append("\n");
+//                actionPath.append("\n");
+//            }
+//            actionPath.close();
 
         }
         int x = 0;
@@ -153,33 +159,6 @@ public class Main {
         System.out.println("一共测试" + testNum + "次");
         double averageAchieveGoal = x / (double) resultList.size();
         System.out.println("平均实现目标数：" + averageAchieveGoal);
-    }
-
-    static boolean isTimeEnd() {
-        return (startTime + 27000 > System.currentTimeMillis());
-    }
-
-
-    /**
-     * 获取文件夹下的文件列表
-     *
-     * @param dirStr 文件夹的路径
-     * @return
-     */
-    public static List<File> getFileList(String dirStr) {
-        //if istxt
-        List<File> sourceList = new ArrayList<>();
-        List<File> resultList = new ArrayList<>();
-        for (int i = 0; i < sourceList.size(); i++) {
-            if (sourceList.get(i).isFile()) {
-                if (sourceList.get(i).getName().contains("txt")) {
-                    System.out.println(sourceList.get(i).getName());
-                } else {
-                    resultList.add(sourceList.get(i));
-                }
-            }
-        }
-        return resultList;
     }
 }
 

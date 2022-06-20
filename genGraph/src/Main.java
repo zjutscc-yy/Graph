@@ -14,6 +14,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * 跑生成的图
+ * 1.树的xml路径
+ * 2.图的xml路径（记得修改GraphAgent中的alpha，beta）
+ *
+ * 以上在main中修改（记得不需要写入txt文件）
+ *
+ * 测试个数在config中修改
+ */
+
 public class Main {
     static long startTime = System.currentTimeMillis();
     public static void main(String[] args) throws Exception {
@@ -22,7 +32,7 @@ public class Main {
         /**
          * 读生成的图
          */
-        //读图的xml文件
+        //读树的xml文件
         String gptPath = "F:\\project\\gpt\\gen5_Graph0.3\\5.50.xml";
 //        String gptPath = "F:\\project\\gpt\\5.xml";
         //图的路径
