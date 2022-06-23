@@ -57,7 +57,7 @@ public class Main {
         }
 
         //上面读取了文件,下面就是修改和生成
-        String newPath = "F:\\project\\gpt\\gen5_Graph0.1\\5.";   //生成的文件的名字
+        String newPath = "F:\\project\\gpt\\gen51_Test0.1\\5.";   //生成的文件的名字
 
         for (int i = 0; i < genAmount; i++) {
             List<String> newArr = fileCon;
@@ -89,7 +89,7 @@ public class Main {
             System.out.println("修改环境结束");
 
 
-            File newFile = new File(newPath+(i+66)+".xml");
+            File newFile = new File(newPath+(i+1)+".xml");
             try {
                 newFile.createNewFile();
                 BufferedWriter bw = new BufferedWriter(new FileWriter(newFile));

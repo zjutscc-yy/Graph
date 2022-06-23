@@ -19,7 +19,7 @@ public class ReadFile {
     /**
      * 第0条路径里面T15对应的最后一个节点的index为 AllPathTIndex[0][14]
      */
-    private int AllPathTIndex[][] = new int[150][10];
+    private int AllPathTIndex[][] = new int[1500][10];
     private int TFlag = 0;//作用域有限
     private Long fileSize = 0l;
 
@@ -296,9 +296,9 @@ public class ReadFile {
     public void writeUml(Graph graph) throws IOException {
 
         //把节点和边保存到txt文件中
-        File graphFile = new File("F:\\project\\SQ-MCTS\\genGraph\\graphView5_0.1.txt");
+        File graphFile = new File("F:\\project\\SQ-MCTS\\genGraph\\graphView51_0.1.txt");
 
-        FileWriter newFile = new FileWriter("graphView5_0.1.txt", true);
+        FileWriter newFile = new FileWriter("graphView51_0.1.txt", true);
 
         newFile.append("@startuml\n\n")
                 .append("digraph ").append("graph1").append(" {\n");

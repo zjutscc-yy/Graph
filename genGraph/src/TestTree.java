@@ -1,32 +1,34 @@
-
-import goalplantree.*;
+import agent.*;
+import environment.SynthEnvironment;
+import goalplantree.GoalNode;
+import goalplantree.Literal;
 import simulation.Simulator;
 import xml2bdi.XMLReader;
-import environment.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import agent.*;
-
 /**
- * 需要的参数
+ * 对完全陌生的环境进行跑树测试
+ *
+ * 需要的参数为
  * 1.文件夹路径（遍历）  main
  * 2.智能体类型  config
  * 3.每个文件测试次数  config
  *
- * 记得需要写入txt文件
+ * 记得不需写入txt文件
  */
 
-public class Main1 {
+public class TestTree {
     static boolean isFirst = true;
     static long startTime = System.currentTimeMillis();
 
     public static void main(String[] args) throws IOException {
 
-        List<File> fileList = getFileList("F:\\project\\gpt\\gen51_Graph0.1");
+        List<File> fileList = getFileList("F:\\project\\gpt\\gen51_Test0.1");
 
 //        startTime = System.currentTimeMillis();
 //        long startAll = System.currentTimeMillis();
@@ -129,15 +131,9 @@ public class Main1 {
                     running = environment.run();
                     step++;
                 }
-
-                if(agent.getNumAchivedGoal() != tlgs.size()){
-                    reWriteFileEnd("F:\\project\\SQ-MCTS\\actions5_0.1.txt");
-                }else {
-                    resultList.add(agent.getNumAchivedGoal());
-                }
-
                 // check the number of goals achieved
                 System.out.println(agent.getNumAchivedGoal());
+                resultList.add(agent.getNumAchivedGoal());
                 total += agent.getNumAchivedGoal();
 //            long end = System.currentTimeMillis();
 
@@ -145,18 +141,6 @@ public class Main1 {
 //            System.out.println("程序运行时间" + (endAll - startAll));
 
 //            System.out.println("程序运行时间" + (end - startTime));
-                FileWriter actionPath  = new FileWriter("actions5_0.1.txt",true);
-
-                actionPath.append("//");
-                actionPath.append("\n");
-                actionPath.append("\n");
-                actionPath.close();
-
-                //对每个文件测试testNum次，一旦找到目标全部实现的，则再跑下一个xml文件
-                if (agent.getNumAchivedGoal() == 5){
-                    break;
-                }
-
             }
 
         }
@@ -165,7 +149,7 @@ public class Main1 {
             x += resultList.get(i);
         }
         System.out.println(resultList);
-        System.out.println("一共生成" + resultList.size() + "条路径");
+        System.out.println("一共测试了" + resultList.size() + "个陌生环境");
         double averageAchieveGoal = x / (double) resultList.size();
         System.out.println("平均实现目标数：" + averageAchieveGoal);
     }
@@ -203,48 +187,4 @@ public class Main1 {
         }
         return resultList;
     }
-
-    static void reWriteFileEnd(String sourceFilePath){
-        List<String> filecon = new ArrayList<>();
-//        if (isFirst){
-//
-//        }
-        //新建文件对象
-        File sourceFile = new File(sourceFilePath);
-        File newFile = new File(sourceFilePath+"test");
-        PrintWriter pw ;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(sourceFile));
-            pw = new PrintWriter(new FileWriter(newFile));
-            String nextLine = br.readLine();
-            while (nextLine!=null){
-                //读取文件内容
-                filecon.add(nextLine);
-                nextLine = br.readLine();
-            }
-            br.close();
-            //找到最后一个双斜线
-            int lastIndex = filecon.lastIndexOf("//");
-            //把写入 // 之前的内容
-            for (int i = 0; i < lastIndex; i++) {
-                pw.print(filecon.get(i)+"\n");
-                pw.flush();
-            }
-            pw.flush();
-            pw.close();
-            //删除
-            sourceFile.delete();
-            //重命名
-            newFile.renameTo(sourceFile);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 }
-
-
-

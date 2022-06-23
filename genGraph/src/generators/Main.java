@@ -25,7 +25,7 @@ public class Main {
        bigGraph.traversalChildNode();
 
        //把生成的图保存为xml文件
-        String path ="F:\\project\\graph\\graph5_0.1.xml";
+        String path ="F:\\project\\graph\\graph51_0.1.xml";
        WriteGraph wxf = new WriteGraph();
        wxf.CreateXML(bigGraph,path);
     }

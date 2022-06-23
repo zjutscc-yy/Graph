@@ -9,63 +9,51 @@ import structure.Graph;
 import xml.ReadGraph;
 import xml2bdi.XMLReader;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
- * 跑生成的图
- * 1.树的xml路径
- * 2.图的xml路径（记得修改GraphAgent中的alpha，beta）
+ * 对完全陌生的环境进行跑图测试
  *
- * 以上在main中修改（记得不需要写入txt文件）
+ * 需要的参数为
+ * 1.测试环境所在文件夹路径（遍历）  main
+ * 2.图的路径 main
+ * 3.原本树的路径 main
  *
- * 测试个数在config中修改
+ * 记得不需写入txt文件
  */
 
-public class Main {
-    static long startTime = System.currentTimeMillis();
+public class TestGraph {
     public static void main(String[] args) throws Exception {
-//        startTime = System.currentTimeMillis();
-//        long startAll = System.currentTimeMillis();
-        /**
-         * 读生成的图
-         */
-        //读树的xml文件
-//        String gptPath = "F:\\project\\gpt\\gen5_Graph0.1\\5.505.xml";
-        String gptPath = "F:\\project\\gpt\\gen51_Test0.1\\5.15.xml";
-//        String gptPath = "F:\\project\\gpt\\5.xml";
+        List<File> fileList = getFileList("F:\\project\\gpt\\gen51_Test0.1");
         //图的路径
-        String path ="F:\\project\\graph\\graph51_0.1.xml";
-        ReadGraph read = new ReadGraph(path,gptPath);
-
-        Graph readGraph = read.translate(path);
-
-        /**
-         * mcts跑图
-         */
+        String graphPath = "F:\\project\\graph\\graph51_0.1.xml";
+        //原本树的路径
+        String gptPath = "F:\\project\\gpt\\51.xml";
         double total = 0;
-        int testNum;
         List<Integer> resultList = new ArrayList<>();
 
-        try{
-            testNum = Integer.parseInt(args[0]);
-        }catch (Exception e){
-            testNum = 10;
-        }
 
         XMLReader reader;
-        reader = new XMLReader(gptPath);
+        String testGptPath;
 
-        Simulator simulator = new Simulator();
+        //得到图
+        ReadGraph read = new ReadGraph(graphPath,gptPath);
+        Graph readGraph = read.translate(graphPath);
 
+        for (int j = 0; j < fileList.size(); j++) {
 
-        for (int m = 0; m < testNum; m++) {
-            startTime = System.currentTimeMillis();
+            testGptPath = fileList.get(j).getPath();
             readGraph.setRunCurrentNode(readGraph.getRoot());
+
+            Simulator simulator = new Simulator();
+
+            reader = new XMLReader(testGptPath);
+
             // get the list of literals in the environment
             ArrayList<Literal> literals = reader.getLiterals();
-            // get the list of goals
-            ArrayList<GoalNode> tlgs = reader.getTlgs();
 
             // build the environment
             SynthEnvironment environment = new SynthEnvironment(literals, 0);
@@ -80,13 +68,9 @@ public class Main {
 
             AbstractAgent agent = new GraphAgent("Graph-Agent", bs, readGraph);
 
-
             environment.addAgent(agent);
 
             boolean running = true;
-
-//        startTime = System.currentTimeMillis();
-//        long startAll = System.currentTimeMillis();
             int step = 1;
             while (running) {
                 System.out.println("---------------------step " + step + "------------------------------");
@@ -94,28 +78,46 @@ public class Main {
                 step++;
             }
             // check the number of goals achieved
-            System.out.println("实现目标个数:"+agent.getNumAchivedGoal());
+            System.out.println("实现目标个数:" + agent.getNumAchivedGoal());
             resultList.add(agent.getNumAchivedGoal());
             total += agent.getNumAchivedGoal();
-//        long end = System.currentTimeMillis();
-
-//        long endAll = System.currentTimeMillis();
-//        System.out.println("总的程序运行时间" + (endAll - startAll));
-
-//        System.out.println("程序运行时间" + (end - startTime));
         }
         int x = 0;
         for (int i = 0; i < resultList.size(); i++) {
             x += resultList.get(i);
         }
         System.out.println(resultList);
-        System.out.println("一共测试" + testNum + "次");
+        System.out.println("一共测试了" + resultList.size() + "次");
         double averageAchieveGoal = x / (double)resultList.size();
         System.out.println("平均实现目标数：" + averageAchieveGoal);
     }
 
-    static boolean isTimeEnd(){
-        return (startTime+27000 > System.currentTimeMillis());
+    /**
+     * 获取文件夹下的文件列表
+     *
+     * @param dirStr 文件夹的路径
+     * @return
+     */
+    public static List<File> getFileList(String dirStr) {
+//        File dir = new File(dirStr);
+//        if (!dir.exists()){
+//            System.out.println("目录不存在");
+//        }
+
+        //if istxt
+        File file = new File(dirStr);
+        List<File> sourceList = Arrays.stream(file.listFiles()).toList();
+        List<File> resultList = new ArrayList<>();
+
+        for (int i = 0; i < sourceList.size(); i++) {
+            if (sourceList.get(i).isFile()) {
+                if (sourceList.get(i).getName().contains("txt")) {
+                    System.out.println(sourceList.get(i).getName());
+                } else {
+                    resultList.add(sourceList.get(i));
+                }
+            }
+        }
+        return resultList;
     }
 }
-

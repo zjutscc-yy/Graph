@@ -141,15 +141,6 @@ public class Main {
 
 //            System.out.println("程序运行时间" + (end - startTime));
 
-            //往哪个文件写action序列
-//            FileWriter actionPath  = new FileWriter("actions6.txt",true);
-//            if (m != testNum - 1){
-//                actionPath.append("//");
-//                actionPath.append("\n");
-//                actionPath.append("\n");
-//            }
-//            actionPath.close();
-
         }
         int x = 0;
         for (int i = 0; i < resultList.size(); i++) {
