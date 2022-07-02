@@ -296,9 +296,9 @@ public class ReadFile {
     public void writeUml(Graph graph) throws IOException {
 
         //把节点和边保存到txt文件中
-        File graphFile = new File("F:\\project\\SQ-MCTS\\genGraph\\graphView51_0.1.txt");
+        File graphFile = new File("F:\\project\\SQ-MCTS\\genGraph\\graphView120_0.05.txt");
 
-        FileWriter newFile = new FileWriter("graphView51_0.1.txt", true);
+        FileWriter newFile = new FileWriter("graphView120_0.05.txt", true);
 
         newFile.append("@startuml\n\n")
                 .append("digraph ").append("graph1").append(" {\n");

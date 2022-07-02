@@ -96,15 +96,6 @@ public class Node {
         return childNode;
     }
 
-    //读取生成的树的xml文件中的 top-leve goal
-//    public ArrayList<GoalNode> getGoalNodes(String fileName) {
-//        //读取goal-plan tree的xml文件
-//        XMLReader reader = new XMLReader(fileName);
-//        //获取多个目标的 top-level goal
-//        ArrayList<GoalNode> tlgs = reader.getTlgs();
-//        return tlgs;
-//    }
-
     public Node() {
     }
 

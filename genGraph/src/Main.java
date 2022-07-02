@@ -32,10 +32,10 @@ public class Main {
          */
         //读树的xml文件
 //        String gptPath = "F:\\project\\gpt\\gen5_Graph0.1\\5.505.xml";
-        String gptPath = "F:\\project\\gpt\\gen51_Test0.1\\5.15.xml";
+        String gptPath = "F:\\project\\gpt\\5.xml";
 //        String gptPath = "F:\\project\\gpt\\5.xml";
         //图的路径
-        String path ="F:\\project\\graph\\graph51_0.1.xml";
+        String path ="F:\\project\\graph\\graph5.xml";
         ReadGraph read = new ReadGraph(path,gptPath);
 
         Graph readGraph = read.translate(path);

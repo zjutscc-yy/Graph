@@ -23,10 +23,11 @@ import agent.*;
 public class Main1 {
     static boolean isFirst = true;
     static long startTime = System.currentTimeMillis();
+    static ArrayList<String> exeXML = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
 
-        List<File> fileList = getFileList("F:\\project\\gpt\\gen51_Graph0.1");
+        List<File> fileList = getFileList("F:\\project\\gpt\\gen120_0.05");
 
 //        startTime = System.currentTimeMillis();
 //        long startAll = System.currentTimeMillis();
@@ -131,7 +132,7 @@ public class Main1 {
                 }
 
                 if(agent.getNumAchivedGoal() != tlgs.size()){
-                    reWriteFileEnd("F:\\project\\SQ-MCTS\\actions5_0.1.txt");
+                    reWriteFileEnd("F:\\project\\SQ-MCTS\\actions120_0.05.txt");
                 }else {
                     resultList.add(agent.getNumAchivedGoal());
                 }
@@ -145,7 +146,7 @@ public class Main1 {
 //            System.out.println("程序运行时间" + (endAll - startAll));
 
 //            System.out.println("程序运行时间" + (end - startTime));
-                FileWriter actionPath  = new FileWriter("actions5_0.1.txt",true);
+                FileWriter actionPath  = new FileWriter("actions120_0.05.txt",true);
 
                 actionPath.append("//");
                 actionPath.append("\n");
@@ -154,6 +155,7 @@ public class Main1 {
 
                 //对每个文件测试testNum次，一旦找到目标全部实现的，则再跑下一个xml文件
                 if (agent.getNumAchivedGoal() == 5){
+                    exeXML.add(fileList.get(j).getName());
                     break;
                 }
 
@@ -168,6 +170,7 @@ public class Main1 {
         System.out.println("一共生成" + resultList.size() + "条路径");
         double averageAchieveGoal = x / (double) resultList.size();
         System.out.println("平均实现目标数：" + averageAchieveGoal);
+        System.out.println(exeXML);
     }
 
     static boolean isTimeEnd() {
