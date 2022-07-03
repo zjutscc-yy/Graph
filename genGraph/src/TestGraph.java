@@ -10,6 +10,7 @@ import xml.ReadGraph;
 import xml2bdi.XMLReader;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,11 +28,11 @@ import java.util.List;
 
 public class TestGraph {
     public static void main(String[] args) throws Exception {
-        List<File> fileList = getFileList("F:\\project\\gpt\\gen120_Test0.05");
+        List<File> fileList = getFileList("F:\\project\\gpt\\TestGraph_5_120_0.1");
         //图的路径
-        String graphPath = "F:\\project\\graph\\graph120_0.05.xml";
+        String graphPath = "F:\\project\\graph\\graph5_120_0.1_1000.xml";
         //原本树的路径
-        String gptPath = "F:\\project\\gpt\\120.xml";
+        String gptPath = "F:\\project\\gpt\\5_120.xml";
         double total = 0;
         List<Integer> resultList = new ArrayList<>();
 
@@ -81,6 +82,13 @@ public class TestGraph {
             System.out.println("实现目标个数:" + agent.getNumAchivedGoal());
             resultList.add(agent.getNumAchivedGoal());
             total += agent.getNumAchivedGoal();
+
+            FileWriter actionPath  = new FileWriter("actions_test.txt",true);
+
+            actionPath.append("//");
+            actionPath.append("\n");
+            actionPath.append("\n");
+            actionPath.close();
         }
         int x = 0;
         for (int i = 0; i < resultList.size(); i++) {

@@ -18,6 +18,7 @@ import agent.*;
  * 3.每个文件测试次数  config
  *
  * 记得需要写入txt文件
+ * main函数里的txt文件名也要改
  */
 
 public class Main1 {
@@ -27,7 +28,7 @@ public class Main1 {
 
     public static void main(String[] args) throws IOException {
 
-        List<File> fileList = getFileList("F:\\project\\gpt\\gen120_0.05");
+        List<File> fileList = getFileList("F:\\project\\gpt\\genGraph_5_120_0.1");
 
 //        startTime = System.currentTimeMillis();
 //        long startAll = System.currentTimeMillis();
@@ -132,7 +133,7 @@ public class Main1 {
                 }
 
                 if(agent.getNumAchivedGoal() != tlgs.size()){
-                    reWriteFileEnd("F:\\project\\SQ-MCTS\\actions120_0.05.txt");
+                    reWriteFileEnd("F:\\project\\SQ-MCTS\\actions5_120_0.1.txt");
                 }else {
                     resultList.add(agent.getNumAchivedGoal());
                 }
@@ -146,7 +147,7 @@ public class Main1 {
 //            System.out.println("程序运行时间" + (endAll - startAll));
 
 //            System.out.println("程序运行时间" + (end - startTime));
-                FileWriter actionPath  = new FileWriter("actions120_0.05.txt",true);
+                FileWriter actionPath  = new FileWriter("actions5_120_0.1.txt",true);
 
                 actionPath.append("//");
                 actionPath.append("\n");

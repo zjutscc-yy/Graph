@@ -5,6 +5,7 @@ import goalplantree.ActionNode;
 import goalplantree.GoalNode;
 import goalplantree.PlanNode;
 import goalplantree.TreeNode;
+import org.apache.commons.math3.ode.events.EventHandler;
 import xml2bdi.XMLReader;
 
 import java.util.*;
@@ -257,6 +258,8 @@ public class Node {
      * @return
      */
     public static ActionNode getDifferentAction(Node fnode, Node cnode) {
+        //存储父节点与子节点不同的action
+//        ArrayList<ActionNode> differAction = new ArrayList<>();
         //孩子节点的hashmap
         HashMap<GoalNode, TreeNode> nodeCurrentStep = cnode.getCurrentStep();
         //遍历父节点的curentStep
@@ -269,6 +272,7 @@ public class Node {
                         //返回孩子节点的那个动作
                         ActionNode act = (ActionNode) nodeCurrentStep.get(key);
                         return act;
+//                        differAction.add(act);
                     }
                 }
             }else {//如果父节点key对应的value为空
@@ -276,7 +280,6 @@ public class Node {
             }
         }
         return null;
+//        return differAction;
     }
-
-
 }
