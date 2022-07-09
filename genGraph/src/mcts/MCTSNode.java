@@ -1,7 +1,6 @@
 package mcts;
 
 import agent.BeliefBaseImp;
-import agent.Choice;
 import goalplantree.*;
 import structure.Graph;
 import structure.Node;
@@ -200,7 +199,6 @@ public class MCTSNode extends BasicMCTSNode{
                     // add it as the child of this node
                     this.children.add(child);
                 }
-
             }
         }
     }

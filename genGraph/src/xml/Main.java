@@ -69,7 +69,7 @@ public class Main {
         }
 
         //上面读取了文件,下面就是修改和生成
-        String newPath = "F:\\project\\gpt\\genGraph_5_120_0.1\\5.";   //生成的文件的名字
+        String newPath = "F:\\project\\gpt\\genGraph_5plus_120_0.1\\5.";   //生成的文件的名字
         changeNum = (int) (rate * envirNum);
 
         if (changeNum > absolutetEnv.size()) {

@@ -2,7 +2,6 @@ import agent.AbstractAgent;
 import agent.Belief;
 import agent.GraphAgent;
 import environment.SynthEnvironment;
-import goalplantree.GoalNode;
 import goalplantree.Literal;
 import simulation.Simulator;
 import structure.Graph;
@@ -30,7 +29,7 @@ public class TestGraph {
     public static void main(String[] args) throws Exception {
         List<File> fileList = getFileList("F:\\project\\gpt\\TestGraph_5_120_0.1");
         //图的路径
-        String graphPath = "F:\\project\\graph\\graph5_120_0.1_1000.xml";
+        String graphPath = "F:\\project\\graph\\graph5_120_0.1_3000.xml";
         //原本树的路径
         String gptPath = "F:\\project\\gpt\\5_120.xml";
         double total = 0;
