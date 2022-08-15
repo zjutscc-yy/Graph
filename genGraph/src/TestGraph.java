@@ -27,11 +27,11 @@ import java.util.List;
 
 public class TestGraph {
     public static void main(String[] args) throws Exception {
-        List<File> fileList = getFileList("F:\\project\\gpt\\TestGraph_5_120_0.1");
+        List<File> fileList = getFileList("F:\\project\\gpt\\TestGraph_5_0.1");
         //图的路径
-        String graphPath = "F:\\project\\graph\\graph5_120_0.1_3000.xml";
+        String graphPath = "F:\\project\\graph\\graph5_0.1_4110.xml";
         //原本树的路径
-        String gptPath = "F:\\project\\gpt\\5_120.xml";
+        String gptPath = "F:\\project\\gpt\\5.xml";
         double total = 0;
         List<Integer> resultList = new ArrayList<>();
 
@@ -82,12 +82,12 @@ public class TestGraph {
             resultList.add(agent.getNumAchivedGoal());
             total += agent.getNumAchivedGoal();
 
-            FileWriter actionPath  = new FileWriter("actions_test.txt",true);
+//            FileWriter actionPath  = new FileWriter("actions_test.txt",true);
 
-            actionPath.append("//");
-            actionPath.append("\n");
-            actionPath.append("\n");
-            actionPath.close();
+//            actionPath.append("//");
+//            actionPath.append("\n");
+//            actionPath.append("\n");
+//            actionPath.close();
         }
         int x = 0;
         for (int i = 0; i < resultList.size(); i++) {

@@ -8,9 +8,9 @@ import java.util.*;
  * 1.原本的gpt路径
  * 2.修改环境变量的概率
  * 3.生成xml文件个数
- *
+ * <p>
  * 以上在config中修改
- *
+ * <p>
  * 修改后的xml文件放置路径（在main中修改）
  */
 
@@ -24,10 +24,15 @@ public class Main {
         int genAmount;
         //原本树中环境变量的个数
         int envirNum = 0;
-        //需要修改的环境变量个数
+        //整体需要修改的环境变量个数
         int changeNum = 0;
         //absolutetEnv中需要修改的概率
-        double absoluteRate;
+        double absoluteRate = 0.0;
+
+        //例如：要改12个，实际absoluteEnv小于9个，就需要修改其余的，修改其余的个数
+        int restNum = 0;
+        //其余的修改的概率
+        double restRate = 0;
 
 
         if (args.length == 0) {
@@ -69,14 +74,16 @@ public class Main {
         }
 
         //上面读取了文件,下面就是修改和生成
-        String newPath = "F:\\project\\gpt\\genGraph_5plus_120_0.1\\5.";   //生成的文件的名字
+        String newPath = "F:\\project\\gpt\\genGraph_5_0.2\\5.";   //生成的文件的名字
         changeNum = (int) (rate * envirNum);
 
-        if (changeNum > absolutetEnv.size()) {
-            System.out.println("需要修改的数量大于绝对来自环境的数量");
-        }
-
         absoluteRate = (double) changeNum / absolutetEnv.size();
+
+        if (changeNum > absolutetEnv.size()) {
+            //120个要改12个，有9个是必须改，剩下要在111里挑3个改
+            restNum = changeNum - absolutetEnv.size();//3
+            restRate = (double) restNum / (envirNum - absolutetEnv.size());
+        }
 
         for (int i = 0; i < genAmount; i++) {
             List<String> newArr = new ArrayList<>();
@@ -87,22 +94,30 @@ public class Main {
             //修改文件
             boolean needEditFlag = false;
             Random rd = new Random();
+//            boolean isCurrentLineEdited = false;
             //修改的变量个数
-            int m = 0;
+            int m = 0;  //已经必须修改的
+            int n = 0;  //剩余的
+            int mustEdit = (changeNum > absolutetEnv.size()) ? (absolutetEnv.size()) : changeNum;// 12或8
+            int restEdit = (changeNum > mustEdit) ? (changeNum - mustEdit) : 0;//12-9或0(9=9下为0)
+            ArrayList<Integer> hasEditLineArr = new ArrayList<>();
             //遍历获取到的xml文件的每一行
-            while (m < changeNum) {
+            while (m + n < changeNum) {     //满足 必须修改和非必须没修改完  m=9 n=2
                 for (int j = 0; j < newArr.size(); j++) {
                     // 如果文件某一行含有 Literal ，说明该行是environment 判断是否修改
-                    if (newArr.get(j).contains("Literal")) {
+//                    isCurrentLineEdited = false;
+                    if (newArr.get(j).contains("Literal") && !newArr.get(j).contains("G-")) {
                         String[] str = newArr.get(j).split("\"");
                         String envName = str[1];
                         for (String s : absolutetEnv) {
                             if (envName.equals(s)) {
                                 //判断是否需要修改
                                 needEditFlag = rd.nextDouble() < absoluteRate;
-                                if (needEditFlag && m < changeNum) {
+                                if (needEditFlag && m < mustEdit && !hasEditLineArr.contains(j)) {
                                     m++;
+                                    hasEditLineArr.add(j);
                                     //需要修改这一行
+//                                    isCurrentLineEdited = true;
                                     //根据initVal把这一行分成两部分
                                     String[] arrTemp = newArr.get(j).split("initVal");
                                     if (arrTemp[1].contains("true")) {
@@ -115,12 +130,33 @@ public class Main {
                                 }
                             }
                         }
+                        //这一行不是必须要改的，例如：要改12个，实际absoluteEnv小于9个，就需要修改其余的
+//                        if (changeNum > absolutetEnv.size()) {
+                        if (restEdit > n && !hasEditLineArr.contains(j)) {
+                            needEditFlag = rd.nextDouble() < restRate;
+                            if (needEditFlag) {
+//                                m++;
+                                n++;
+                                hasEditLineArr.add(j);
+                                //需要修改这一行
+                                //根据initVal把这一行分成两部分
+                                String[] arr = newArr.get(j).split("initVal");
+                                if (arr[1].contains("true")) {
+                                    arr[1] = arr[1].replace("true", "false");
+                                } else {
+                                    arr[1] = arr[1].replace("false", "true");
+                                }
+                                // 上面把字符串换完了，之后把字符串写回去
+                                newArr.set(j, arr[0] + "initVal" + arr[1]);
+                            }
+                        }
+
                     }
                 }
             }
             //存储文件
-            System.out.println("修改环境结束");
-            System.out.println("该文件修改了" + m + "个环境变量");
+//            System.out.println("修改环境结束");
+//            System.out.println("该文件修改了" + m + "个环境变量");
             // control + alt + L
             File newFile = new File(newPath + (i + 1) + ".xml");
             try {

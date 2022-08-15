@@ -28,7 +28,7 @@ public class TestTree {
 
     public static void main(String[] args) throws IOException {
 
-        List<File> fileList = getFileList("F:\\project\\gpt\\TestGraph_5_120_0.1");
+        List<File> fileList = getFileList("F:\\project\\gpt\\TestGraph_5_0.15");
 
 //        startTime = System.currentTimeMillis();
 //        long startAll = System.currentTimeMillis();

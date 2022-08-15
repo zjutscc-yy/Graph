@@ -64,7 +64,7 @@ public class genTestXML {
         }
 
         //上面读取了文件,下面就是修改和生成
-        String newPath = "F:\\project\\gpt\\TestGraph_5_120_0.1\\5.";   //生成的文件的名字
+        String newPath = "F:\\project\\gpt\\TestGraph_5_0.2\\5.";   //生成的文件的名字
         changeNum = (int) (rate * envirNum);
 
         for (int i = 0; i < genAmount; i++) {
@@ -78,6 +78,8 @@ public class genTestXML {
             Random rd = new Random();
             //修改的变量个数
             int m = 0;
+
+            ArrayList<Integer> hasEditLineArr = new ArrayList<>();
             //遍历获取到的xml文件的每一行
             while (m < changeNum) {
                 for (int j = 0; j < newArr.size(); j++) {
@@ -85,8 +87,9 @@ public class genTestXML {
                     if (newArr.get(j).contains("Literal") && !newArr.get(j).contains("G-")) {
                         //判断是否需要修改
                         needEditFlag = rd.nextDouble() < rate;
-                        if (needEditFlag && m < changeNum) {
+                        if (needEditFlag && m < changeNum  && !hasEditLineArr.contains(j)) {
                             m++;
+                            hasEditLineArr.add(j);
                             //需要修改这一行
                             //根据initVal把这一行分成两部分
                             String[] arrTemp = newArr.get(j).split("initVal");
