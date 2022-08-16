@@ -1,6 +1,7 @@
 package xml;
 
 import java.io.*;
+import java.lang.annotation.Target;
 import java.util.*;
 
 /**
@@ -18,21 +19,21 @@ public class Main {
     public static void main(String[] args) {
         //要修改的树的存储路径
         String gptFilePath;
-        //改动环境变量的比例（只改影响结果大的环境变量）
+        //改动完全来自于环境中的变量的比例（只改影响结果大的环境变量）
         double rate;
         //生成新的xml（新环境）的个数
         int genAmount;
         //原本树中环境变量的个数
-        int envirNum = 0;
+//        int envirNum = 0;
         //整体需要修改的环境变量个数
         int changeNum = 0;
         //absolutetEnv中需要修改的概率
-        double absoluteRate = 0.0;
+//        double absoluteRate = 0.0;
 
         //例如：要改12个，实际absoluteEnv小于9个，就需要修改其余的，修改其余的个数
-        int restNum = 0;
+//        int restNum = 0;
         //其余的修改的概率
-        double restRate = 0;
+//        double restRate = 0;
 
 
         if (args.length == 0) {
@@ -46,6 +47,8 @@ public class Main {
         ArrayList<String> absolutetEnv = summaryEnv.checkAbsolutetEnvName();
 
         rate = Double.valueOf(args[1]);
+
+        changeNum =  (int) (rate * absolutetEnv.size());
 
         genAmount = Integer.parseInt(args[2]);
 
@@ -62,9 +65,9 @@ public class Main {
                 //读取下一行
                 if (line != null || !line.equals("")) {
                     fileCon.add(line);
-                    if (line.contains("Literal") && !line.contains("G-")) {
-                        envirNum++;
-                    }
+//                    if (line.contains("Literal") && !line.contains("G-")) {
+//                        envirNum++;
+//                    }
                 }
                 line = br.readLine();
             }
@@ -74,16 +77,7 @@ public class Main {
         }
 
         //上面读取了文件,下面就是修改和生成
-        String newPath = "F:\\project\\gpt\\genGraph_5_0.2\\5.";   //生成的文件的名字
-        changeNum = (int) (rate * envirNum);
-
-        absoluteRate = (double) changeNum / absolutetEnv.size();
-
-        if (changeNum > absolutetEnv.size()) {
-            //120个要改12个，有9个是必须改，剩下要在111里挑3个改
-            restNum = changeNum - absolutetEnv.size();//3
-            restRate = (double) restNum / (envirNum - absolutetEnv.size());
-        }
+        String newPath = "F:\\project\\gpt\\genGraph_5_0.1\\5.";   //生成的文件的名字
 
         for (int i = 0; i < genAmount; i++) {
             List<String> newArr = new ArrayList<>();
@@ -95,14 +89,10 @@ public class Main {
             boolean needEditFlag = false;
             Random rd = new Random();
 //            boolean isCurrentLineEdited = false;
-            //修改的变量个数
-            int m = 0;  //已经必须修改的
-            int n = 0;  //剩余的
-            int mustEdit = (changeNum > absolutetEnv.size()) ? (absolutetEnv.size()) : changeNum;// 12或8
-            int restEdit = (changeNum > mustEdit) ? (changeNum - mustEdit) : 0;//12-9或0(9=9下为0)
+            int m = 0;  //已经修改的
             ArrayList<Integer> hasEditLineArr = new ArrayList<>();
             //遍历获取到的xml文件的每一行
-            while (m + n < changeNum) {     //满足 必须修改和非必须没修改完  m=9 n=2
+            while (m < changeNum) {     //满足 必须修改和非必须没修改完  m=9 n=2
                 for (int j = 0; j < newArr.size(); j++) {
                     // 如果文件某一行含有 Literal ，说明该行是environment 判断是否修改
 //                    isCurrentLineEdited = false;
@@ -110,10 +100,10 @@ public class Main {
                         String[] str = newArr.get(j).split("\"");
                         String envName = str[1];
                         for (String s : absolutetEnv) {
-                            if (envName.equals(s)) {
+                            if (envName.equals(s) && m < changeNum) {
                                 //判断是否需要修改
-                                needEditFlag = rd.nextDouble() < absoluteRate;
-                                if (needEditFlag && m < mustEdit && !hasEditLineArr.contains(j)) {
+                                needEditFlag = rd.nextDouble() < rate;
+                                if (needEditFlag && !hasEditLineArr.contains(j)) {
                                     m++;
                                     hasEditLineArr.add(j);
                                     //需要修改这一行
@@ -130,27 +120,6 @@ public class Main {
                                 }
                             }
                         }
-                        //这一行不是必须要改的，例如：要改12个，实际absoluteEnv小于9个，就需要修改其余的
-//                        if (changeNum > absolutetEnv.size()) {
-                        if (restEdit > n && !hasEditLineArr.contains(j)) {
-                            needEditFlag = rd.nextDouble() < restRate;
-                            if (needEditFlag) {
-//                                m++;
-                                n++;
-                                hasEditLineArr.add(j);
-                                //需要修改这一行
-                                //根据initVal把这一行分成两部分
-                                String[] arr = newArr.get(j).split("initVal");
-                                if (arr[1].contains("true")) {
-                                    arr[1] = arr[1].replace("true", "false");
-                                } else {
-                                    arr[1] = arr[1].replace("false", "true");
-                                }
-                                // 上面把字符串换完了，之后把字符串写回去
-                                newArr.set(j, arr[0] + "initVal" + arr[1]);
-                            }
-                        }
-
                     }
                 }
             }
