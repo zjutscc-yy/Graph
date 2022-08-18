@@ -149,7 +149,7 @@ public abstract class AbstractEnvironment {
         // 创建文件接收action
 //        File actionPath1 = new File("F:\\project\\SQ-MCTS\\actions_0.2.txt");
         //把action结果输出到file中
-        FileWriter actionPath  = new FileWriter("actions_0.2.txt",true);
+        FileWriter actionPath  = new FileWriter("actions_0.3txt",true);
 
         for(AbstractAgent a: agents){
 

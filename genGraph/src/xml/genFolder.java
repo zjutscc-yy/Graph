@@ -1,7 +1,9 @@
 package xml;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * 改变环境变量
@@ -14,7 +16,7 @@ import java.util.*;
  * 修改后的xml文件放置路径（在main中修改）
  */
 
-public class Main {
+public class genFolder {
     public static void main(String[] args) {
         //要修改的树的存储路径
         String gptFilePath;

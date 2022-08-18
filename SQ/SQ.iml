@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib-jdom1" level="project" />
     <orderEntry type="library" name="lib-jdom" level="project" />
+    <orderEntry type="module" module-name="genGraph" />
   </component>
 </module>
