@@ -11,6 +11,10 @@ import java.util.List;
 
 /**
  * 判断文件夹中那些文件符合要求，将不符合的删掉
+ * 树的路径
+ * 文件夹路径
+ *
+ * 在main中修改
  *
  */
 public class DealFolder {
@@ -25,9 +29,11 @@ public class DealFolder {
             ArrayList<Literal[]> literals = executableGoal.checkGoal(tlg);
             allGoalExe.add(literals);
         }
-
-        List<File> fileList = getFileList("F:\\project\\gpt\\genGraph_5_0.3");
+//        Graph_5_0.3
+        List<File> fileList = getFileList("F:\\project\\gpt\\gen");
+        //遍历每个文件
         for (int i = 0; i < fileList.size(); i++) {
+            //检查每个文件是否符合所有goal
             for (ArrayList<Literal[]> singleGoal : allGoalExe) {
                 //checkFile为false，说明当前目标在该文件下没有可以实现的组合,删掉该文件
                 if (!checkFile(fileList.get(i).getPath(),singleGoal)){
