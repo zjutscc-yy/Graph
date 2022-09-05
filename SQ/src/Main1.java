@@ -27,7 +27,7 @@ public class Main1 {
     static ArrayList<String> exeXML = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-        List<File> fileList = getFileList("F:\\project\\gpt\\genGraph_1\\genGraph_1_0.6");
+        List<File> fileList = getFileList("F:\\project\\gpt\\genGraph_3\\20exe");
 
 //        startTime = System.currentTimeMillis();
 //        long startAll = System.currentTimeMillis();
@@ -132,7 +132,7 @@ public class Main1 {
                 }
 
                 if(agent.getNumAchivedGoal() != tlgs.size()){
-                    reWriteFileEnd("F:\\project\\SQ-MCTS\\actions_1_0.6.txt");
+                    reWriteFileEnd("F:\\project\\SQ-MCTS\\actions_3_0.2-.txt");
                 }else {
                     resultList.add(agent.getNumAchivedGoal());
                 }
@@ -146,7 +146,7 @@ public class Main1 {
 //            System.out.println("程序运行时间" + (endAll - startAll));
 
 //            System.out.println("程序运行时间" + (end - startTime));
-                FileWriter actionPath  = new FileWriter("actions_1_0.6.txt",true);
+                FileWriter actionPath  = new FileWriter("actions_3_0.2-.txt",true);
 
                 actionPath.append("//");
                 actionPath.append("\n");

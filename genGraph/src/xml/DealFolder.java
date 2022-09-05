@@ -40,7 +40,7 @@ public class DealFolder {
             allGoalExe.add(literals);
         }
 //        Graph_5_0.3
-        List<File> fileList = getFileList("F:\\project\\gpt\\genGraph_1\\genGraph_1_0.6");
+        List<File> fileList = getFileList("F:\\project\\gpt\\3del");
         //遍历每个文件
         for (int i = 0; i < fileList.size(); i++) {
             //检查每个文件是否符合所有goal

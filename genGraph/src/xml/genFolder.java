@@ -8,8 +8,7 @@ import java.util.Random;
 /**
  * 改变环境变量
  * 1.原本的gpt路径
- * 2.修改环境变量的概率
- * 3.生成xml文件个数
+ * 2.修改环境变量的个数
  * <p>
  * 以上在config中修改
  * <p>
@@ -23,7 +22,7 @@ public class genFolder {
         //改动完全来自于环境中的变量的比例（只改影响结果大的环境变量）
         double rate;
         //生成新的xml（新环境）的个数
-        int genAmount;
+        long genAmount;
         //整体需要修改的环境变量个数
         int changeNum = 0;
 
@@ -37,11 +36,14 @@ public class genFolder {
         SummaryEnv summaryEnv = new SummaryEnv(gptFilePath);
         ArrayList<String> absolutetEnv = summaryEnv.checkAbsolutetEnvName();
 
-        rate = Double.valueOf(args[1]);
+//        rate = Double.valueOf(args[1]);
 
-        changeNum =  (int) (rate * absolutetEnv.size());
+//        changeNum =  (int) (rate * absolutetEnv.size());
+        changeNum = Integer.parseInt(args[1]);
 
-        genAmount = Integer.parseInt(args[2]);
+        rate = changeNum / (double)absolutetEnv.size();
+//        genAmount = Integer.parseInt(args[2]);
+        genAmount = computeGenAmout(absolutetEnv.size(),changeNum);
 
         //读取文件
         File sourceFile = new File(gptFilePath);
@@ -68,7 +70,7 @@ public class genFolder {
         }
 
         //上面读取了文件,下面就是修改和生成
-        String newPath = "F:\\project\\gpt\\genGraph_1\\Test_0.1+0.2\\1.";   //生成的文件的名字
+        String newPath = "F:\\project\\gpt\\gen3\\4\\3.";   //生成的文件的名字
 
         for (int i = 0; i < genAmount; i++) {
             List<String> newArr = new ArrayList<>();
@@ -118,7 +120,7 @@ public class genFolder {
 //            System.out.println("修改环境结束");
 //            System.out.println("该文件修改了" + m + "个环境变量");
             // control + alt + L
-            File newFile = new File(newPath + (i + 6) + ".xml");
+            File newFile = new File(newPath + (i + 1) + ".xml");
             try {
                 newFile.createNewFile();
                 BufferedWriter bw = new BufferedWriter(new FileWriter(newFile));
@@ -172,4 +174,38 @@ public class genFolder {
 //        //存一个新文件
 //        xmlWriter.CreateXML(map,tlgs,"path");
     }
+    public static long A(int n, int m){
+        long result = 1;
+        for (int i = m; i > 0;i--){
+            result *= n;
+            n--;
+        }
+        return result;
+    }
+
+    public static long computeGenAmout(int n,int m){
+        //分母
+        long denominator = A(m,m);
+        //分子
+        long numerator = A(n,m);
+        return numerator / denominator;
+    }
+
+//    public static long jiecheng(int num){
+//        long sum = 1;
+//        if (num == 1){
+//            return 1;
+//        }else {
+//            sum = num * jiecheng(num - 1);
+//            return sum;
+//        }
+//    }
+//    public static long computeGenAmout(int n,int m){
+//        //分母
+//        long denominator = jiecheng(m) * jiecheng(n - m);
+//        //分子
+//        long numerator = jiecheng(n);
+//        return numerator / denominator;
+//    }
+
 }

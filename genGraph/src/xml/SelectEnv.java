@@ -26,8 +26,12 @@ import java.util.Random;
 public class SelectEnv {
 
     public static void main(String[] args) throws Exception {
+        double rate;
+        //每次选择多少个
+        int selectNum;
+
         //总的文件夹集合
-        List<File> allFile = getFileList("F:\\project\\gpt\\genGraph_3\\AllEnv");
+        List<File> allFile = getFileList("F:\\project\\gpt\\genGraph_3\\20");
         //选择过的文件集合
         List<File> selectedFiles = getFileList("F:\\project\\gpt\\genGraph_3\\SelectedEnv");
 
@@ -37,11 +41,14 @@ public class SelectEnv {
         }
 
         //新文件夹路径：用来存放每次选择的文件
-        String newFilePath = "F:\\project\\gpt\\genGraph_3\\newSelect";
-        //每次选择多少个
-        int selectNum;
+//        String newFilePath = "F:\\project\\gpt\\genGraph_3\\newSelect";
+
+        String newFilePath = "F:\\project\\gpt\\genGraph_3\\Test20";
 
         selectNum = Integer.parseInt(args[0]);
+
+        rate = selectNum / (double) (allFile.size()-selectedFiles.size());
+//        rate = selectNum / (double) allFile.size();
 
         //判断该文件是否选择
         boolean needSelectFile = false;
@@ -58,15 +65,19 @@ public class SelectEnv {
         while (m < selectNum) {
             for (File file : allFile) {
                 //随机挑选文件
-                needSelectFile = rd.nextDouble() < 0.1;
+                needSelectFile = rd.nextDouble() < rate;
                 if (needSelectFile && !selectedFileName.contains(file.getName()) && m < selectNum) {
                     m++;
 //                    thisSelect.add(file);
                     selectedFiles.add(file);
+                    selectedFileName.add(file.getName());
                     //把选择的文件复制到刚创建的文件夹中
                     copyFile(file.getAbsolutePath(),newFilePath+"\\"+file.getName());
                     //把选择的文件复制到SelectedEnv文件夹下
-                    copyFile(file.getAbsolutePath(),"F:\\project\\gpt\\genGraph_3\\SelectedEnv"+"\\"+file.getName());
+//                    copyFile(file.getAbsolutePath(),"F:\\project\\gpt\\genGraph_3\\SelectedEnv"+"\\"+file.getName());
+                    if (m == selectNum){
+                        break;
+                    }
                 }
 
             }

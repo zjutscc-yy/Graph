@@ -145,4 +145,20 @@ public class ExecutableGoal {
         }
     }
 
+    //合并两个Literal数组
+    public static Literal[] combination(Literal[] A,Literal[] B){
+        if (A.length == 0){
+            return B;
+        }
+        if (B.length == 0){
+            return A;
+        }
+        Literal[] literalArrCopy = new Literal[A.length + B.length];
+        //合并数组
+        System.arraycopy(A,0,literalArrCopy,0,A.length);
+        System.arraycopy(B,0,literalArrCopy,A.length,B.length);
+        Literal[] delSame = ExecutableGoal.deDuplication(literalArrCopy);
+        return ExecutableGoal.deDuplication(delSame);
+    }
+
 }

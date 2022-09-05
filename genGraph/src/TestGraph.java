@@ -27,11 +27,11 @@ import java.util.List;
 
 public class TestGraph {
     public static void main(String[] args) throws Exception {
-        List<File> fileList = getFileList("F:\\project\\gpt\\genGraph_1\\Test_0.1+0.2");
+        List<File> fileList = getFileList("F:\\project\\gpt\\genGraph_3\\Test2");
         //图的路径
-        String graphPath = "F:\\project\\graph\\graph1_0.1+0.2.xml";
+        String graphPath = "F:\\project\\graph\\graph3_150000.xml";
         //原本树的路径
-        String gptPath = "F:\\project\\gpt\\1.xml";
+        String gptPath = "F:\\project\\gpt\\3.xml";
         double total = 0;
         List<Integer> resultList = new ArrayList<>();
 
