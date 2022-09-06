@@ -29,15 +29,15 @@ public class ValueCombine {
      */
     public void solution()
     {
-        System.out.println("n = " + combination.length + " ***** 所有真值组合： ");
+//        System.out.println("n = " + combination.length + " ***** 所有真值组合： ");
         do {
-            System.out.println(getOneTuple());
+            getOneTuple();
+//            System.out.println(getOneTuple());
             count++;
             increOne();
         } while(!terminate());
-        System.out.println("真值组合数： " + count);
+//        System.out.println("真值组合数： " + count);
     }
-
 
     /**
      * 逐次加一，生成每一个真值元组

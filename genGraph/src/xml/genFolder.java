@@ -190,22 +190,4 @@ public class genFolder {
         long numerator = A(n,m);
         return numerator / denominator;
     }
-
-//    public static long jiecheng(int num){
-//        long sum = 1;
-//        if (num == 1){
-//            return 1;
-//        }else {
-//            sum = num * jiecheng(num - 1);
-//            return sum;
-//        }
-//    }
-//    public static long computeGenAmout(int n,int m){
-//        //分母
-//        long denominator = jiecheng(m) * jiecheng(n - m);
-//        //分子
-//        long numerator = jiecheng(n);
-//        return numerator / denominator;
-//    }
-
 }

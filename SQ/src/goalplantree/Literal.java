@@ -82,4 +82,13 @@ public class Literal implements Cloneable{
         }
     }
 
+    /**
+     * @return the stringrization of this literal
+     */
+    public String toStateString() {
+        if (state == true){
+            return "true";
+        }
+        return "false";
+    }
 }
