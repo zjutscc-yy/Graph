@@ -45,7 +45,6 @@ public class test {
             goalAchieve = genAllCase.mergeGoal(goalAchieve,hashMaps);
             System.out.println("1111");
         }
-
         System.out.println("没有问题");
     }
 

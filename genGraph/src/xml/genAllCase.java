@@ -229,12 +229,6 @@ public class genAllCase {
             if (B.get(key) != null && !B.get(key).equals(value)){
                 return false;
             }
-//            for (Map.Entry<String, String> bEntry : B.entrySet()) {
-//                //说明有相反的环境，删除
-//                if (!bEntry.getKey().equals(value)){
-//                    return false;
-//                }
-//            }
         }
         return true;
     }

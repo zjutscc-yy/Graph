@@ -96,18 +96,6 @@ public class SelectEnv {
         in.close();
         out.close();
     }
-//    public static void copyFile(File source,File dest) throws IOException{
-//        FileChannel inputChannel = null;
-//        FileChannel outputChannel = null;
-//        try{
-//            inputChannel = new FileInputStream(source).getChannel();
-//            outputChannel = new FileInputStream(dest).getChannel();
-//            outputChannel.transferFrom(inputChannel,0,inputChannel.size());
-//        }finally {
-//            inputChannel.close();
-//            outputChannel.close();
-//        }
-//    }
 
     public static List<File> getFileList(String dirStr) {
         //if istxt
