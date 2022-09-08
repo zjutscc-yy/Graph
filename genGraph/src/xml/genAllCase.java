@@ -52,6 +52,65 @@ public class genAllCase {
             }
         }
 
+        if (needEdit1.size() == 0 && needEdit2.size() == 0){
+            for (HashMap<String, String> p11 : p1) {
+                if (!result.contains(p11)) {
+                    result.add(p11);
+                }
+            }
+            for (HashMap<String, String> p22 : p2) {
+                if (!result.contains(p22)){
+                    result.add(p22);
+                }
+            }
+            System.out.println("检查完" + goalNode.getName());
+            return result;
+        }
+
+        if (needEdit1.size() == 0 && needEdit2.size() != 0){
+            ArrayList<HashMap<String, String>> hashMaps2 = genValues(needEdit2);
+            for (HashMap<String, String> p11 : p1) {
+                if (!result.contains(p11)) {
+                    result.add(p11);
+                }
+            }
+            for (HashMap<String, String> p22 : p2) {
+                for (int i = 0; i < hashMaps2.size(); i++) {
+                    //保存每种组合
+                    HashMap<String, String> everResult = new HashMap<>();
+                    everResult.putAll(p22);
+                    everResult.putAll(hashMaps2.get(i));
+                    if (!result.contains(everResult)) {
+                        result.add(everResult);
+                    }
+                }
+            }
+            System.out.println("检查完" + goalNode.getName());
+            return result;
+        }
+
+        if (needEdit1.size() != 0 && needEdit2.size() == 0){
+            ArrayList<HashMap<String, String>> hashMaps1 = genValues(needEdit1);
+            for (HashMap<String, String> p22 : p2) {
+                if (!result.contains(p22)) {
+                    result.add(p22);
+                }
+            }
+            for (HashMap<String, String> p11 : p1) {
+                for (int i = 0; i < hashMaps1.size(); i++) {
+                    //保存每种组合
+                    HashMap<String, String> everResult = new HashMap<>();
+                    everResult.putAll(p11);
+                    everResult.putAll(hashMaps1.get(i));
+                    if (!result.contains(everResult)) {
+                        result.add(everResult);
+                    }
+                }
+            }
+            System.out.println("检查完" + goalNode.getName());
+            return result;
+        }
+
         ArrayList<HashMap<String, String>> hashMaps1 = genValues(needEdit1);
         ArrayList<HashMap<String, String>> hashMaps2 = genValues(needEdit2);
 
