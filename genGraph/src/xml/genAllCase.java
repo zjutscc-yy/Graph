@@ -27,88 +27,82 @@ public class genAllCase {
         ArrayList<HashMap<String, String>> p1 = checkPlan(plans[0]);
         ArrayList<HashMap<String, String>> p2 = checkPlan(plans[1]);
         if (p1.equals(p2)){
+            System.out.println("检查完" + goalNode.getName());
             return p1;
         }
+
+        //获取第一个计划的所有key值：因为计划P1里的key都是一样的，只是真假值的区别
+        Set<String> p1KeySet = p1.get(0).keySet();
+        //获取第二个计划的所有key值：因为计划P2里的key都是一样的，只是真假值的区别
+        Set<String> p2KeySet = p2.get(0).keySet();
+
+        //保存不在第一个计划里的Literal名字
+        ArrayList<String> needEdit1 = new ArrayList<>();
+        for (Map.Entry<String, String> p22Entry : p2.get(0).entrySet()) {
+            if (!p1KeySet.contains(p22Entry.getKey())){
+                needEdit1.add(p22Entry.getKey());
+            }
+        }
+
+        //保存不在第二个计划里的Literal名字
+        ArrayList<String> needEdit2 = new ArrayList<>();
+        for (Map.Entry<String, String> p11Entry : p1.get(0).entrySet()) {
+            if (!p2KeySet.contains(p11Entry.getKey())){
+                needEdit2.add(p11Entry.getKey());
+            }
+        }
+
+        ArrayList<HashMap<String, String>> hashMaps1 = genValues(needEdit1);
+        ArrayList<HashMap<String, String>> hashMaps2 = genValues(needEdit2);
+
         int m = 0;
         //第一个计划的一种可能
         for (HashMap<String, String> p11 : p1) {
             m++;
-            //获取该可能的所有key值
-            Set<String> keySet = p11.keySet();
-            int n = 0;
-            //第二个计划的一种可能
-            for (HashMap<String, String> p22 : p2) {
-                n++;
-                //保存第二个计划中不在第一个计划中的Literal名字
-                ArrayList<String> needEdit = new ArrayList<>();
-                //获取需要修改的literal的名字
-                for (Map.Entry<String, String> entry : p22.entrySet()) {
-                    if (!keySet.contains(entry.getKey())){
-                        needEdit.add(entry.getKey());
+            if (needEdit1.size() != 0) {
+                //得到第二个计划中,与第一个计划中的第一种可能合并
+                for (int i = 0; i < hashMaps1.size(); i++) {
+                    //保存每种组合
+                    HashMap<String, String> everResult = new HashMap<>();
+                    everResult.putAll(p11);
+                    everResult.putAll(hashMaps1.get(i));
+                    if (!result.contains(everResult)) {
+                        result.add(everResult);
                     }
                 }
-                if (needEdit.size() != 0) {
-                    int p = 0;
-                    //得到第二个计划中,与第一个计划中的第一种可能合并
-                    for (HashMap<String, String> genValue : genValues(needEdit)) {
-                        p++;
-                        //保存每种组合
-                        HashMap<String, String> everResult = new HashMap<>();
-                        everResult.putAll(p11);
-                        everResult.putAll(genValue);
-                        if (!result.contains(everResult)) {
-                            result.add(everResult);
-                        }
-                    }
-                }else {
+            }else {
                     HashMap<String, String> everResult = new HashMap<>();
                     everResult.putAll(p11);
                     if (!result.contains(everResult)) {
                         result.add(everResult);
                     }
                 }
-            }
         }
+
         int k = 0;
         //第二个计划的一种可能
         for (HashMap<String, String> p22 : p2) {
             k++;
-            //获取该可能的所有key值
-            Set<String> keySet = p22.keySet();
-            int l = 0;
-            //第二个计划的一种可能
-            for (HashMap<String, String> p11 : p1) {
-                l++;
-                //保存第二个计划中不在第一个计划中的Literal名字
-                ArrayList<String> needEdit = new ArrayList<>();
-                //获取需要修改的literal的名字
-                for (Map.Entry<String, String> entry : p11.entrySet()) {
-                    if (!keySet.contains(entry.getKey())){
-                        needEdit.add(entry.getKey());
-                    }
-                }
-                if (needEdit.size() != 0) {
-                    int p = 0;
-                    //得到第二个计划中,与第一个计划中的第一种可能合并
-                    for (HashMap<String, String> genValue : genValues(needEdit)) {
-                        p++;
-                        //保存每种组合
-                        HashMap<String, String> everResult = new HashMap<>();
-                        everResult.putAll(p22);
-                        everResult.putAll(genValue);
-                        if (!result.contains(everResult)) {
-                            result.add(everResult);
-                        }
-                    }
-                }else {
+            if (needEdit2.size() != 0) {
+                //得到第二个计划中,与第一个计划中的第一种可能合并
+                for (int i = 0; i < hashMaps2.size(); i++) {
+                    //保存每种组合
                     HashMap<String, String> everResult = new HashMap<>();
                     everResult.putAll(p22);
+                    everResult.putAll(hashMaps2.get(i));
                     if (!result.contains(everResult)) {
                         result.add(everResult);
                     }
                 }
+            }else {
+                HashMap<String, String> everResult = new HashMap<>();
+                everResult.putAll(p22);
+                if (!result.contains(everResult)) {
+                    result.add(everResult);
+                }
             }
         }
+
         System.out.println("检查完" + goalNode.getName());
 
         return result;
@@ -144,6 +138,7 @@ public class genAllCase {
         if (i == 0) {
             //说明该计划没有孩子节点为目标，所以只需将该计划的pre加入
             planLiteral.add(planPre);
+//            System.out.println("检查完" + plan.getName());
             return planLiteral;
         } else {
             //说明该计划有孩子节点为目标,把该计划的pre加到每个hashmap（也就是每种可能）的后面
@@ -153,6 +148,7 @@ public class genAllCase {
                     result.add(enableTuple);
                 }
             }
+//            System.out.println("检查完" + plan.getName());
             return result;
         }
     }
@@ -195,7 +191,6 @@ public class genAllCase {
 
     }
 
-    //合并两个目标的可能
     public static ArrayList<HashMap<String, String>> mergeGoal(ArrayList<HashMap<String, String>> A,ArrayList<HashMap<String, String>> B){
         if (A.size() == 0){
             return B;
@@ -208,17 +203,15 @@ public class genAllCase {
         for (HashMap<String, String> aHashMap : A) {
             //获得B所有的haspMap
             for (HashMap<String, String> bHashMap : B) {
-                HashMap<String, String> and = new HashMap<>();
                 if (checkMap(aHashMap,bHashMap)) {
-                    and.putAll(aHashMap);
-                    and.putAll(bHashMap);
-                    result.add(and);
+                    aHashMap.putAll(bHashMap);
+                    result.add(aHashMap);
                 }
             }
         }
         return result;
     }
-    
+
     //判断两个hashmap是否含有相反环境
     public static boolean checkMap(HashMap<String, String> A,HashMap<String, String>B){
         //只有两个key对应的value相等或key值并不等，才会加入

@@ -28,7 +28,7 @@ public class test {
 //        c.getAlltuples();
 
 
-        String gptFilePath = "F:\\project\\gpt\\1.3.xml";
+        String gptFilePath = "F:\\project\\gpt\\3.4.xml";
         XMLReader reader = new XMLReader(gptFilePath);
 
         SummaryEnv summaryEnv = new SummaryEnv(gptFilePath);
@@ -39,13 +39,15 @@ public class test {
         //保存所有目标的可能计划
         goalAchieve = new ArrayList<>();
         ArrayList<GoalNode> tlgs = reader.getTlgs();
-
+        gens.checkGoal(tlgs.get(1));
+//        gens.checkGoal(tlgs.get(0));
         for (GoalNode tlg : tlgs) {
             ArrayList<HashMap<String, String>> hashMaps = gens.checkGoal(tlg);
+            System.out.println("目标" + tlg.getName() + "有" + hashMaps.size() + "种可能");
             goalAchieve = genAllCase.mergeGoal(goalAchieve,hashMaps);
-            System.out.println("1111");
+//            System.out.println("1111");
         }
-        System.out.println("没有问题");
+        System.out.println(goalAchieve.size());
     }
 
 
