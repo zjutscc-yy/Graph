@@ -10,8 +10,7 @@ import java.util.Map;
 public class test {
     public static ArrayList<HashMap<String, String>> goalAchieve;
     public static void main(String[] args) {
-
-        String gptFilePath = "F:\\project\\gpt\\2.4.xml";
+        String gptFilePath = "F:\\project\\gpt\\test.xml";
         XMLReader reader = new XMLReader(gptFilePath);
 
         SummaryEnv summaryEnv = new SummaryEnv(gptFilePath);
@@ -28,9 +27,9 @@ public class test {
             ArrayList<HashMap<String, String>> hashMaps = gens.checkGoal(tlg);
             System.out.println("目标" + tlg.getName() + "有" + hashMaps.size() + "种可能");
             goalAchieve = genAllCase.mergeGoal(goalAchieve,hashMaps);
-//            System.out.println("1111");
+            System.out.println("合并后的结果为"+goalAchieve.size());
+            System.out.println("1111");
         }
-        System.out.println(goalAchieve.size());
     }
 
 

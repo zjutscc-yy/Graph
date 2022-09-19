@@ -259,12 +259,21 @@ public class genAllCase {
         }
         ArrayList<HashMap<String, String>> result = new ArrayList<>();
         //获得A所有的haspMap
+        int i = 0;
         for (HashMap<String, String> aHashMap : A) {
+            i++;
+            //每次把A的hashmap保存起来
+//            HashMap<String, String> retainA = new HashMap<>(aHashMap);
             //获得B所有的haspMap
+            int j = 0;
             for (HashMap<String, String> bHashMap : B) {
+                j++;
                 if (checkMap(aHashMap,bHashMap)) {
-                    aHashMap.putAll(bHashMap);
-                    result.add(aHashMap);
+                    HashMap<String,String> retainA = new HashMap<>();
+                    retainA.putAll(aHashMap);
+                    retainA.putAll(bHashMap);
+                    result.add(retainA);
+//                    aHashMap = retainA;
                 }
             }
         }

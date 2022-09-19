@@ -31,24 +31,24 @@ public class SelectEnv {
         int selectNum;
 
         //总的文件夹集合
-        List<File> allFile = getFileList("F:\\project\\gpt\\genGraph_3\\20");
+        List<File> allFile = getFileList("F:\\project\\gpt\\Atest\\test");
         //选择过的文件集合
-        List<File> selectedFiles = getFileList("F:\\project\\gpt\\genGraph_3\\SelectedEnv");
+//        List<File> selectedFiles = getFileList("F:\\project\\gpt\\genGraph_3\\SelectedEnv");
 
         List<String> selectedFileName = new ArrayList<>();
-        for (File selectedFile : selectedFiles) {
-            selectedFileName.add(selectedFile.getName());
-        }
+//        for (File selectedFile : selectedFiles) {
+//            selectedFileName.add(selectedFile.getName());
+//        }
 
         //新文件夹路径：用来存放每次选择的文件
 //        String newFilePath = "F:\\project\\gpt\\genGraph_3\\newSelect";
 
-        String newFilePath = "F:\\project\\gpt\\genGraph_3\\Test20";
+        String newFilePath = "F:\\project\\gpt\\Atest\\test50";
 
         selectNum = Integer.parseInt(args[0]);
 
-        rate = selectNum / (double) (allFile.size()-selectedFiles.size());
-//        rate = selectNum / (double) allFile.size();
+//        rate = selectNum / (double) (allFile.size()-selectedFiles.size());
+        rate = selectNum / (double) allFile.size();
 
         //判断该文件是否选择
         boolean needSelectFile = false;
@@ -69,7 +69,7 @@ public class SelectEnv {
                 if (needSelectFile && !selectedFileName.contains(file.getName()) && m < selectNum) {
                     m++;
 //                    thisSelect.add(file);
-                    selectedFiles.add(file);
+//                    selectedFiles.add(file);
                     selectedFileName.add(file.getName());
                     //把选择的文件复制到刚创建的文件夹中
                     copyFile(file.getAbsolutePath(),newFilePath+"\\"+file.getName());

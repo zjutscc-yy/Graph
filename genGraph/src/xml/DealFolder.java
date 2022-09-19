@@ -31,7 +31,7 @@ public class DealFolder {
 
         ArrayList<ArrayList<Literal[]>> allGoalExe = new ArrayList<>();
         //获取保证每个目标可实现的集合
-        ExecutableGoal executableGoal = new ExecutableGoal();
+        ExecutableGoal executableGoal = new ExecutableGoal(absolutetEnv);
         XMLReader reader = new XMLReader(gptFilePath);
         ArrayList<GoalNode> tlgs = reader.getTlgs();
         //获取所有tlg可能集合

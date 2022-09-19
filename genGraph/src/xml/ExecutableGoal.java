@@ -9,6 +9,12 @@ import java.util.ArrayList;
 
 public class ExecutableGoal {
 
+    private ArrayList<String> envs;
+
+    public ExecutableGoal(ArrayList<String> envs) {
+        this.envs = envs;
+    }
+
     public ArrayList<Literal[]> checkGoal(GoalNode goalNode){
         ArrayList<Literal[]> goalLiteral = new ArrayList<>();
         for (PlanNode plan : goalNode.getPlans()) {
@@ -41,16 +47,28 @@ public class ExecutableGoal {
                 planLiteral = combination(planLiteral,literals);
             }
         }
+
+        //只保留完全来自环境的literal
+        int num = 0;
+        ArrayList<Literal> needAddLiteral = new ArrayList<>();
+        for (Literal literal : prec) {
+            if (envs.contains(literal.getName())){
+                needAddLiteral.add(literal);
+            }
+        }
+
+        Literal[] needAdd = genAllCase.listToArray(needAddLiteral);
+
         if (i == 0){
-            planLiteral.add(plan.getPrec());
+            planLiteral.add(needAdd);
             return planLiteral;
         }
         else {
             //每获得计划的一个前置条件，就把他加到check该计划的结果后面
             for (Literal[] literal : planLiteral) {
-                Literal[] c = new Literal[literal.length + prec.length];
+                Literal[] c = new Literal[literal.length + needAdd.length];
                 System.arraycopy(literal,0,c,0,literal.length);
-                System.arraycopy(prec,0,c,literal.length,prec.length);
+                System.arraycopy(needAdd,0,c,literal.length,needAdd.length);
                 Literal[] result = ExecutableGoal.deDuplication(c);
                 resultLiteral.add(result);
             }

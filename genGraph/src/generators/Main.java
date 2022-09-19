@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
 //        读取actions.txt
        ReadFile read = new ReadFile();
-       Graph bigGraph = read.readFile("F:\\project\\SQ-MCTS\\actions_3_0.2-.txt","F:\\project\\gpt\\3.xml");
+       Graph bigGraph = read.readFile("F:\\project\\SQ-MCTS\\actions_test.txt","F:\\project\\gpt\\test.xml");
 
        System.out.println(bigGraph.getNodes().size());
 

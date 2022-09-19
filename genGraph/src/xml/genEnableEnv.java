@@ -64,7 +64,7 @@ public class genEnableEnv {
         }
 
         //上面读取了文件,下面就是修改和生成
-        String newPath = "F:\\project\\gpt\\gen5.3\\5.";   //生成的文件的名字
+        String newPath = "F:\\project\\gpt\\Atest\\gen\\3.";   //生成的文件的名字
 
         int j = 0;
         for (HashMap<String, String> map : goalAchieve) {

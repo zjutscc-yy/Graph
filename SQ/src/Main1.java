@@ -27,7 +27,7 @@ public class Main1 {
     static ArrayList<String> exeXML = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-        List<File> fileList = getFileList("F:\\project\\gpt\\gen5.3");
+        List<File> fileList = getFileList("F:\\project\\gpt\\Atest\\gen");
 
 //        startTime = System.currentTimeMillis();
 //        long startAll = System.currentTimeMillis();
