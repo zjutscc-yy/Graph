@@ -40,7 +40,7 @@ public class DealFolder {
             allGoalExe.add(literals);
         }
 //        Graph_5_0.3
-        List<File> fileList = getFileList("F:\\project\\gpt\\3del");
+        List<File> fileList = getFileList("F:\\project\\gpt\\5\\zonggen");
         //遍历每个文件
         for (int i = 0; i < fileList.size(); i++) {
             //检查每个文件是否符合所有goal
@@ -114,11 +114,6 @@ public class DealFolder {
      * @return
      */
     public static List<File> getFileList(String dirStr) {
-//        File dir = new File(dirStr);
-//        if (!dir.exists()){
-//            System.out.println("目录不存在");
-//        }
-
         //if istxt
         File file = new File(dirStr);
         List<File> sourceList = Arrays.stream(file.listFiles()).toList();

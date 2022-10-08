@@ -49,7 +49,7 @@ public class RandomGenEnv {
         }
 
         //上面读取了文件,下面就是修改和生成
-        String newPath = "F:\\project\\gpt\\5\\zonggen\\5.";   //生成的文件的名字
+        String newPath = "F:\\project\\gpt\\5\\test\\5.";   //生成的文件的名字
 
         for (int i = 0; i < genAmount; i++) {
             List<String> newArr = new ArrayList<>();
