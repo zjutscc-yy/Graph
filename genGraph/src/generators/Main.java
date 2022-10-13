@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
 //        读取actions.txt
        ReadFile read = new ReadFile();
-       Graph bigGraph = read.readFile("F:\\project\\SQ-MCTS\\actions_test.txt","F:\\project\\gpt\\test.xml");
+       Graph bigGraph = read.readFile("F:\\project\\SQ-MCTS\\actions_8.txt","F:\\project\\gpt\\8.xml");
 
        System.out.println(bigGraph.getNodes().size());
 
@@ -26,7 +26,7 @@ public class Main {
        bigGraph.traversalChildNode();
 
        //把生成的图保存为xml文件
-        String path ="F:\\project\\graph\\graph3_0.2-.xml";
+        String path ="F:\\project\\graph\\graph8_txt.xml";
        WriteGraph wxf = new WriteGraph();
        wxf.CreateXML(bigGraph,path);
     }

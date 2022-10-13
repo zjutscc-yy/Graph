@@ -26,7 +26,7 @@ public class ReadGraph {
     public ReadGraph(String url,String gptFilePath){
         try{
             reader = new xml2bdi.XMLReader(gptFilePath);
-            translate(url);
+//            translate(url);
         }catch (Exception e){
             System.out.println("Read XML file error! " + " url: " + url);
         }
@@ -47,6 +47,7 @@ public class ReadGraph {
         List<Element> node = nodesElement.getChildren();
 
         for (int i = 0; i < node.size(); i++){
+            System.out.println("读点");
             bigGraph.addNode(readNode(node.get(i)));
         }
 
@@ -73,6 +74,7 @@ public class ReadGraph {
         List<Element> nodeRelation = Relation.getChildren();
         //每条node_id
         for (int i = 0; i < nodeRelation.size(); i++){
+            System.out.println("读关系" + i);
             readChild(nodeRelation.get(i),bigGraph);
         }
 

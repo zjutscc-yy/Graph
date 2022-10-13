@@ -7,17 +7,20 @@ import generators.ReadFile;
 import goalplantree.GoalNode;
 import goalplantree.Literal;
 import structure.Graph;
-import xml.ReadGraph;
+import xml.SelectEnv;
 import xml.SummaryEnv;
 import xml.WriteGraph;
 import xml2bdi.XMLReader;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 原本树的路径
  * 原本图的路径
  * 文件夹路径
  *
@@ -29,20 +32,19 @@ public class GraphTree {
     //记录图
     public static Graph resultGraph;
     //记录环境
-    public static ArrayList<ArrayList<String>> envs;
-    static ArrayList<String> exeXML = new ArrayList<>();
+    public static ArrayList<ArrayList<Integer>> envs;
+    static ArrayList<String> unExeXML = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
         XMLReader reader;
         //训练生成图的路径，由文件里xml组成
         String trainPath;
         //原本树的路径
-        String gptPath = "F:\\project\\gpt\\5.xml";
-        //保存执行结果
-//        List<Integer> resultList = new ArrayList<>();
+        String gptPath = "F:\\project\\gpt\\8.xml";
         int testNum;
+        String newFilePath = "F:\\project\\gpt\\8\\envs";
         //不同环境,之后可以不用读文件
-        List<File> fileList = TestGraph.getFileList("F:\\project\\gpt\\5\\zonggen");
+        List<File> fileList = TestGraph.getFileList("F:\\project\\gpt\\8\\8gen");
 
         //得到完全来自于环境中的变量名
         SummaryEnv summaryEnv = new SummaryEnv(gptPath);
@@ -58,11 +60,6 @@ public class GraphTree {
         }
 
         for (int i = 0; i < fileList.size(); i++) {
-            //得到图
-//            ReadGraph read = new ReadGraph("F:\\project\\graph\\graphTest.xml",gptPath);
-//            Graph readGraph = read.translate("F:\\project\\graph\\graphTest.xml");
-
-//            resultGraph = readGraph;
             trainPath = fileList.get(i).getPath();
             resultGraph.setRunCurrentNode(resultGraph.getRoot());
             reader = new XMLReader(trainPath);
@@ -74,13 +71,18 @@ public class GraphTree {
             ArrayList<GoalNode> tlgs = reader.getTlgs();
 
             //判断环境是否已存在
-            ArrayList<String> thisEnv = new ArrayList<>();
+            ArrayList<Integer> thisEnv = new ArrayList<>();
             //1.保存当前环境下为真的完全来自于环境中的变量的名字
-            for (Literal literal : literals) {
-                if (absolutetEnv.contains(literal.getName()) && literal.getState() == true){
-                    thisEnv.add(literal.getName());
+            for (int j = 0; j < literals.size(); j++) {
+                if (absolutetEnv.contains(literals.get(j).getName()) && literals.get(j).getState() == true){
+                    thisEnv.add(j);
                 }
             }
+//            for (Literal literal : literals) {
+//                if (absolutetEnv.contains(literal.getName()) && literal.getState() == true){
+//                    thisEnv.add(literal.getName());
+//                }
+//            }
 
             //再判断环境是否已存在
             //包含此环境，跑图
@@ -126,6 +128,8 @@ public class GraphTree {
                  */
                 //到这，说明没有进if，即当前环境不在 图里，需要进行mcts跑树,合并图
 
+                //记录5次结果
+                ArrayList<Integer> n5 = new ArrayList<>();
                 for (int j = 0; j < testNum; j++) {
                     SynthEnvironment envir = new SynthEnvironment(literals, 0);
                     System.out.println(envir.onPrint());
@@ -149,25 +153,56 @@ public class GraphTree {
                     }
                     // check the number of goals achieved
                     System.out.println(treeAgent.getNumAchivedGoal());
+                    n5.add(treeAgent.getNumAchivedGoal());
                     //如果某次实现全部目标，则加入到图中
                     if (treeAgent.getNumAchivedGoal() == tlgs.size()) {
-                        exeXML.add(fileList.get(i).getName());
+                        //把当前环境加入到envs文件夹中
+                        copyFile(fileList.get(i).getAbsolutePath(),newFilePath+"\\"+fileList.get(i).getName());
                         //把当前环境加入到总的环境中
                         envs.add(thisEnv);
-//                        resultList.add(treeAgent.getNumAchivedGoal());
                         //生成单条路径，合并到图里
                         Graph pathGraph = ReadFile.generatePathGraph(envir.getRecordActions(), gptPath);
                         resultGraph = ReadFile.mergeGraph(resultGraph, pathGraph);
                         break;
                     }
 
+
+                }
+                if (!n5.contains(tlgs.size())) {
+                    unExeXML.add(fileList.get(i).getName());
                 }
             }
 
         }
+
         WriteGraph wxf = new WriteGraph();
-        wxf.CreateXML(resultGraph,"F:\\project\\graph\\graphTest.xml");
-        System.out.println(exeXML);
-        System.out.println(exeXML.size());
+        wxf.CreateXML(resultGraph,"F:\\project\\graph\\graph8.xml");
+        System.out.println(unExeXML);
+        System.out.println(unExeXML.size());
+
+        File actionPath1 = new File("F:\\project\\SQ-MCTS\\envs8.txt");
+        FileWriter envPath  = new FileWriter("envs8.txt",true);
+
+        for (ArrayList<Integer> integers : envs) {
+            for (int i = 0; i < integers.size(); i++) {
+                envPath.append(integers.get(i) + " ");
+            }
+            envPath.append("\n");
+        }
+
+        envPath.close();
+    }
+
+    public static void copyFile(String source,String dest) throws Exception{
+        FileInputStream in = new FileInputStream(new File(source));
+        FileOutputStream out = new FileOutputStream(new File(dest));
+        byte[] buff = new byte[512];
+        int n = 0;
+        while ((n = in.read(buff)) != -1){
+            out.write(buff,0,n);
+        }
+        out.flush();
+        in.close();
+        out.close();
     }
 }

@@ -40,18 +40,24 @@ public class DealFolder {
             allGoalExe.add(literals);
         }
 //        Graph_5_0.3
-        List<File> fileList = getFileList("F:\\project\\gpt\\5\\zonggen");
+        List<File> fileList = getFileList("F:\\project\\gpt\\8\\8test");
         //遍历每个文件
         for (int i = 0; i < fileList.size(); i++) {
+            int m = 0;
             //检查每个文件是否符合所有goal
             for (ArrayList<Literal[]> singleGoal : allGoalExe) {
                 //checkFile为false，说明当前目标在该文件下没有可以实现的组合,删掉该文件
                 if (!checkFile(fileList.get(i).getPath(),singleGoal,absolutetEnv)){
+                    m++;
                     //删掉该文件
-                    fileList.get(i).delete();
-                    break;
+//                    fileList.get(i).delete();
+//                    break;
                 }
 
+            }
+            //删除一个目标都不能实现的环境
+            if (m == tlgs.size()){
+                fileList.get(i).delete();
             }
         }
 
@@ -86,26 +92,6 @@ public class DealFolder {
             }
         }
         return false;
-
-//        //每种可能组合
-//        for (int i = 0; i < literals.size(); i++) {
-//            //记录每种组合中相等的元素
-//            int num = 0;
-//            //获取一个目标的可能组合 并 遍历一种可能性的每个元素
-//            for (Literal literal : literals.get(i)) {
-//                //gpt中的环境
-//                for (Literal env : reader.getLiterals()) {
-//                    if (literal.equals(env)){
-//                        num++;
-//                    }
-//                }
-//            }
-//            //遍历完每个组合后，判断相等的个数是否等于组合中元素个数
-//            if (num == literals.get(i).length){
-//                return true;
-//            }
-//        }
-//        return false;
     }
     /**
      * 获取文件夹下的文件列表

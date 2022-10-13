@@ -5,6 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * 需要的参数：
+ * 1.树的路径
+ * 2.要生成新环境的个数
+ *
+ * 都在config中
+ * 3.生成文件的路径，main中修改
+ *
+ * 思路：
+ * step1:先生成一个随机数，决定要修改的变量的个数n
+ * step2：再用一个随机数来判断是哪n个变量需要被修改
+ */
 public class RandomGenEnv {
     public static void main(String[] args) {
         //要修改的树的存储路径
@@ -24,7 +36,6 @@ public class RandomGenEnv {
         SummaryEnv summaryEnv = new SummaryEnv(gptFilePath);
         ArrayList<String> absolutetEnv = summaryEnv.checkAbsolutetEnvName();
 
-        rate = 0.2;
         genAmount = Integer.parseInt(args[1]);
 
         //读取文件
@@ -49,9 +60,14 @@ public class RandomGenEnv {
         }
 
         //上面读取了文件,下面就是修改和生成
-        String newPath = "F:\\project\\gpt\\5\\test\\5.";   //生成的文件的名字
-
+        String newPath = "F:\\project\\gpt\\8\\8test\\8.";   //生成的文件的名字
         for (int i = 0; i < genAmount; i++) {
+            Random r = new Random();
+            int changeNum = r.nextInt(absolutetEnv.size()) + 1;
+
+            rate = changeNum / (double) absolutetEnv.size();
+
+            int m = 0;
             List<String> newArr = new ArrayList<>();
             /**
              * 如果是基本数据类型，那么是赋值，如果是引用数据类型，那么是引用（也就是两个变量指向同一个地址，改变其中一个，那么相应的另外一个也相应变化）
@@ -60,32 +76,31 @@ public class RandomGenEnv {
             //修改文件
             boolean needEditFlag = false;
             Random rd = new Random();
-//            boolean isCurrentLineEdited = false;
             ArrayList<Integer> hasEditLineArr = new ArrayList<>();
-            //遍历获取到的xml文件的每一行
-            for (int j = 0; j < newArr.size(); j++) {
-                // 如果文件某一行含有 Literal ，说明该行是environment 判断是否修改
-//                   isCurrentLineEdited = false;
-                if (newArr.get(j).contains("Literal") && !newArr.get(j).contains("G-")) {
-                    String[] str = newArr.get(j).split("\"");
-                    String envName = str[1];
-                    for (String s : absolutetEnv) {
-                        if (envName.equals(s) ) {
-                            //判断是否需要修改
-                            needEditFlag = rd.nextDouble() < rate;
-                            if (needEditFlag && !hasEditLineArr.contains(j)) {
-                                hasEditLineArr.add(j);
-                                //需要修改这一行
-//                                   isCurrentLineEdited = true;
-                                //根据initVal把这一行分成两部分
-                                String[] arrTemp = newArr.get(j).split("initVal");
-                                if (arrTemp[1].contains("true")) {
-                                    arrTemp[1] = arrTemp[1].replace("true", "false");
-                                } else {
-                                    arrTemp[1] = arrTemp[1].replace("false", "true");
-                                }
+            while (m < changeNum){
+                //遍历获取到的xml文件的每一行
+                for (int j = 0; j < newArr.size(); j++) {
+                    // 如果文件某一行含有 Literal ，说明该行是environment 判断是否修改
+                    if (newArr.get(j).contains("Literal") && !newArr.get(j).contains("G-")) {
+                        String[] str = newArr.get(j).split("\"");
+                        String envName = str[1];
+                        for (String s : absolutetEnv) {
+                            if (envName.equals(s) && m < changeNum) {
+                                //判断是否需要修改
+                                needEditFlag = rd.nextDouble() < rate;
+                                if (needEditFlag && !hasEditLineArr.contains(j)) {
+                                    m++;
+                                    hasEditLineArr.add(j);
+                                    //根据initVal把这一行分成两部分
+                                    String[] arrTemp = newArr.get(j).split("initVal");
+                                    if (arrTemp[1].contains("true")) {
+                                        arrTemp[1] = arrTemp[1].replace("true", "false");
+                                    } else {
+                                        arrTemp[1] = arrTemp[1].replace("false", "true");
+                                    }
                                     // 上面把字符串换完了，之后把字符串写回去
-                                newArr.set(j, arrTemp[0] + "initVal" + arrTemp[1]);
+                                    newArr.set(j, arrTemp[0] + "initVal" + arrTemp[1]);
+                                }
                             }
                         }
                     }
@@ -93,8 +108,8 @@ public class RandomGenEnv {
             }
 
             //存储文件
-//            System.out.println("修改环境结束");
-//            System.out.println("该文件修改了" + m + "个环境变量");
+            System.out.println("修改环境结束");
+            System.out.println("该文件修改了" + m + "个环境变量");
             // control + alt + L
             File newFile = new File(newPath + (i + 1) + ".xml");
             try {

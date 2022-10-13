@@ -26,8 +26,9 @@ public class Main1 {
     static long startTime = System.currentTimeMillis();
     static ArrayList<String> exeXML = new ArrayList<>();
 
-    public static void main(String[] args) throws IOException {
-        List<File> fileList = getFileList("F:\\project\\gpt\\Atest\\gen");
+    public static void main(String[] args) throws Exception {
+        List<File> fileList = getFileList("F:\\project\\gpt\\8\\8gen");
+        String newFilePath = "F:\\project\\gpt\\8\\envs_txt";
 
 //        startTime = System.currentTimeMillis();
 //        long startAll = System.currentTimeMillis();
@@ -132,9 +133,10 @@ public class Main1 {
                 }
 
                 if(agent.getNumAchivedGoal() != tlgs.size()){
-                    reWriteFileEnd("F:\\project\\SQ-MCTS\\actions_test.txt");
+                    reWriteFileEnd("F:\\project\\SQ-MCTS\\actions_8.txt");
                 }else {
                     resultList.add(agent.getNumAchivedGoal());
+                    copyFile(fileList.get(j).getAbsolutePath(),newFilePath+"\\"+fileList.get(j).getName());
                 }
 
                 // check the number of goals achieved
@@ -146,7 +148,7 @@ public class Main1 {
 //            System.out.println("程序运行时间" + (endAll - startAll));
 
 //            System.out.println("程序运行时间" + (end - startTime));
-                FileWriter actionPath  = new FileWriter("actions_test.txt",true);
+                FileWriter actionPath  = new FileWriter("actions_8.txt",true);
 
                 actionPath.append("//");
                 actionPath.append("\n");
@@ -246,6 +248,19 @@ public class Main1 {
             e.printStackTrace();
         }
 
+    }
+
+    public static void copyFile(String source,String dest) throws Exception{
+        FileInputStream in = new FileInputStream(new File(source));
+        FileOutputStream out = new FileOutputStream(new File(dest));
+        byte[] buff = new byte[512];
+        int n = 0;
+        while ((n = in.read(buff)) != -1){
+            out.write(buff,0,n);
+        }
+        out.flush();
+        in.close();
+        out.close();
     }
 }
 

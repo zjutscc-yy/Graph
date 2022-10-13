@@ -153,9 +153,9 @@ public abstract class AbstractEnvironment {
         // for all the agents, run one cycle
 
         // 创建文件接收action
-//        File actionPath1 = new File("F:\\project\\SQ-MCTS\\actions_3_0.2-.txt");
+//        File actionPath1 = new File("F:\\project\\SQ-MCTS\\actions_8.txt");
         //把action结果输出到file中
-//        FileWriter actionPath  = new FileWriter("actions_test.txt",true);
+//        FileWriter actionPath  = new FileWriter("actions_8.txt",true);
 
         for(AbstractAgent a: agents){
 
