@@ -26,6 +26,17 @@ public class Graph {
     //所有目标都实现的节点
     private Node endNode;
 
+    //图中所包含环境及对应的哪个点（爪形使用）
+    private HashMap<ArrayList<Integer>, Integer> envs = new HashMap();
+
+    public void addEnv(ArrayList<Integer> env, int a){
+        envs.put(env,a);
+    }
+
+    public HashMap<ArrayList<Integer>, Integer> getEnvs() {
+        return envs;
+    }
+
     public Node getEndNode() {
         return endNode;
     }

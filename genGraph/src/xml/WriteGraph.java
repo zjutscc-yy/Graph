@@ -40,6 +40,13 @@ public class WriteGraph {
             endElement.setAttribute(new Attribute("Id",String.valueOf(endNode.getId())));
             graph.addContent(endElement);
 
+            //图中所包含环境
+            Element envsElement = new Element("Environments");
+            for (Map.Entry<ArrayList<Integer>, Integer> entry : bigGraph.getEnvs().entrySet()) {
+                writeEnv(entry,envsElement);
+            }
+            //把环境加到图里
+            graph.addContent(envsElement);
 
             //普通节点
             Element nodesElement = new Element("Nodes");
@@ -67,6 +74,13 @@ public class WriteGraph {
             ex.printStackTrace();
         }
 
+    }
+
+    private void writeEnv(Map.Entry<ArrayList<Integer>, Integer> entry, Element parent){
+        Element envElement = new Element("Environment");
+        envElement.setAttribute("env",String.valueOf(entry.getKey()));
+        envElement.setAttribute("correspond_Id",String.valueOf(entry.getValue()));
+        parent.addContent(envElement);
     }
 
     private void writeNode(Node node,Element parent) {

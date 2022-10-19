@@ -28,7 +28,7 @@ public class TestTree {
 
     public static void main(String[] args) throws IOException {
 
-        List<File> fileList = getFileList("F:\\project\\gpt\\8\\test1");
+        List<File> fileList = getFileList("F:\\project\\gpt\\8\\test4");
 
 //        startTime = System.currentTimeMillis();
 //        long startAll = System.currentTimeMillis();
@@ -40,6 +40,7 @@ public class TestTree {
         String gptFilePath;
         XMLReader reader;
 
+        long start = System.currentTimeMillis();
         //遍历改变环境后的文件夹里的所有xml文件
         for (int j = 0; j < fileList.size(); j++) {
             gptFilePath = fileList.get(j).getPath();
@@ -144,6 +145,9 @@ public class TestTree {
             }
 
         }
+
+        long end = System.currentTimeMillis();
+        System.out.println("程序运行时间" + (end - start));
         int x = 0;
         for (int i = 0; i < resultList.size(); i++) {
             x += resultList.get(i);

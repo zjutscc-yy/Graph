@@ -262,13 +262,27 @@ public class Node {
             GoalNode key = entry.getKey();//获得父节点的key
             if(entry.getValue() != null) {//如果父节点key对应的value不为空
                 TreeNode value = entry.getValue();
-                if (nodeCurrentStep.get(key) != value && nodeCurrentStep.get(key) != null) {
-                    if (nodeCurrentStep.get(key) instanceof ActionNode) {
-                        //返回孩子节点的那个动作
-                        ActionNode act = (ActionNode) nodeCurrentStep.get(key);
-                        return act;
+                //遍历孩子节点
+                for (Map.Entry<GoalNode, TreeNode> childEntry : nodeCurrentStep.entrySet()) {
+                    GoalNode childKey = childEntry.getKey();
+                    if (childEntry.getValue() != null){
+                        if (key.getName().equals(childKey.getName()) &&
+                                !value.getName().equals(childEntry.getValue().getName())){
+                            if (childEntry.getValue() instanceof ActionNode){
+                                ActionNode act = (ActionNode) childEntry.getValue();
+                                return act;
+                            }
+
+                        }
                     }
                 }
+//                if (nodeCurrentStep.get(key) != value && nodeCurrentStep.get(key) != null) {
+//                    if (nodeCurrentStep.get(key) instanceof ActionNode) {
+//                        //返回孩子节点的那个动作
+//                        ActionNode act = (ActionNode) nodeCurrentStep.get(key);
+//                        return act;
+//                    }
+//                }
             }
         }
         return null;
