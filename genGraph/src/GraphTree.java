@@ -1,7 +1,4 @@
-import agent.AbstractAgent;
-import agent.Belief;
-import agent.GraphAgent;
-import agent.MCTSAgent;
+import agent.*;
 import environment.SynthEnvironment;
 import generators.ReadFile;
 import goalplantree.ActionNode;
@@ -41,11 +38,14 @@ public class GraphTree {
         //每个环境测试次数
         int testNum;
         //可以执行成功的新环境要复制到哪
-        String newFilePath = "F:\\project\\gpt\\8\\envs";
+//        String newFilePath = "F:\\project\\gpt\\End8\\envs";
         //要训练的环境所在文件夹
-        List<File> fileList = TestGraph.getFileList("F:\\project\\gpt\\8\\8gen");
+        List<File> fileList = TestGraph.getFileList("F:\\project\\gpt\\End8\\test");
+
+        //重复环境个数
+        int num = 0;
         //图的路径
-//        String graphPath = "F:\\project\\graph\\graph8.xml";
+        String graphPath = "F:\\project\\graph\\graph8_GPT_500.xml";
 
         //存放结果，方便判断是不是加入图的每个环境都为可执行成功的环境
         List<Integer> resultList = new ArrayList<>();
@@ -55,8 +55,8 @@ public class GraphTree {
         ArrayList<String> absolutetEnv = summaryEnv.checkAbsolutetEnvName();
 
         resultGraph = new Graph();
-//        ReadGraph read = new ReadGraph(graphPath, gptPath);
-//        resultGraph = read.translate(graphPath);
+        ReadGraph read = new ReadGraph(graphPath, gptPath);
+        resultGraph = read.translate(graphPath);
         System.out.println("读图成功");
 
         try {
@@ -91,31 +91,34 @@ public class GraphTree {
                 /**
                  * start 图
                  */
+                num++;
                 System.out.println("该环境已存在于图中");
                 System.out.println(fileList.get(i).getName());
+
                 resultGraph.setRunCurrentNode(resultGraph.getRoot());
-                Integer searchRouteId = resultGraph.getEnvs().get(thisEnv);
-                for (Node node : resultGraph.getRoot().getChildNode()) {
-                    if (node.getId() == searchRouteId){
-                        //找到对应那条路径
-                        ActionNode act = Node.getDifferentAction(resultGraph.getRunCurrentNode(), node);
-                        System.out.println(act.getName());
-                        resultGraph.setRunCurrentNode(node);
-                        break;
-                    }
+
+                // 构建环境
+                SynthEnvironment environment = new SynthEnvironment(literals, 0);
+                System.out.println(environment.onPrint());
+                System.out.println("--------------------------------------------------------");
+
+                // 构建智能体
+                ArrayList<Belief> bs = new ArrayList<>();
+                for (Literal l : literals) {
+                    bs.add(new Belief(l.getName(), l.getState() ? 1 : 0));
                 }
 
-                //开始执行
-                while (resultGraph.getRunCurrentNode().getChildNode().size() != 0){
-                    Node node = resultGraph.getRunCurrentNode().getChildNode().get(0);
-                    if (Node.getDifferentAction(resultGraph.getRunCurrentNode(),node) == null){
-                        break;
-                    }
-                    ActionNode act = Node.getDifferentAction(resultGraph.getRunCurrentNode(), node);
-                    System.out.println(act.getName());
-                    resultGraph.setRunCurrentNode(node);
+                AbstractAgent agent = new ClawGraphAgent("ClawGraph-Agent", bs, resultGraph,thisEnv);
+                environment.addAgent(agent);
+
+                boolean running = true;
+                int step = 1;
+                while (running) {
+                    System.out.println("---------------------step图 " + step + "------------------------------");
+                    running = environment.run();
+                    step++;
                 }
-                System.out.println("图执行成功");
+                System.out.println(resultGraph.getRunCurrentNode().getAchievedGoal().size());
                 resultList.add(resultGraph.getRunCurrentNode().getAchievedGoal().size());
             }else {
                 /**
@@ -145,27 +148,23 @@ public class GraphTree {
                     }
                     // check the number of goals achieved
                     System.out.println(treeAgent.getNumAchivedGoal());
-                    //如果某次实现全部目标，则加入到图中
-                    if (treeAgent.getNumAchivedGoal() == tlgs.size()) {
-                        //把当前环境加入到envs文件夹中
-                        copyFile(fileList.get(i).getAbsolutePath(),newFilePath+"\\"+fileList.get(i).getName());
-
-                        //生成单条路径，合并到图里
-                        Graph pathGraph = ReadFile.generatePathGraph(envir.getRecordActions(), gptPath, thisEnv);
-
-                        //合并爪形图
-                        resultGraph = ReadFile.mergeClawGraph(resultGraph, pathGraph);
-                        resultList.add(treeAgent.getNumAchivedGoal());
-
-                        FileWriter actionPath = new FileWriter("F:\\project\\SQ-MCTS\\actions_8.txt",true);
-                        actionPath.append("//");
-                        actionPath.append("\n");
-                        actionPath.append("\n");
-                        actionPath.close();
-                        break;
-                    }else {
-                        reWriteFileEnd("F:\\project\\SQ-MCTS\\actions_8.txt");
+                    resultList.add(treeAgent.getNumAchivedGoal());
+                    if (treeAgent.getNumAchivedGoal() < 5){
+                        System.out.println("实现目标数太少" + fileList.get(i).getName());
                     }
+                    //如果某次实现全部目标，则加入到图中
+//                    if (treeAgent.getNumAchivedGoal() == tlgs.size()) {
+//                        //把当前环境加入到envs文件夹中
+////                        copyFile(fileList.get(i).getAbsolutePath(),newFilePath+"\\"+fileList.get(i).getName());
+//
+//                        //生成单条路径，合并到图里
+//                        Graph pathGraph = ReadFile.generatePathGraph(envir.getRecordActions(), gptPath, thisEnv);
+//
+//                        //合并爪形图
+//                        resultGraph = ReadFile.mergeClawGraph(resultGraph, pathGraph);
+//
+//                        break;
+//                    }
 
                 }
             }
@@ -180,9 +179,10 @@ public class GraphTree {
         System.out.println("一共有" + resultList.size() + "个可执行环境");
         double averageAchieveGoal = x / (double) resultList.size();
         System.out.println("平均实现目标数：" + averageAchieveGoal);
+        System.out.println("重复环境数为" + num);
 
-        WriteGraph wxf = new WriteGraph();
-        wxf.CreateXML(resultGraph,"F:\\project\\graph\\graph8.xml");
+//        WriteGraph wxf = new WriteGraph();
+//        wxf.CreateXML(resultGraph,"F:\\project\\graph\\graph8_GPT_500.xml");
     }
 
     public static void copyFile(String source,String dest) throws Exception{
