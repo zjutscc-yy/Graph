@@ -31,7 +31,7 @@ public class SelectEnv {
         int selectNum;
 
         //总的文件夹集合
-        List<File> allFile = getFileList("F:\\project\\gpt\\8\\envs");
+        List<File> allFile = getFileList("F:\\project\\pGPT\\8\\envs");
         //选择过的文件集合
 //        List<File> selectedFiles = getFileList("F:\\project\\gpt\\genGraph_3\\SelectedEnv");
 
@@ -43,7 +43,7 @@ public class SelectEnv {
         //新文件夹路径：用来存放每次选择的文件
 //        String newFilePath = "F:\\project\\gpt\\genGraph_3\\newSelect";
 
-        String newFilePath = "F:\\project\\gpt\\8\\test1";
+        String newFilePath = "F:\\project\\pGPT\\8\\test50";
 
         selectNum = Integer.parseInt(args[0]);
 

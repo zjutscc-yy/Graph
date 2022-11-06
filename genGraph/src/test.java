@@ -133,7 +133,7 @@ public class test {
                     //如果在5次测试某环境中，有一次能实现全部目标，则生成单条路径，并与之前图合并
                     if (agent.getNumAchivedGoal() == tlgs.size()) {
                         //把当前环境加入到envs文件夹中
-                        GraphTree.copyFile(fileList.get(i).getAbsolutePath(),newFilePath+"\\"+fileList.get(i).getName());
+                        LearningProcess.copyFile(fileList.get(i).getAbsolutePath(),newFilePath+"\\"+fileList.get(i).getName());
 
                         //生成单条路径，合并到图里
                         Graph pathGraph = ReadFile.generatePathGraph(environment.getRecordActions(), gptPath, thisEnv);

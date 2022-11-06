@@ -106,12 +106,6 @@ public class TestGraph {
      * @return
      */
     public static List<File> getFileList(String dirStr) {
-//        File dir = new File(dirStr);
-//        if (!dir.exists()){
-//            System.out.println("目录不存在");
-//        }
-
-        //if istxt
         File file = new File(dirStr);
         List<File> sourceList = Arrays.stream(file.listFiles()).toList();
         List<File> resultList = new ArrayList<>();
